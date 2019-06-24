@@ -28,7 +28,7 @@ class PostController extends Controller
         // $this->post contient une instance de la classe PostTable
         $paginatedQuery = new PaginatedQueryAppController(
             $this->post,
-            $this->generateUrl('home')
+            $this->generateUrl('posts')
         );
         $postById = $paginatedQuery->getItems();
 

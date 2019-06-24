@@ -1,0 +1,17 @@
+{% extends "layout/sitebiere.twig" %}
+
+{% block title %}{{title}}{% endblock %}
+
+{% block content %}
+<h1 class="titreduhaut">{{title}}</h1>
+<form method="POST" name="{{title}}" action="/connexion">
+<div class="form-group">
+    <label for="mail">votre courriel</label>
+    <input id="mail" type="email" name="mail" value="" required></div>
+<div class="form-group">
+    <label for="mail">votre mot de passe</label>
+    <input id="password" type="password" name="password" value="" required></div>
+<button type="submit">Envoyez</button>
+
+</form>
+{% endblock content %}

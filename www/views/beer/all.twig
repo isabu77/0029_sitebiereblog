@@ -1,0 +1,21 @@
+{% extends "layout/sitebiere.twig" %}
+
+{% block title %}{{title}}{% endblock %}
+
+{% block content %}
+<!-- PAGE PRINCIPALE de présentation des bières -->
+<h1 class="titreduhaut">{{title}}</h1>
+<section id="boutiques">
+    <!-- BOUCLE de lecture du tableau pour afficher un article par bière -->
+    {% for biere in bieres %}
+      <article class='bieres'>
+        <h2>{{biere.title}}</h2>
+        <div><img src="{{biere.img}}" alt="{{biere.title}}"/></div>
+        <p>{{biere.excerpt}}</p>
+         <p class="price">{{biere.getPrix()}}</p>
+    </article>
+    {% endfor %}
+</section>
+
+{{ paginate | raw }}
+{% endblock content %}

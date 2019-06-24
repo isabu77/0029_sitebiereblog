@@ -47,4 +47,15 @@ class TextController
 
         
     }
+
+    function rand_pwd($nb_car = 10, $chaine ='azertyuiopqsdfghjklmwxcvbn0123456789') {
+        $nb_lettre = strlen($chaine) -1;
+        $generation = '';
+        for($i=0; $i < $nb_car; $i++) {
+            $pos = mt_rand(0, $nb_lettre);
+            $car = $chaine[$pos];
+            $generation .= $car;
+        }
+        return $generation;
+    }
 }

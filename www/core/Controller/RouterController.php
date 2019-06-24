@@ -24,6 +24,15 @@ class RouterController
         return $this; // pour enchainer les get à l'appel
 
     }
+    /**
+     * post
+     */
+    public function post(string $uri, string $file, string $name): self
+    {
+        $this->router->map('POST', $uri, $file, $name);
+        return $this; // pour enchainer les get à l'appel
+
+    }
 
     /**
      * génère une url avec une route 
@@ -47,12 +56,18 @@ class RouterController
         if (is_array($match)) {
             if (strpos($match['target'], "#")) {
                 [$controller, $methode] = explode("#", $match['target']);
-                $controller = "App\\Controller\\".ucfirst($controller)."Controller";
-               ;
-                (new $controller())->$methode(...array_values($match['params']));
+                $controller = "App\\Controller\\" . ucfirst($controller) . "Controller";
+                // traitement des formulaires : envoi du $_POST 
+                if (!empty($_POST)) {
+                    (new $controller())->$methode($_POST);
+                } else {
+                    // traitement d'une route avec params : on transforme le tableau en liste de paramètres
+                    (new $controller())->$methode(...array_values($match['params']));
+                }
+
                 exit();
             }
-            $params = $match['params'];	
+            $params = $match['params'];
             require $this->pathToFile($match['target']);
         } else {
             // no route was matched
