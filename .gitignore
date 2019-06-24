@@ -1,0 +1,10 @@
+.env
+.vscode
+www/vendor
+blog.code-workspace
+createBlog.sql
+www/tests/Exotest/
+SchemaMvc.pdf
+www/composer.lock
+
+
