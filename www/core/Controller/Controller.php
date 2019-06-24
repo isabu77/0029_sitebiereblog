@@ -5,6 +5,7 @@ class Controller
 {
     private $app;
     private $twig;
+    private $tva = 1.2;
 
     /**
      * Rendu d'une page en .twig
@@ -59,6 +60,26 @@ class Controller
         // (par exemple : 'post' crée une instance $post= new PostTable() )
         $this->$nameTable = $this->getApp()->getTable($nameTable);
 
+    }
+    /**
+     * verifie qu'un utilisateur est connecté
+     * @return array|void
+     */
+    public function userOnly($verify = false)
+    { //:array|void|boolean
+        if (session_status() != PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        // est pas defini et false
+        if (!$_SESSION["auth"]) {
+            if ($verify) {
+                return false;
+                //exit();
+            }
+            header('location: /connexion');
+            exit();
+        }
+        return $_SESSION["auth"];
     }
 
 }

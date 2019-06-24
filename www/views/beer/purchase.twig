@@ -1,0 +1,70 @@
+{% extends "layout/sitebiere.twig" %}
+
+{% block title %}{{title}}{% endblock %}
+
+{% block content %}
+<h1 class="titreduhaut">{{title}}</h1>
+	<form method="POST" action="/purchase" id="formPurchase">
+		<div class="form_row">
+			<div class="form">
+				<label>NOM</label>
+				<input type="text" name="lastname" value="{{user.lastname}}" required/>
+			</div>
+			<div class="form">
+				<label>PRENOM</label>
+				<input type="text" name="firstname" value="{{user.firstname}}" required/>
+			</div>
+		</div>
+		<div class="form">
+			<label>ADRESSE</label>
+			<input type="text" name="address" value="{{user.address}}" required/>
+		</div>
+		<div class="form_row">
+			<div class="form">
+				<label>Code Postal</label>
+				<input type="text" name="zipCode" value="{{user.zipcode}}" required/>
+			</div>
+			<div class="form">
+				<label>VILLE</label>
+				<input type="text" name="city" value="{{user.city}}" required/>
+			</div>
+		</div>
+		<div class="form">
+			<label>PAYS</label>
+			<input type="text" name="country" value="{{user.country}}" required/>
+		</div>
+		<div class="form_row">
+			<div class="form">
+				<label>TEL</label>
+				<input type="tel" name="phone" value="{{user.phone}}" required/>
+			</div>
+			<div class="form">
+				<label>MAIL</label>
+				<input type="text" name="mail" value="{{user.mail}}" disabled/>
+			</div>
+		</div>
+		<table>
+			<thead>
+				<tr>
+					<th>Nomination</th>
+					<th>Prix HT</th>
+					<th>Prix TTC</th>
+					<th>Quantité</th>
+				</tr>
+			</thead>
+			<tbody>
+            {% for biere in bieres %}
+                <tr>
+                    <td>{{biere.title}}</td>
+                    <td id="PHT_{{biere.id}}">{{biere.getPrixHt()}}</td>
+                    <td id="PTTC_{{biere.id}}">{{biere.getPrixTTC()}}</td>
+                    <td><input type="number" min="0" name="qty[{{biere.id}}]" value="0" oninput="calcPrice(this, {{biere.id}}, {{biere.price}});" /></td>
+                </tr>
+            {% endfor %}
+			</tbody>
+		</table>
+		<button type="submit">COMMANDER</button>
+	</form>
+
+{{ paginate | raw }}
+{% endblock content %}

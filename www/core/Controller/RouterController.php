@@ -59,10 +59,10 @@ class RouterController
                 $controller = "App\\Controller\\" . ucfirst($controller) . "Controller";
                 // traitement des formulaires : envoi du $_POST 
                 if (!empty($_POST)) {
-                    (new $controller())->$methode($_POST);
+                    (new $controller())->$methode($_POST, ...array_values($match['params']));
                 } else {
                     // traitement d'une route avec params : on transforme le tableau en liste de paramètres
-                    (new $controller())->$methode(...array_values($match['params']));
+                    (new $controller())->$methode(null, ...array_values($match['params']));
                 }
 
                 exit();

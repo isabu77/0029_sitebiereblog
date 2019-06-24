@@ -49,14 +49,17 @@ class DatabaseMysqlController extends DatabaseController
 
     public function query(string $statement, ?string $class_name = null, bool $one = false)
     {
-        //dd($class_name);
         $req = $this->getPDO()->query($statement);
         if (
             strpos($statement, 'UPDATE') === 0 ||
             strpos($statement, 'INSERT') === 0 ||
             strpos($statement, 'DELETE') === 0
         ) {
-            return $req;
+            if (strpos($statement, 'INSERT') === 0){
+                return $this->getPDO()->lastInsertId(); //On recupère l'id de la dernière insertion en bdd
+            }else{
+                return $req;
+            }
         }
         if (is_null($class_name)){
             $req->setFetchMode(PDO::FETCH_OBJ);
@@ -80,6 +83,11 @@ class DatabaseMysqlController extends DatabaseController
             strpos($statement, 'INSERT') === 0 ||
             strpos($statement, 'DELETE') === 0
         ) {
+            if (strpos($statement, 'INSERT') === 0){
+                return $this->getPDO()->lastInsertId(); //On recupère l'id de la dernière insertion en bdd
+            }else{
+                return $res;
+            }
             return $res;
         }
         if (is_null($class_name)){

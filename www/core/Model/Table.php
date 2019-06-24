@@ -72,6 +72,13 @@ class Table
     {
         return $this->query("SELECT * FROM {$this->table} LIMIT {$limit} OFFSET {$offset}", null);
     }
+/**
+     * lecture de tous les enregistrement d'une table par page
+     */
+    public function all()
+    {
+        return $this->query("SELECT * FROM {$this->table}", null);
+    }
 
     /**
      * lecture d'un enregistrement par son id 

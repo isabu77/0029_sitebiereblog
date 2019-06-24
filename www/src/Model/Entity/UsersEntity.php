@@ -26,7 +26,7 @@ class UsersEntity extends Entity
      **/
     public function getId_user(): int
     {
-        return ($this->id_user);
+        return ((int)$this->id_user);
     }
 
     /**

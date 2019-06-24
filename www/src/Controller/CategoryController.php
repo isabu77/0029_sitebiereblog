@@ -45,7 +45,7 @@ class CategoryController extends Controller
     /**
      * une seule catégorie et ses articles
      */
-    public function show(string $slug, int $id)
+    public function show($post = null, string $slug, int $id)
     {
         // méthode générique de table.php
         $category = $this->category->find($id);

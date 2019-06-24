@@ -44,7 +44,7 @@ class PostController extends Controller
     /**
      * un seul article by 'lire plus'
      */
-    public function show(string $slug, int $id)
+    public function show($post = null, string $slug, int $id)
     {
         // lecture de l'article dans la base (objet Post) par son id
         $post = $this->post->find($id);

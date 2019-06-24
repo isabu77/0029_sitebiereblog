@@ -11,10 +11,9 @@ use App\Model\Entity\UsersEntity;
 class UsersTable extends Table
 {
     /**
-     * lecture d'un enregistrement par son id 
-     * valable pour n'importe quelle table
+     * insertion d'un enregistrement dans la base
      */
-    public function insert(UsersEntity $userEntity):int
+    public function insert(UsersEntity $userEntity): int
     {
         $password = password_hash(htmlspecialchars($_POST["password"]), PASSWORD_BCRYPT);
         $token = TextController::rand_pwd(24);
@@ -60,15 +59,16 @@ class UsersTable extends Table
 
 
 
-        /**
+    /**
      * Connecte le client
      * @return boolean|void
      */
     public function userConnect($mail, $password, $isConnect = false)
-    { 
+    {
         $user = $this->query("SELECT * FROM users WHERE `mail`= ?", [$mail], true);
 
-        if ($user &&
+        if (
+            $user &&
             password_verify(
                 htmlspecialchars($password),
                 $user->getPassword()
@@ -83,7 +83,7 @@ class UsersTable extends Table
             }
             $user->setPassword("");
             $_SESSION['auth'] = $user;
-            //connecté
+            //connecté : on affiche le profil
             header('location: /profil');
             exit();
         } else {
@@ -99,6 +99,4 @@ class UsersTable extends Table
             //TODO : err pas connecté
         }
     }
-
-
 }

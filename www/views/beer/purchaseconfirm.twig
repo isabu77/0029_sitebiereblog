@@ -1,0 +1,45 @@
+{% extends "layout/sitebiere.twig" %}
+
+{% block title %}{{title}}{% endblock %}
+
+{% block content %}
+<h1 class="titreduhaut">Confirmation de commande</h1>
+<section id="commandSection">
+	<table>
+		<thead>
+			<tr>
+				<th>Nomination</th>
+				<th>Prix HT</th>
+				<th>Prix TTC</th>
+				<th>Quantité</th>
+				<th>Total TTC</th>
+			</tr>
+		</thead>
+		<tbody>
+        {% for key,line in lines %}
+				<tr>
+					<td>{{bieres[key].title}}</td>
+					<td>{{line["price"]|number_format(2, ',', '.')}}€</td>
+                    {% set prix = line["price"] * tva %}
+					<td>{{prix|number_format(2, ',', '.')}}€</td>
+					<td>{{line["qty"]}}</td>
+                    {% set prix = line["price"] * line["qty"] * tva %}
+					<td>{{prix|number_format(2, ',', '.')}}€</td>
+				</tr>
+            {% endfor %}
+			<tr>
+				<td><strong>Total TTC</strong></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><strong>{{order.getPriceTTC()|number_format(2, ',', '.')}}€</strong></td>
+			</tr>
+		</tbody>
+	</table>
+	<p style="text-align: center;">Celle-ci vous sera livrée au {{user.address}} {{user.zipCode}} {{user.city}} sous deux jours</p>
+		<p style="text-align:center;">
+			<small>Si vous ne réglez pas sous 10 jours, le prix de votre commande sera majoré (25%/jour de retard)</small>
+		</p>
+</section>
+
+{% endblock content %}

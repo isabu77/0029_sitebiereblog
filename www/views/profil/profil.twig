@@ -1,0 +1,55 @@
+{% extends "layout/sitebiere.twig" %}
+
+{% block title %}{{title}}{% endblock %}
+
+{% block content %}
+<h1 class="titreduhaut">{{title}}</h1>
+<form method="POST" name="{{title}}" action="/profil">
+<div class="form-group">
+    <label for="lastname">votre nom</label>
+    <input id="lastname" type="text" name="lastname" value="{{user.lastname}}" required></div>
+<div class="form-group">
+    <label for="firstname">votre prénom</label>
+    <input id="firstname" type="text" name="firstname" value="{{user.firstname}}" required></div>
+<div class="form-group">
+    <label for="address">votre adresse</label>
+    <input id="address" type="text" name="address" value="{{user.address}}" required></div>
+<div class="form-group">
+    <label for="zipCode">votre code postal</label>
+    <input id="zipCode" type="text" name="zipCode" value="{{user.zipCode}}" required></div>
+<div class="form-group">
+    <label for="city">votre ville</label>
+    <input id="city" type="text" name="city" value="{{user.city}}" required></div>
+<div class="form-group">
+    <label for="country">votre pays</label>
+    <input id="country" type="text" name="country" value="{{user.country}}" required></div>
+<div class="form-group">
+    <label for="phone">votre numéro de portable</label>
+    <input id="phone" type="tel" name="phone" value="{{user.phone}}" required></div>
+<div class="form-group">
+    <input id="robot" type="hidden" name="robot" value=""></div>
+<div class="form-group">
+    <input id="id_user" type="hidden" name="id_user" value="{{user.id_user}}"></div>
+
+<button type="submit">Envoyez</button>
+
+</form>
+
+<form method="POST" name="{{title}}" action="/profil">
+<div class="form-group">
+    <label for="passwordOld">votre ancien mot de passe</label>
+    <input id="passwordOld" type="password" name="passwordOld" value="" required></div>
+<div class="form-group">
+    <label for="password">votre mot de passe</label>
+    <input id="password" type="password" name="password" value="" required></div>
+<div class="form-group">
+    <label for="passwordVerify">confirmez votre mot de passe</label>
+    <input id="passwordVerify" type="password" name="passwordVerify" value="" required></div>
+    <input id="robot" type="hidden" name="robot" value=""></div>
+<button type="submit">Envoyez</button>
+</form>
+
+    {% for order in orders %}
+	<a href="/purchaseconfirm/{{order.id}}">commande n°{{order.id}} - {{order.priceTTC|number_format(2, ',' ,'.')}}€</a><br />
+    {% endfor %}
+{% endblock content %}
