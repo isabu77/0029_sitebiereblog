@@ -7,7 +7,6 @@ use App\Model\Entity\OrdersEntity;
 
 class BeerController extends Controller
 {
-    private $tva = 1.2;
     /**
      * constructeur
      */
@@ -76,7 +75,7 @@ class BeerController extends Controller
                 if ($valueQty > 0) {
                     $price = $beerTotal[$key]->getPrice();
                     $qty[$key] = ['qty' => $valueQty, "price" => $price];
-                    $priceTTC += $valueQty * $price * $this->tva;
+                    $priceTTC += $valueQty * $price * getenv('ENV_TVA');
                 }
             }
             $serialCommande = serialize($qty); //On convertit le tableau $qty en String pour 												l'envoyer en bdd plus tard.
@@ -143,7 +142,7 @@ class BeerController extends Controller
         $lines = unserialize($order->getIds_product());
         $priceTTC = 0;
         foreach ($lines as $line) {
-            $priceTTC += (float)(($line["price"] * $line["qty"]) * $this->tva);
+            $priceTTC += (float)(($line["price"] * $line["qty"]) * getenv('ENV_TVA'));
         }
         //On vérifie le prix total TTC
         if ((string)$priceTTC != (string)$order->getPriceTTC()) {
@@ -155,7 +154,7 @@ class BeerController extends Controller
         $title = 'Confirmation de commande';
 
         $this->render('beer/purchaseconfirm', [
-            'tva' => $this->tva,
+            'tva' => getenv('ENV_TVA'),
             'user' => $user,
             'order' => $order,
             'bieres' => $beers,

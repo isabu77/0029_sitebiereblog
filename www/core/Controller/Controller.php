@@ -5,7 +5,6 @@ class Controller
 {
     private $app;
     private $twig;
-    private $tva = 1.2;
 
     /**
      * Rendu d'une page en .twig

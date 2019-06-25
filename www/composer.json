@@ -1,7 +1,9 @@
 {
     "require": {
         "altorouter/altorouter": "1.2.0",
-        "twig/twig": "2.11.2"
+        "twig/twig": "2.11.2",
+        "swiftmailer/swiftmailer": "5.4.12",
+        "plasticbrain/php-flash-messages": "^1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "1.8.0",

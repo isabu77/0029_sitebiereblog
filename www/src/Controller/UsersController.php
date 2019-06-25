@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use \Core\Controller\Controller;
+use \Core\Controller\Helpers\MailController;
 use App\Model\Entity\UsersEntity;
 use phpDocumentor\Reflection\Types\Boolean;
 
@@ -151,7 +152,7 @@ class UsersController extends Controller
             } elseif (
                 isset($post["lastname"]) && !empty($post["lastname"]) &&
                 isset($post["firstname"]) && !empty($post["firstname"]) &&
-                isset($post["address"]) && !empty($post["address"]) 
+                isset($post["address"]) && !empty($post["address"])
             ) {
                 if (
                     isset($post["lastname"]) && !empty($post["lastname"]) &&
@@ -168,7 +169,6 @@ class UsersController extends Controller
                         if ($res) {
                             //message modif ok
                             $_SESSION['success'] = 'Votre profil a bien été modifié';
-                            
                         } else {
                             dd($res);
                             $_SESSION['error'] = "Votre profil n'a pas été modifié";
@@ -195,4 +195,79 @@ class UsersController extends Controller
         unset($_SESSION["error"]); //Supprime la SESSION['error']
 
     }
+
+    /**
+     * Contact
+     */
+    public function contact($post = null)
+    {
+        if (!empty($post)) {
+
+            if (
+                isset($_POST["send"]) &&
+                isset($_POST["from"]) &&
+                isset($_POST["object"]) &&
+                isset($_POST["message"])
+            ) {
+                define('MAIL_TO', getenv('GMAIL_USER'));
+                define('MAIL_FROM', ''); // valeur par défaut  
+                define('MAIL_OBJECT', 'objet du message'); // valeur par défaut  
+                define('MAIL_MESSAGE', 'votre message'); // valeur par défaut  
+                // drapeau qui aiguille l'affichage du formulaire OU du récapitulatif  
+                $mailSent = false;
+                // tableau des erreurs de saisie  
+                $errors = array();
+                // si le courriel fourni est vide OU égale à la valeur par défaut  
+                $from = filter_input(INPUT_POST, 'from', FILTER_VALIDATE_EMAIL);
+                if ($from === NULL || $from === MAIL_FROM) {
+                    $errors[] = 'Vous devez renseigner votre adresse de courrier électronique.';
+                    $_SESSION['error'] = 'Vous devez renseigner votre adresse de courrier électronique.';
+                } elseif ($from === false) // si le courriel fourni n'est pas valide  
+                {
+                    $errors[] = 'L\'adresse de courrier électronique n\'est pas valide.';
+                    $from = filter_input(INPUT_POST, 'from', FILTER_SANITIZE_EMAIL);
+                }
+                $object = filter_input(INPUT_POST, 'object', FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_HIGH | FILTER_FLAG_ENCODE_LOW);
+                // si l'objet fourni est vide, invalide ou égale à la valeur par défaut  
+                if ($object === NULL or $object === false or empty($object) or $object === MAIL_OBJECT) {
+                    $errors[] = 'Vous devez renseigner l\'objet.';
+                }
+                $message = filter_input(INPUT_POST, 'message', FILTER_UNSAFE_RAW);
+                // si le message fourni est vide ou égal à la valeur par défaut  
+                if ($message === NULL or $message === false or empty($message) or $message === MAIL_MESSAGE) {
+                    $errors[] = 'Vous devez écrire un message.';
+                }
+                if (count($errors) === 0) // si il n'y a pas d'erreur  
+                {
+                    // tentative d'envoi du message  
+                    if (MailController::sendMail(MAIL_TO, $object, $message, false, $from)) {
+                        //if( mail( MAIL_TO, $object, $message, "From: $from\nReply-to: $from\n" ) ) 
+
+                        $mailSent = true;
+                    } else // échec de l'envoi  
+                    {
+                        $errors[] = 'Votre message n\'a pas été envoyé.';
+                    }
+                }
+                // si le message a bien été envoyé, on affiche le récapitulatif  
+                if ($mailSent === true) {
+                    $_SESSION['success'] = 'Votre message a bien été envoyé. Courriel pour la réponse :' . $from . '. Objet : ' . $object . '. Message : ' . nl2br(htmlspecialchars($message));
+                } else
+                // le formulaire est affiché pour la première fois ou le formulaire a été soumis mais contenait des erreurs  
+                {
+                    if (count($errors) !== 0) {
+                        $_SESSION['error'] = $errors;
+                    } else {
+                        $_SESSION['error'] = "Tous les champs sont obligatoires...";
+                    }
+                }
+            }
+        }
+
+        $title = 'Contact';
+
+        $this->render('users/contact', [
+            'title' => $title
+        ]);
+}
 }
