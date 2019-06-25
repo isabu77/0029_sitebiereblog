@@ -28,7 +28,6 @@ class Table
      */
     public function __construct(DatabaseController $db = null)
     {
-
         $this->db = $db;
         if (is_null($this->table)) {
             $parts = explode('\\', get_class($this));
@@ -72,7 +71,7 @@ class Table
     {
         return $this->query("SELECT * FROM {$this->table} LIMIT {$limit} OFFSET {$offset}", null);
     }
-/**
+    /**
      * lecture de tous les enregistrement d'une table par page
      */
     public function all()
@@ -87,5 +86,22 @@ class Table
     public function find(int $id)
     {
         return $this->query("SELECT * FROM {$this->table} WHERE id=?", [$id], true);
+    }
+
+   /**
+     * update d'un enregistrement par son id 
+     * valable pour n'importe quelle table
+     */
+    public function update($id, $fields)
+    {
+        $sql_parts = [];
+        $attributes = [];
+        foreach ($fields as $k => $v) {
+            $sql_parts[] = "$k = ?";
+            $attributes[] = $v;
+        }
+        $attributes[] = $id;
+        $sql_part = implode(', ', $sql_parts);
+        return $this->query("UPDATE {$this->table} SET $sql_part WHERE id = ?", $attributes, true);
     }
 }

@@ -15,7 +15,6 @@ class UsersTable extends Table
      */
     public function insert(UsersEntity $userEntity): int
     {
-        $password = password_hash(htmlspecialchars($_POST["password"]), PASSWORD_BCRYPT);
         $token = TextController::rand_pwd(24);
 
         return $this->query(
@@ -50,53 +49,65 @@ class UsersTable extends Table
                 ":country"        => htmlspecialchars($userEntity->getCountry()),
                 ":phone"        => htmlspecialchars($userEntity->getPhone()),
                 ":mail"            => htmlspecialchars($userEntity->getMail()),
-                ":password"        => $password,
+                ":password"        => $userEntity->getPassword(),
                 ":token"        => $token
-            ],
-            true
+            ]
         );
     }
 
-
+    /**
+     * modification du mot de passe d'un enregistrement dans la base
+     */
+    public function updatePassword($user, $password)
+    {
+        return $this->query(
+            "UPDATE `users` SET `password`=:password WHERE `id`=:id",
+            [
+                ":id"     => $user->getId(),
+                ":password"        => $password
+            ]
+        );
+    }
 
     /**
-     * Connecte le client
-     * @return boolean|void
+     * modification d'un enregistrement dans la base
      */
-    public function userConnect($mail, $password, $isConnect = false)
+/*     public function updateUser($user, $post)
     {
-        $user = $this->query("SELECT * FROM users WHERE `mail`= ?", [$mail], true);
+       //dd($post);
+        $sqlparts = []; //:Array
+        $fields = []; //:Array
+        foreach ($post as $key => $userInfo) {
+            if ($key != 'robot' && $key != 'id') {
+                //On push "$key = ?" dans array $sqlparts
+                $sqlparts[] = $key . ' = ?';
+                //On push la valeur de $userInfo dans $fields
+                $fields[] = $userInfo;
+                
+            }
+        }
+        $fields[] = $post['id'];
 
-        if (
-            $user &&
-            password_verify(
-                htmlspecialchars($password),
-                $user->getPassword()
-            ) /* && $user->getVerify() */
-        ) {
-            if ($isConnect) {
-                return true;
-                //exit();
-            }
-            if (session_status() != PHP_SESSION_ACTIVE) {
-                session_start();
-            }
-            $user->setPassword("");
-            $_SESSION['auth'] = $user;
-            //connecté : on affiche le profil
-            header('location: /profil');
-            exit();
+        //On push l'id de l'utilisateur en dernier
+        //On convertit le tableau $sqlparts en String en séparant ses cases par des virgules ',' 
+        $sqlparts = implode(',', $sqlparts);
+        $sql = "UPDATE users SET $sqlparts WHERE id = ?";
+        return $this->query($sql, $fields);
+    }
+ */
+    /**
+     * Connecte le user par vérification de son mdp
+     * @return boolean|object
+     */
+    public function userConnect($mail, $password): ?object
+    {
+        $user = $this->query(" SELECT * FROM users WHERE `mail`  = ?", [$mail], true);
+
+        if ($user && password_verify(htmlspecialchars($password), $user->getPassword())) {
+            return $user;
         } else {
-            if ($isConnect) {
-                return false;
-                //exit();
-            }
-            if (session_status() != PHP_SESSION_ACTIVE) {
-                session_start();
-            }
-            $_SESSION['auth'] = false;
-            header('location: /connexion');
-            //TODO : err pas connecté
+            return null;
         }
     }
 }
+

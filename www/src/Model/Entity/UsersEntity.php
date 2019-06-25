@@ -7,7 +7,7 @@ use \Core\Model\Entity;
  **/
 class UsersEntity extends Entity
 {
-    private $id_user;
+    private $id;
     private $lastname;
     private $firstname;
     private $address;
@@ -24,9 +24,9 @@ class UsersEntity extends Entity
      *  id
      *  @return int
      **/
-    public function getId_user(): int
+    public function getId(): int
     {
-        return ((int)$this->id_user);
+        return ((int)$this->id);
     }
 
     /**
@@ -152,9 +152,9 @@ class UsersEntity extends Entity
      *  id
      *  @return int
      **/
-    public function setId_user(string $id_user)
+    public function setId(string $id)
     {
-        $this->id_user = $id_user;
+        $this->id = $id;
     }
 
     /**

@@ -66,7 +66,7 @@ $etape = $pdo->exec("CREATE TABLE `orders` (
 echo "-||-".$etape;
   
 $etape = $pdo->exec("CREATE TABLE `users` (
-    `id_user` int(11) NOT NULL AUTO_INCREMENT,
+    `id` int(11) NOT NULL AUTO_INCREMENT,
     `lastname` varchar(255) NOT NULL,
     `firstname` varchar(255) NOT NULL,
     `address` varchar(255) NOT NULL,
@@ -79,7 +79,7 @@ $etape = $pdo->exec("CREATE TABLE `users` (
     `token` varchar(24) NOT NULL,
     `createdAt` timestamp NULL DEFAULT current_timestamp(),
     `verify` tinyint(1) NOT NULL DEFAULT 0,
-            PRIMARY KEY(id_user)
+            PRIMARY KEY(id)
   ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 echo "-||-".$etape;
 

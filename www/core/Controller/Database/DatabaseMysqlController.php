@@ -76,6 +76,7 @@ class DatabaseMysqlController extends DatabaseController
 
     public function prepare(string $statement, array $attributes, ?string $class_name = null, bool $one = false)
     {
+        //dd($statement);
         $req = $this->getPDO()->prepare($statement);
         $res = $req->execute($attributes);
         if (

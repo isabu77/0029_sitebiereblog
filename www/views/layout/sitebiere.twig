@@ -17,7 +17,7 @@
       <ul>
         <li><a href="/">Home</a></li>
         <li><a href="/boutique">Boutique</a></li>
-        {% if connect == true %}
+        {% if session.auth %}
         <li><a href="/purchase">Bon de commande</a></li>
         <li><a href="/profil">Profil</a></li>
         <li><a href="/deconnexion">Déconnexion</a></li>

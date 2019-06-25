@@ -22,18 +22,14 @@ class OrdersTable extends Table
                 ":id_user"        => $orderEntity->getId_user(),
                 ":ids_product"    => $orderEntity->getIds_product(),
                 ":priceTTC"        => $orderEntity->getPriceTTC()
-            ],
-            true
-        );
+            ] );
     }
     /**
      * lecture de toutes les commandes d'un client
      */
     public function allInId( int $idUser)
     {
-        return $this->query("
-        SELECT * FROM {$this->table}  
-                WHERE id_user = {$idUser}");
+        return $this->query("SELECT * FROM {$this->table} WHERE id_user = {$idUser}");
     }
     
 }

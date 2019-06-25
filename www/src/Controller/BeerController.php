@@ -17,6 +17,7 @@ class BeerController extends Controller
         // $this->beer est créée dynamiquement
         $this->loadModel('beer');
         $this->loadModel('orders');
+        $this->loadModel('users');
     }
 
     /**
@@ -28,7 +29,6 @@ class BeerController extends Controller
         $title = 'Bread Beer Shop';
 
         $this->render('beer/index', [
-            'connect' => $this->userOnly(true),
             'title' => $title
         ]);
     }
@@ -48,7 +48,6 @@ class BeerController extends Controller
         $title = 'Nos produits';
 
         $this->render('beer/all', [
-            'connect' => $this->userOnly(true),
             'bieres' => $bieres,
             'paginate' => $paginatedQuery->getNavHTML(),
             'title' => $title
@@ -59,11 +58,13 @@ class BeerController extends Controller
      */
     public function purchase($post = null)
     {
+        // le client connecté
+        $user = $this->connectedSession();
+        $user = $this->users->find($user->getId());
+
         if (!empty($post)) {
             // enregistremet de la commande
 
-            // le client connecté
-            $user = $this->userOnly(false);
 
             $beerArray = $this->beer->all();
             $beerTotal = [];
@@ -82,7 +83,7 @@ class BeerController extends Controller
 
             // créer l'objet
             $orderEntity = new OrdersEntity();
-            $orderEntity->setId_user($user->getId_user());
+            $orderEntity->setId_user($user->getId());
             $orderEntity->setPriceTTC($priceTTC);
             $orderEntity->setIds_product($serialCommande);
 
@@ -107,7 +108,7 @@ class BeerController extends Controller
         $title = 'Bon de commande';
 
         $this->render('beer/purchase', [
-            'user' => $this->userOnly(false),
+            'user' => $user,
             'bieres' => $bieres,
             'paginate' => $paginatedQuery->getNavHTML(),
             'title' => $title
@@ -121,10 +122,12 @@ class BeerController extends Controller
         // la commande
         $order = $this->orders->find($idOrder);
         // le client
-        $user = $this->userOnly(false);
+        $user = $this->connectedSession();
+
         //On vérifie l'id de l'utilisateur
         //Et l'existence de la commande
-        if (!$order || $order->getId_user() != $user->getId_user()) {
+        if (!$order || $order->getId_user() != $user->getId()) {
+            dd("user");
             header('location: /profil');
             exit();
         }
@@ -134,15 +137,17 @@ class BeerController extends Controller
         foreach ($bieres as $beer) {
             $beers[$beer->getId()] = $beer;
         }
+        //dd($beers);
 
         // Rétablit le tableau à sa forme originale
         $lines = unserialize($order->getIds_product());
         $priceTTC = 0;
         foreach ($lines as $line) {
-            $priceTTC += ($line["price"] * $line["qty"]) * $this->tva;
+            $priceTTC += (float)(($line["price"] * $line["qty"]) * $this->tva);
         }
         //On vérifie le prix total TTC
-        if ($priceTTC !== $order->getPriceTTC()) {
+        if ((string)$priceTTC != (string)$order->getPriceTTC()) {
+            //dd("price ".$priceTTC."    order ".$order->getPriceTTC());
             header('location: /profil');
             exit();
         }
@@ -150,11 +155,10 @@ class BeerController extends Controller
         $title = 'Confirmation de commande';
 
         $this->render('beer/purchaseconfirm', [
-            'connect' => $this->userOnly(true),
             'tva' => $this->tva,
             'user' => $user,
             'order' => $order,
-            'bieres' => $bieres,
+            'bieres' => $beers,
             'lines' => $lines,
             'title' => $title
         ]);

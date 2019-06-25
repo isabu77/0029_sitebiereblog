@@ -25,7 +25,6 @@ class ContactController extends Controller
         $title = 'Contact';
 
         $this->render('contact/index', [
-            'connect' => $this->userOnly(true),
             'title' => $title
         ]);
     }

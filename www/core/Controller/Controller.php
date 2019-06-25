@@ -13,19 +13,22 @@ class Controller
     protected function render(string $view, array $variable = [])
     {
         $variable['debugTime'] = $this->getApp()->getDebugTime();
-        echo $this->getTwig()->render($view.'.twig', $variable);
+        echo $this->getTwig()->render($view . '.twig', $variable);
     }
-    
+
     /**
      * retourne l'instance du moteur de template Twig
      */
     private function getTwig()
     {
-        if (is_null($this->twig)){
+        if (is_null($this->twig)) {
             // initialisation de Twig : moteur de template PHP
             $loader = new \Twig\Loader\FilesystemLoader(dirname(dirname(__dir__)) . '/views/');
             $this->twig = new \Twig\Environment($loader);
+            $this->twig->addGlobal("session", $_SESSION);
+            //dd($this->twig);
         }
+
         return $this->twig;
     }
 
@@ -34,7 +37,7 @@ class Controller
      */
     protected function getApp()
     {
-        if (is_null($this->app)){
+        if (is_null($this->app)) {
             $this->app = \App\App::getInstance();
         }
         return $this->app;
@@ -48,7 +51,6 @@ class Controller
         return $this->getApp()->getRouter()->url($routeName, $params);
     }
 
-
     /**
      * crée dynamiquement une instance de la classe $nameTable
      * et la stocke dans la propriété de nom $nameTable
@@ -59,27 +61,47 @@ class Controller
         // crée une propriété de nom '$nameTable' contenant l'instance de la sous-classe de Table
         // (par exemple : 'post' crée une instance $post= new PostTable() )
         $this->$nameTable = $this->getApp()->getTable($nameTable);
-
     }
+
     /**
-     * verifie qu'un utilisateur est connecté
-     * @return array|void
+     * retourne l'utilisateur connecté
+     * @return object|void
      */
-    public function userOnly($verify = false)
-    { //:array|void|boolean
+    public function connectedSession():?object
+    {
         if (session_status() != PHP_SESSION_ACTIVE) {
             session_start();
         }
-        // est pas defini et false
+        // n'est pas defini et false
         if (!$_SESSION["auth"]) {
-            if ($verify) {
-                return false;
-                //exit();
-            }
-            header('location: /connexion');
-            exit();
+            return null;
         }
         return $_SESSION["auth"];
     }
 
+    /**
+     * la connexion au site 
+     *      
+     */
+    public function connectSession($user)
+    {
+        if (session_status() != PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        $_SESSION['auth'] = $user;
+    }
+
+    /**
+     * la déconnexion du site 
+     *      
+     */
+    public function deconnectSession()
+    {
+        if (session_status() != PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        unset($_SESSION["auth"]);
+        header('Location: /');
+        exit();
+    }
 }
