@@ -33,6 +33,31 @@ class BeerController extends Controller
     }
 
     /**
+     * les mentions légales du site bière
+     *      
+     */
+    public function mentions()
+    {
+        $title = 'Mentions légales';
+
+        $this->render('beer/mentions', [
+            'title' => $title
+        ]);
+    }
+    /**
+     * les condions générales de vente du site bière
+     *      
+     */
+    public function cgv()
+    {
+        $title = 'Condions générales de vente';
+
+        $this->render('beer/cgv', [
+            'title' => $title
+        ]);
+    }
+
+    /**
      * tous les produits bière
      */
     public function all()
