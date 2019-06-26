@@ -1,7 +1,9 @@
 <?php
 namespace App\Model\Entity;
+
 use \Core\Controller\Helpers\TextController;
 use \Core\Model\Entity;
+
 /**
  *  Classe Orders : une commande de bières
  **/
@@ -25,7 +27,7 @@ class OrdersEntity extends Entity
      *  id_user
      *  @return int
      **/
-    public function getId_user(): int
+    public function getIdUser(): int
     {
         return ((int)$this->id_user);
     }
@@ -35,7 +37,7 @@ class OrdersEntity extends Entity
      *  @return string
      **/
 
-    public function getIds_product()
+    public function getIdsProduct()
     {
         return ((string)$this->ids_product);
     }
@@ -59,14 +61,14 @@ class OrdersEntity extends Entity
             ->getRouter()
             ->url('orders', [
             'id' => $this->getId()
-        ]);
+            ]);
     }
 
     /**
      *  contenu
      *  @return string
      **/
-    public function setId_user(int $id_user)
+    public function setIdUser(int $id_user)
     {
         $this->id_user = $id_user;
     }
@@ -84,7 +86,7 @@ class OrdersEntity extends Entity
      *  contenu
      *  @return string
      **/
-    public function setIds_product(string $ids_product)
+    public function setIdsProduct(string $ids_product)
     {
         $this->ids_product =$ids_product;
     }

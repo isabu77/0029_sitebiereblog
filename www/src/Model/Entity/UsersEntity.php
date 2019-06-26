@@ -1,9 +1,11 @@
 <?php
 namespace App\Model\Entity;
+
 use \Core\Controller\Helpers\TextController;
 use \Core\Model\Entity;
+
 /**
- *  Classe Users : un article du blog 
+ *  Classe Users : un article du blog
  **/
 class UsersEntity extends Entity
 {
@@ -148,7 +150,7 @@ class UsersEntity extends Entity
             ->getRouter()
             ->url('users', [
             'id' => $this->getId()
-        ]);
+            ]);
     }
     /**
      *  contenu
@@ -247,6 +249,4 @@ class UsersEntity extends Entity
     {
         $this->createdAt =$createdAt;
     }
-        
-
 }

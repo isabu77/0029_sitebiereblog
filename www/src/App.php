@@ -81,14 +81,14 @@ class App
     }
 
     /**
-     * 
+     *
      */
     public function getDebugTime()
     {
         return number_format((microtime(true) - $this->startTime) * 1000, 2);
     }
 
-    //================= correction AFORMAC 
+    //================= correction AFORMAC
     /**
      * retourne l'instance DatabaseController
      */

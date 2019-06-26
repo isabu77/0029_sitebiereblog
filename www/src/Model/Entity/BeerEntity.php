@@ -1,9 +1,11 @@
 <?php
 namespace App\Model\Entity;
+
 use \Core\Controller\Helpers\TextController;
 use \Core\Model\Entity;
+
 /**
- *  Classe Beer : une bière 
+ *  Classe Beer : une bière
  **/
 class BeerEntity extends Entity
 {
@@ -72,7 +74,7 @@ class BeerEntity extends Entity
      **/
     public function getPrixHt()
     {
-        return (String)number_format($this->price,2,',',' ').'€';
+        return (String)number_format($this->price, 2, ',', ' ').'€';
     }
     
     /**
@@ -81,7 +83,7 @@ class BeerEntity extends Entity
      **/
     public function getPrixTTC()
     {
-        return (String)number_format($this->price*1.2,2,',',' ').'€';
+        return (String)number_format($this->price*1.2, 2, ',', ' ').'€';
     }
 
     /**
@@ -93,6 +95,6 @@ class BeerEntity extends Entity
             ->getRouter()
             ->url('beer', [
             'id' => $this->getId()
-        ]);
+            ]);
     }
 }

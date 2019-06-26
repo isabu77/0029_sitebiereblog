@@ -1,9 +1,11 @@
 <?php
 namespace App\Model\Entity;
+
 use \Core\Controller\Helpers\TextController;
 use \Core\Model\Entity;
+
 /**
- *  Classe Post : un article du blog 
+ *  Classe Post : un article du blog
  **/
 class PostEntity extends Entity
 {
@@ -73,7 +75,7 @@ class PostEntity extends Entity
      **/
     public function getExcerpt(int $lg):string
     {
-        return htmlentities( TextController::excerpt($this->content, $lg));
+        return htmlentities(TextController::excerpt($this->content, $lg));
     }
     /**
      *  catégories du post
@@ -110,6 +112,6 @@ class PostEntity extends Entity
             ->url('post', [
             'slug' => $this->getSlug(),
             'id' => $this->getId()
-        ]);
+            ]);
     }
 }

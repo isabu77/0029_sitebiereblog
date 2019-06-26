@@ -5,31 +5,31 @@ use \Core\Model\Table;
 use \Core\Controller\URLController;
 
 /**
- * classe PaginatedQueryController : gestion d'une pagination avec requête à la base 
- * 
+ * classe PaginatedQueryController : gestion d'une pagination avec requête à la base
+ *
  */
 class PaginatedQueryController
 {
     /**
-     * @var string 
+     * @var string
      * @access private
      */
     private $classTable;
 
     /**
-     * @var string 
+     * @var string
      * @access private
      */
     private $query;
 
     /**
-     * @var string 
+     * @var string
      * @access private
      */
     private $url;
 
     /**
-     * @var int 
+     * @var int
      * @access private
      */
     private $perPage;
@@ -48,7 +48,7 @@ class PaginatedQueryController
     /**
      * constructeur
      * @param Table $classTable : classe de la Table
-     * @param string $url : url de la page à afficher quand on change de page 
+     * @param string $url : url de la page à afficher quand on change de page
      * @param int $perPage : nb d'items par page
      */
     public function __construct(
@@ -62,7 +62,7 @@ class PaginatedQueryController
     }
 
     /**
-     * retourne la page courante 
+     * retourne la page courante
      */
     protected function getCurrentPage(): int
     {

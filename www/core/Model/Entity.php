@@ -12,7 +12,7 @@ class Entity
         // remplir l'objet avec le formulaire posté en paramètre
         foreach ($post as $key => $value) {
             $methode = "set" . ucfirst($key);
-            if (method_exists($this,$methode)) {
+            if (method_exists($this, $methode)) {
                 $this->$methode($value);
             }
         }

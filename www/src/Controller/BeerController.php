@@ -12,7 +12,7 @@ class BeerController extends Controller
      */
     public function __construct()
     {
-        // crée une instance de la classe BeerTable dans la propriété 
+        // crée une instance de la classe BeerTable dans la propriété
         // $this->beer est créée dynamiquement
         $this->loadModel('beer');
         $this->loadModel('orders');
@@ -21,7 +21,7 @@ class BeerController extends Controller
 
     /**
      * la page d'accueil du site bière
-     *      
+     *
      */
     public function index()
     {
@@ -34,7 +34,7 @@ class BeerController extends Controller
 
     /**
      * les mentions légales du site bière
-     *      
+     *
      */
     public function mentions()
     {
@@ -46,7 +46,7 @@ class BeerController extends Controller
     }
     /**
      * les condions générales de vente du site bière
-     *      
+     *
      */
     public function cgv()
     {
@@ -104,18 +104,20 @@ class BeerController extends Controller
                 }
             }
             $FraisPort = 5.40;
-            if ($priceTTC < 30){
+            if ($priceTTC < 30) {
                 $priceTTC += $FraisPort;
-            }else{
-                   $priceTTC = 0.00;
+            } else {
+                $priceTTC = 0.00;
             }
-            $serialCommande = serialize($qty); //On convertit le tableau $qty en String pour 												l'envoyer en bdd plus tard.
+
+            //On convertit le tableau $qty en String pour l'envoyer en bdd plus tard.
+            $serialCommande = serialize($qty);
 
             // créer l'objet
             $orderEntity = new OrdersEntity();
-            $orderEntity->setId_user($user->getId());
+            $orderEntity->setIdUser($user->getId());
             $orderEntity->setPriceTTC($priceTTC);
-            $orderEntity->setIds_product($serialCommande);
+            $orderEntity->setIdsProduct($serialCommande);
 
             // insérer l'objet en base
             $result = $this->orders->insert($orderEntity);
@@ -147,7 +149,7 @@ class BeerController extends Controller
     /**
      * confirmation de commande des produits bière
      */
-    public function purchaseconfirm($post = null, int $idOrder)
+    public function purchaseconfirm($post, int $idOrder)
     {
         // la commande
         $order = $this->orders->find($idOrder);
@@ -156,7 +158,7 @@ class BeerController extends Controller
 
         //On vérifie l'id de l'utilisateur
         //Et l'existence de la commande
-        if (!$order || $order->getId_user() != $user->getId()) {
+        if (!$order || $order->getIdUser() != $user->getId()) {
             dd("user");
             header('location: /profil');
             exit();
@@ -170,25 +172,25 @@ class BeerController extends Controller
         //dd($beers);
 
         // Rétablit le tableau à sa forme originale
-        $lines = unserialize($order->getIds_product());
+        $lines = unserialize($order->getIdsProduct());
         $priceTTC = 0;
         foreach ($lines as $line) {
             $priceTTC += (float)(($line["price"] * $line["qty"]) * getenv('ENV_TVA'));
         }
         $FraisPort = 5.40;
-        if ($priceTTC < 30){
+        if ($priceTTC < 30) {
             $priceTTC += $FraisPort;
-        }else{
-             $FraisPort = 0.00;
+        } else {
+            $FraisPort = 0.00;
         }
 
         //On vérifie le prix total TTC
-        
+
         if (number_format($priceTTC, 2, ',', '.') != number_format($order->getPriceTTC(), 2, ',', '.')) {
-           header('location: /profil');
+            header('location: /profil');
             exit();
         }
-    
+
         $title = 'Confirmation de commande';
 
         $this->render('beer/purchaseconfirm', [

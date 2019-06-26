@@ -22,7 +22,6 @@ class RouterController
     {
         $this->router->map('GET', $uri, $file, $name);
         return $this; // pour enchainer les get à l'appel
-
     }
     /**
      * post
@@ -31,11 +30,10 @@ class RouterController
     {
         $this->router->map('POST', $uri, $file, $name);
         return $this; // pour enchainer les get à l'appel
-
     }
 
     /**
-     * génère une url avec une route 
+     * génère une url avec une route
      */
     public function url(string $name, array  $params = []): string
     {
@@ -49,7 +47,7 @@ class RouterController
     {
         $match = $this->router->match();
 
-        // on définit une variable avec l'instance pour appeler url() 
+        // on définit une variable avec l'instance pour appeler url()
         // dans toutes les vues qui sont incluses ci-dessous (dans le dossier views)
         $router = $this;
 
@@ -57,7 +55,7 @@ class RouterController
             if (strpos($match['target'], "#")) {
                 [$controller, $methode] = explode("#", $match['target']);
                 $controller = "App\\Controller\\" . ucfirst($controller) . "Controller";
-                // traitement des formulaires : envoi du $_POST 
+                // traitement des formulaires : envoi du $_POST
                 if (!empty($_POST)) {
                     (new $controller())->$methode($_POST, ...array_values($match['params']));
                 } else {
@@ -77,7 +75,7 @@ class RouterController
     }
 
     /**
-     * 
+     *
      */
     private function pathToFile(string $file): string
     {

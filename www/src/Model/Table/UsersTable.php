@@ -6,7 +6,7 @@ use \Core\Controller\Helpers\TextController;
 use App\Model\Entity\UsersEntity;
 
 /**
- *  Classe UsersTable : accès à la table Users 
+ *  Classe UsersTable : accès à la table Users
  **/
 class UsersTable extends Table
 {
@@ -15,7 +15,7 @@ class UsersTable extends Table
      */
     public function insert(UsersEntity $userEntity): int
     {
-        $token = TextController::rand_pwd(24);
+        $token = TextController::randpwd(24);
         $dateverify = time();
 
         return $this->query(
@@ -89,4 +89,3 @@ class UsersTable extends Table
         }
     }
 }
-

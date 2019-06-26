@@ -4,8 +4,8 @@ namespace App\Controller;
 use \Core\Controller\PaginatedQueryController;
 
 /**
- * classe PaginatedQueryAppController : gestion d'une pagination avec requête à la base 
- * 
+ * classe PaginatedQueryAppController : gestion d'une pagination avec requête à la base
+ *
  */
 class PaginatedQueryAppController extends PaginatedQueryController
 {

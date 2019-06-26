@@ -1,9 +1,10 @@
 <?php
 namespace App\Model\Table;
+
 use \Core\Model\Table;
 
 /**
- *  Classe CategoryTable : accès à la table category 
+ *  Classe CategoryTable : accès à la table category
  **/
 class CategoryTable extends Table
 {
@@ -17,5 +18,4 @@ class CategoryTable extends Table
         LEFT JOIN category c on pc.category_id = c.id
         WHERE post_id IN (" . $ids . ")");
     }
-    
 }

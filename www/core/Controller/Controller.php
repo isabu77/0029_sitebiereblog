@@ -79,8 +79,8 @@ class Controller
     }
 
     /**
-     * la connexion au site 
-     *      
+     * la connexion au site
+     *
      */
     public function connectSession($user)
     {
@@ -91,8 +91,8 @@ class Controller
     }
 
     /**
-     * la déconnexion du site 
-     *      
+     * la déconnexion du site
+     *
      */
     public function deconnectSession()
     {

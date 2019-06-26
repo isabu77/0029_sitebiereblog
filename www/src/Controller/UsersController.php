@@ -14,7 +14,7 @@ class UsersController extends Controller
      */
     public function __construct()
     {
-        // crée une instance de la classe UsersTable dans la propriété 
+        // crée une instance de la classe UsersTable dans la propriété
         // $this->users qui est créée dynamiquement
         $this->loadModel('users');
         $this->loadModel('orders');
@@ -22,7 +22,7 @@ class UsersController extends Controller
 
     /**
      * reset du password par mail
-     *      
+     *
      */
     public function resetpwd($post = null)
     {
@@ -38,7 +38,11 @@ class UsersController extends Controller
                 $res = $this->users->update($user->getId(), ["password" => $password]);
                 if ($res) {
                     // envoyer nouveau mot de passe
-                    $res = MailController::sendMail($post["mail"], "Réinitialisation mdp",  "Le nouveau mot de passe est : " .  $passwordrdn);
+                    $res = MailController::sendMail(
+                        $post["mail"],
+                        "Réinitialisation mdp",
+                        "Le nouveau mot de passe est : " .  $passwordrdn
+                    );
                     if ($res) {
                         $_SESSION['success'] = "Votre nouveau mot de passe vous a été envoyé par mail";
                         // Page de connexion
@@ -71,18 +75,16 @@ class UsersController extends Controller
 
         unset($_SESSION["success"]); //Supprime la SESSION['success']
         unset($_SESSION["error"]); //Supprime la SESSION['error']
-
     }
 
     /**
      * la page d'accueil du site bière
-     *      
+     *
      */
     public function inscription($post = null, $idUser = 0, $token = "", $createdAt = "")
     {
         if (!empty($post)) {
-            if (
-                isset($post["lastname"]) && !empty($post["lastname"]) &&
+            if (isset($post["lastname"]) && !empty($post["lastname"]) &&
                 isset($post["firstname"]) && !empty($post["firstname"]) &&
                 isset($post["address"]) && !empty($post["address"]) &&
                 isset($post["zipCode"]) && !empty($post["zipCode"]) &&
@@ -94,8 +96,7 @@ class UsersController extends Controller
                 isset($post["password"]) && !empty($post["password"]) &&
                 isset($post["passwordVerify"]) && !empty($post["passwordVerify"])
             ) {
-                if (
-                    (filter_var($post["mail"], FILTER_VALIDATE_EMAIL) &&
+                if ((filter_var($post["mail"], FILTER_VALIDATE_EMAIL) &&
                         $_POST["mail"] == $post["mailVerify"]) && ($_POST["password"] == $post["passwordVerify"])
                 ) {
                     // créer l'objet users
@@ -113,14 +114,24 @@ class UsersController extends Controller
                             $user = $this->users->find($userId);
 
                             // envoyer le mail de confirmation
-                            $texte = ["html" => '<h1>Bienvenue sur notre site Beer Shop</h1><p>Pour activer votre compte, veuillez cliquer sur le lien ci-dessous ou copier/coller dans votre navigateur internet:</p><br /><a href="http://localhost/identification/verify/'
+                            $texte = ["html" => '<h1>Bienvenue sur notre site Beer Shop'
+                                . '</h1><p>Pour activer votre compte, veuillez cliquer sur le lien ci-dessous'
+                                . ' ou copier/coller dans votre navigateur internet:</p><br />'
+                                . '<a href="http://localhost/identification/verify/'
                                 . $userId
                                 . "&" . $user->getToken()
-                                . '">Cliquez ICI pour valider votre compte</a><hr><p>Ceci est un mail automatique, Merci de ne pas y répondre.</p>'];
+                                . '">Cliquez ICI pour valider votre compte</a><hr><p>Ceci est un mail automatique,'
+                                . ' Merci de ne pas y répondre.</p>'];
 
-                            $res = MailController::sendMail($_POST["mail"], "Confirmation Inscription Beer Shop",  $texte);
+                            $res = MailController::sendMail(
+                                $_POST["mail"],
+                                "Confirmation Inscription Beer Shop",
+                                $texte
+                            );
                             if ($res) {
-                                $_SESSION['success'] = "Veuillez confirmer votre inscription en cliquant sur le lien qui vous a été envoyé par mail";
+                                $_SESSION['success'] =
+                                    "Veuillez confirmer votre inscription "
+                                    ."en cliquant sur le lien qui vous a été envoyé par mail";
                             } else {
                                 $_SESSION['error'] = "Erreur d'envoi du mail de confirmation, recommencez.";
                             }
@@ -149,8 +160,7 @@ class UsersController extends Controller
             }
         } else {
             // confirmation d'inscription
-            if (
-                isset($idUser) && !empty($idUser) &&
+            if (isset($idUser) && !empty($idUser) &&
                 isset($token) && !empty($token)
             ) {
                 $user = $this->users->find($idUser);
@@ -190,15 +200,13 @@ class UsersController extends Controller
     public function connexion($post = null)
     {
         if (!empty($post)) {
-
             // créer l'objet users
             $userEntity = new UsersEntity($post);
 
             // vérifier l'existence du user en base
             $user = $this->users->getUserByMail($userEntity->getMail());
             // vérifier le mot de passe de l'objet en base
-            if (
-                $user  && !empty($userEntity->getPassword())
+            if ($user  && !empty($userEntity->getPassword())
                 && password_verify(htmlspecialchars($userEntity->getPassword()), $user->getPassword())
                 && $user->getVerify()
             ) {
@@ -230,8 +238,8 @@ class UsersController extends Controller
     }
 
     /**
-     * la déconnexion du site 
-     *      
+     * la déconnexion du site
+     *
      */
     public function deconnexion()
     {
@@ -259,7 +267,7 @@ class UsersController extends Controller
 
     /**
      * la page profil du site bière
-     *      
+     *
      */
     public function profil($post = null)
     {
@@ -268,8 +276,7 @@ class UsersController extends Controller
 
         // traitement de la modification du profil
         if (!empty($post)) {
-            if (
-                isset($post["passwordOld"]) && !empty($post["passwordOld"]) &&
+            if (isset($post["passwordOld"]) && !empty($post["passwordOld"]) &&
                 isset($post["password"]) && !empty($post["password"]) &&
                 isset($post["passwordVerify"]) && !empty($post["passwordVerify"]) &&
                 isset($post["robot"]) && empty($post["robot"]) //protection robot
@@ -277,8 +284,7 @@ class UsersController extends Controller
                 // vérifier l'existence du user en base
                 $user = $this->users->getUserByMail($userConnect->getMail());
                 // vérifier le mot de passe de l'objet en base
-                if (
-                    $user  && !empty($post["passwordOld"])
+                if ($user  && !empty($post["passwordOld"])
                     && password_verify(htmlspecialchars($post["passwordOld"]), $user->getPassword())
                     && $user->getVerify()
                 ) {
@@ -298,16 +304,14 @@ class UsersController extends Controller
                         $_SESSION['error'] = 'Les deux mots de passe ne correspondent pas.';
                     }
                 } else {
-                    //erreur 
+                    //erreur
                     $_SESSION['error'] = 'Mot de passe incorrect';
                 }
-            } elseif (
-                isset($post["lastname"]) && !empty($post["lastname"]) &&
+            } elseif (isset($post["lastname"]) && !empty($post["lastname"]) &&
                 isset($post["firstname"]) && !empty($post["firstname"]) &&
                 isset($post["address"]) && !empty($post["address"])
             ) {
-                if (
-                    isset($post["lastname"]) && !empty($post["lastname"]) &&
+                if (isset($post["lastname"]) && !empty($post["lastname"]) &&
                     isset($post["firstname"]) && !empty($post["firstname"]) &&
                     isset($post["address"]) && !empty($post["address"]) &&
                     isset($post["zipCode"]) && !empty($post["zipCode"]) &&
@@ -345,7 +349,6 @@ class UsersController extends Controller
 
         unset($_SESSION["success"]); //Supprime la SESSION['success']
         unset($_SESSION["error"]); //Supprime la SESSION['error']
-
     }
 
     /**
@@ -354,59 +357,61 @@ class UsersController extends Controller
     public function contact($post = null)
     {
         if (!empty($post)) {
-
-            if (
-                isset($_POST["send"]) &&
+            if (isset($_POST["send"]) &&
                 isset($_POST["from"]) &&
                 isset($_POST["object"]) &&
                 isset($_POST["message"])
             ) {
                 define('MAIL_TO', getenv('GMAIL_USER'));
-                define('MAIL_FROM', ''); // valeur par défaut  
-                define('MAIL_OBJECT', 'objet du message'); // valeur par défaut  
-                define('MAIL_MESSAGE', 'votre message'); // valeur par défaut  
-                // drapeau qui aiguille l'affichage du formulaire OU du récapitulatif  
+                define('MAIL_FROM', ''); // valeur par défaut
+                define('MAIL_OBJECT', 'objet du message'); // valeur par défaut
+                define('MAIL_MESSAGE', 'votre message'); // valeur par défaut
+                // drapeau qui aiguille l'affichage du formulaire OU du récapitulatif
                 $mailSent = false;
-                // tableau des erreurs de saisie  
-                $errors = array();
-                // si le courriel fourni est vide OU égale à la valeur par défaut  
+                // tableau des erreurs de saisie
+                $errors = [];
+                // si le courriel fourni est vide OU égale à la valeur par défaut
                 $from = filter_input(INPUT_POST, 'from', FILTER_VALIDATE_EMAIL);
-                if ($from === NULL || $from === MAIL_FROM) {
+                if ($from === null || $from === MAIL_FROM) {
                     $errors[] = 'Vous devez renseigner votre adresse de courrier électronique.';
                     $_SESSION['error'] = 'Vous devez renseigner votre adresse de courrier électronique.';
-                } elseif ($from === false) // si le courriel fourni n'est pas valide  
-                {
+                } elseif ($from === false) { // si le courriel fourni n'est pas valide
                     $errors[] = 'L\'adresse de courrier électronique n\'est pas valide.';
                     $from = filter_input(INPUT_POST, 'from', FILTER_SANITIZE_EMAIL);
                 }
-                $object = filter_input(INPUT_POST, 'object', FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_HIGH | FILTER_FLAG_ENCODE_LOW);
-                // si l'objet fourni est vide, invalide ou égale à la valeur par défaut  
-                if ($object === NULL or $object === false or empty($object) or $object === MAIL_OBJECT) {
+                $object = filter_input(
+                    INPUT_POST,
+                    'object',
+                    FILTER_SANITIZE_STRING,
+                    FILTER_FLAG_ENCODE_HIGH | FILTER_FLAG_ENCODE_LOW
+                );
+                // si l'objet fourni est vide, invalide ou égale à la valeur par défaut
+                if ($object === null or $object === false or empty($object) or $object === MAIL_OBJECT) {
                     $errors[] = 'Vous devez renseigner l\'objet.';
                 }
                 $message = filter_input(INPUT_POST, 'message', FILTER_UNSAFE_RAW);
-                // si le message fourni est vide ou égal à la valeur par défaut  
-                if ($message === NULL or $message === false or empty($message) or $message === MAIL_MESSAGE) {
+                // si le message fourni est vide ou égal à la valeur par défaut
+                if ($message === null or $message === false or empty($message) or $message === MAIL_MESSAGE) {
                     $errors[] = 'Vous devez écrire un message.';
                 }
-                if (count($errors) === 0) // si il n'y a pas d'erreur  
-                {
-                    // tentative d'envoi du message  
+                if (count($errors) === 0) { // si il n'y a pas d'erreur
+                    // tentative d'envoi du message
                     if (MailController::sendMail(MAIL_TO, $object, $message, false, $from)) {
-                        //if( mail( MAIL_TO, $object, $message, "From: $from\nReply-to: $from\n" ) ) 
+                        //if( mail( MAIL_TO, $object, $message, "From: $from\nReply-to: $from\n" ) )
 
                         $mailSent = true;
-                    } else // échec de l'envoi  
+                    } else // échec de l'envoi
                     {
                         $errors[] = 'Votre message n\'a pas été envoyé.';
                     }
                 }
-                // si le message a bien été envoyé, on affiche le récapitulatif  
+                // si le message a bien été envoyé, on affiche le récapitulatif
                 if ($mailSent === true) {
-                    $_SESSION['success'] = 'Votre message a bien été envoyé. Courriel pour la réponse :' . $from . '. Objet : ' . $object . '. Message : ' . nl2br(htmlspecialchars($message));
-                } else
-                // le formulaire est affiché pour la première fois ou le formulaire a été soumis mais contenait des erreurs  
-                {
+                    $_SESSION['success'] = 'Votre message a bien été envoyé. Courriel pour la réponse :'
+                        . $from . '. Objet : ' . $object . '. Message : ' . nl2br(htmlspecialchars($message));
+                } else {
+                    // le formulaire est affiché pour la première fois
+                    // ou le formulaire a été soumis mais contenait des erreurs
                     if (count($errors) !== 0) {
                         $_SESSION['error'] = $errors;
                     } else {

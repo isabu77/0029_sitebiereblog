@@ -5,7 +5,7 @@ use \Core\Model\Table;
 use App\Model\Entity\PostEntity;
 
 /**
- *  Classe PostTable : accès à la table post 
+ *  Classe PostTable : accès à la table post
  **/
 class PostTable extends Table
 {
@@ -40,14 +40,13 @@ class PostTable extends Table
      */
     public function count(?int $id = null)
     {
-        if (!$id){
+        if (!$id) {
             // sans id : appel de la méthode de la classe parente Table.php
             return parent::count();
-        }else{
+        } else {
             return $this->query("SELECT COUNT(id) as nbrow FROM {$this->table} as p 
                     JOIN post_category as pc ON pc.post_id = p.id 
                     WHERE pc.category_id = {$id}", null, true);
-            
         }
     }
     /**

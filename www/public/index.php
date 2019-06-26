@@ -1,5 +1,5 @@
 <?php
-// Fichier principal qui initialise l'application et définit les routes 
+// Fichier principal qui initialise l'application et définit les routes
 $basepath = dirname(__dir__) . DIRECTORY_SEPARATOR; // contient /var/www/
 
 require_once $basepath . 'vendor/autoload.php';
@@ -9,7 +9,7 @@ $app = \App\App::getInstance();
 $app->setStartTime(microtime(true));
 $app::load();
 
-// définition des routes 
+// définition des routes
 //$router = new App\Router($basepath . 'views');
 $app->getRouter($basepath)
     ->get('/', 'Beer#index', 'home')

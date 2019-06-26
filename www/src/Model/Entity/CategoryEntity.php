@@ -1,9 +1,10 @@
 <?php
 namespace App\Model\Entity;
+
 use Core\Model\Entity;
 
 /**
- *  Classe Category : une catégorie du blog 
+ *  Classe Category : une catégorie du blog
  **/
 class CategoryEntity extends Entity
 {
@@ -47,6 +48,6 @@ class CategoryEntity extends Entity
             ->url('category', [
             'slug' => $this->getSlug(),
             'id' => $this->getId()
-        ]);
+            ]);
     }
 }

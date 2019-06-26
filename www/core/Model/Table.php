@@ -80,7 +80,7 @@ class Table
     }
 
     /**
-     * lecture d'un enregistrement par son id 
+     * lecture d'un enregistrement par son id
      * valable pour n'importe quelle table
      */
     public function find(int $id)
@@ -89,7 +89,7 @@ class Table
     }
 
    /**
-     * update d'un enregistrement par son id 
+     * update d'un enregistrement par son id
      * valable pour n'importe quelle table
      */
     public function update($id, $fields)
