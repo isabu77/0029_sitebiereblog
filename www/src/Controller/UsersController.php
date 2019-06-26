@@ -21,6 +21,50 @@ class UsersController extends Controller
     }
 
     /**
+     * reset du password par mail
+     *      
+     */
+    public function resetpwd($post = null)
+    {
+        if (isset($post["mail"]) && !empty($post["mail"])) {
+            // vérifier l'existence du user en base
+            $user = $this->users->getUserByMail($post["mail"]);
+            if ($user) {
+                // générer un nouveau mot de passe à sauvegarder dans la table users
+                $passwordrdn = rand();
+                $password = password_hash($passwordrdn, PASSWORD_BCRYPT);
+
+                // modification des infos du user dans la base
+                $res = $this->users->update($user->getId(), ["password" => $password]);
+                if ($res) {
+                    // envoyer nouveau mot de passe
+                    $res = MailController::sendMail($post["mail"], "Réinitialisation mdp",  "Le nouveau mot de passe est : " .  $passwordrdn);
+                    if ($res) {
+                        $_SESSION['success'] = "Votre nouveau mot de passe vous a été envoyé par mail";
+                        header('Location: /connexion');
+                        exit();
+
+                    } else {
+                        $_SESSION['error'] = "Erreur d'envoi du mail, recommencez.";
+                    }
+                } else {
+                    $_SESSION['error'] = "Erreur de modification du mot de passe en base";
+                }
+            }
+        }
+        $title = 'Réinitialisation du mot de passe';
+
+        $this->render('users/resetpwd', [
+            'user' => $post,
+            'title' => $title
+        ]);
+
+        unset($_SESSION["success"]); //Supprime la SESSION['success']
+        unset($_SESSION["error"]); //Supprime la SESSION['error']
+
+    }
+
+    /**
      * la page d'accueil du site bière
      *      
      */
