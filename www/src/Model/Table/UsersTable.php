@@ -75,15 +75,14 @@ class UsersTable extends Table
     }
 
     /**
-     * Connecte le user par vérification de son mdp
+     * cherche le user par son mail
      * @return boolean|object
      */
-    public function userConnect($mail, $password): ?object
+    public function getUserByMail($mail): ?object
     {
         $user = $this->query(" SELECT * FROM users WHERE `mail`  = ?", [$mail], true);
 
-        if ($user && password_verify(htmlspecialchars($password), $user->getPassword())
-        && $user->getVerify()) {
+        if ($user) {
             return $user;
         } else {
             return null;

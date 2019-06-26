@@ -29,21 +29,27 @@
     	<li><a href="/contact">Contact</a></li>
       </ul>
     </nav>
-  </header >
+
+<div>
   {% if session.success %}
-    <div style="background-color: lightgreen; text-align: center;">
+    <div style="background-color: lightgreen; color: black; text-align: center;">
     {{session.success}}
     </div>
   {% endif %}
 
   {% if session.error %}
-    <div style="background-color: red; text-align: center; color: #FFFFFF;">
+    <div style="background-color: red; text-align: center; color: black;">
     {{session.error}}
     </div>
   {% endif %}
+</div>
+  </header >
+  <section class="container">
+  <h1 class="titreduhaut">{% block title %}Bread Beer Shop - {{title}}{% endblock %}</h1>
   {% block content %}
 
   {% endblock content %}
+  </section>
 	<footer>
 		<nav>
 			<ul>

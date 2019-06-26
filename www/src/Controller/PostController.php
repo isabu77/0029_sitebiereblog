@@ -32,7 +32,7 @@ class PostController extends Controller
         );
         $postById = $paginatedQuery->getItems();
 
-        $title = 'Mon Blog en MVC';
+        $title = 'Posts';
 
         $this->render('post/all', [
             'posts' => $postById,

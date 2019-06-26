@@ -48,18 +48,16 @@ class UsersController extends Controller
                     $userEntity = new UsersEntity($post);
 
                     // vérifier l'existence du user en base
-                    $user = $this->users->userConnect($userEntity->getMail(), $userEntity->getPassword(), false);
+                    $user = $this->users->getUserByMail($userEntity->getMail());
 
                     if (!$user) {
                         // il n'existe pas : insertion en base
-                        $post["password"] = password_hash(htmlspecialchars($post["password"]), PASSWORD_BCRYPT);
-                        $userEntity = new UsersEntity($post);
-
-                        // insérer l'objet en base
+                        $userEntity->setPassword(password_hash(htmlspecialchars($post["password"]), PASSWORD_BCRYPT));
                         $userId = $this->users->insert($userEntity);
+
                         if ($userId) {
-                            // TODO : mail de confirmation
                             $user = $this->users->find($userId);
+
                             // envoyer le mail de confirmation
                             $texte = ["html" => '<h1>Bienvenue sur notre site Beer Shop</h1><p>Pour activer votre compte, veuillez cliquer sur le lien ci-dessous ou copier/coller dans votre navigateur internet:</p><br /><a href="http://localhost/identification/verify/'
                                 . $userId
@@ -71,26 +69,36 @@ class UsersController extends Controller
                                 $_SESSION['success'] = "Veuillez confirmer votre inscription en cliquant sur le lien qui vous a été envoyé par mail";
                             } else {
                                 $_SESSION['error'] = "Erreur d'envoi du mail de confirmation, recommencez.";
-                                //header('location: /inscription');
                             }
                         } else {
-                            //TODO : signaler erreur
+                            //signaler erreur
+                            $_SESSION['error'] = "Erreur d'enregistrement en base, recommencez.";
                             header('Location: /inscription');
                             exit();
                         }
                     } else {
+                        // connecter l'utilisateur
                         $this->connexion($post);
                         exit();
+                    }
+                } else {
+                    if (!filter_var($post["mail"], FILTER_VALIDATE_EMAIL)) {
+                        $_SESSION['error'] = "L'adresse mail est invalide.";
+                    }
+                    if ($_POST["mail"] !== $post["mailVerify"]) {
+                        $_SESSION['error'] = "Les deux mails ne correspondent pas.";
+                    }
+                    if ($_POST["password"] !== $post["passwordVerify"]) {
+                        $_SESSION['error'] = "Les deux mots de passe ne correspondent pas.";
                     }
                 }
             }
         } else {
-
+            // confirmation d'inscription
             if (
                 isset($idUser) && !empty($idUser) &&
                 isset($token) && !empty($token)
             ) {
-                // confirmation d'inscription
                 $user = $this->users->find($idUser);
 
                 if ($user) {
@@ -114,9 +122,10 @@ class UsersController extends Controller
         $title = 'Inscription';
 
         $this->render('users/inscription', [
+            'user' => $post,
             'title' => $title
         ]);
-        
+
         unset($_SESSION["success"]); //Supprime la SESSION['success']
         unset($_SESSION["error"]); //Supprime la SESSION['error']
     }
@@ -131,17 +140,28 @@ class UsersController extends Controller
             // créer l'objet users
             $userEntity = new UsersEntity($post);
 
+            // vérifier l'existence du user en base
+            $user = $this->users->getUserByMail($userEntity->getMail());
             // vérifier le mot de passe de l'objet en base
-            $user = $this->users->userConnect($userEntity->getMail(), $userEntity->getPassword(), false);
-            if ($user) {
+            if (
+                $user  && !empty($userEntity->getPassword())
+                && password_verify(htmlspecialchars($userEntity->getPassword()), $user->getPassword())
+                && $user->getVerify()
+            ) {
+                // connecter l'utilisateur
                 $user->setPassword("");
                 parent::connectSession($user);
                 header('Location: /profil');
+                exit();
             } else {
-                //TODO : signaler erreur
-                header('Location: /connexion');
+                $_SESSION['auth'] = false;
+                //signaler erreur
+                if ($user && !$user->getVerify()) {
+                    $_SESSION['error'] = "Votre inscription n'est pas validée, veuillez recommencer.";
+                } else {
+                    $_SESSION['error'] = "Adresse mail ou mot de passe invalide";
+                }
             }
-            exit();
         }
 
         // Page de connexion
@@ -200,14 +220,18 @@ class UsersController extends Controller
                 isset($post["passwordVerify"]) && !empty($post["passwordVerify"]) &&
                 isset($post["robot"]) && empty($post["robot"]) //protection robot
             ) {
-                // vérifier le mot de passe en récupérant l'objet user
-                $user = $this->users->userConnect($userConnect->getMail(), $post["passwordOld"], true);
-                if ($user) {
+                // vérifier l'existence du user en base
+                $user = $this->users->getUserByMail($userConnect->getMail());
+                // vérifier le mot de passe de l'objet en base
+                if (
+                    $user  && !empty($post["passwordOld"])
+                    && password_verify(htmlspecialchars($post["passwordOld"]), $user->getPassword())
+                    && $user->getVerify()
+                ) {
                     if ($post["password"] == $post["passwordVerify"]) {
                         // modification du mot de passe en base
                         $password = password_hash(htmlspecialchars($post["password"]), PASSWORD_BCRYPT);
 
-                        //$res = $this->users->updatePassword($user, $password);
                         $res = $this->users->update($userConnect->getId(), ["password" => $password]);
                         if ($res) {
                             //message modif ok
@@ -217,7 +241,7 @@ class UsersController extends Controller
                         }
                     } else {
                         //mdp correspondent pas
-                        $_SESSION['error'] = 'Les deux mots de passes ne correspondent pas.';
+                        $_SESSION['error'] = 'Les deux mots de passe ne correspondent pas.';
                     }
                 } else {
                     //erreur 

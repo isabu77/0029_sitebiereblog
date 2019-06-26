@@ -1,37 +1,34 @@
 {% extends "layout/sitebiere.twig" %}
 
-{% block title %}{{title}}{% endblock %}
-
 {% block content %}
-<h1 class="titreduhaut">{{title}}</h1>
 <form method="POST" name="{{title}}" action="/inscription">
 <div class="form-group">
     <label for="mail">votre courriel</label>
-    <input id="mail" type="email" name="mail" value="" required></div>
+    <input id="mail" type="email" name="mail" value="{{user.mail}}" required></div>
 <div class="form-group">
     <label for="mailVerify">vérification de votre courriel</label>
-    <input id="mailVerify" type="email" name="mailVerify" value="" required></div>
+    <input id="mailVerify" type="email" name="mailVerify" value="{{user.mailVerify}}" required></div>
 <div class="form-group">
     <label for="lastname">votre nom</label>
-    <input id="lastname" type="text" name="lastname" value="" required></div>
+    <input id="lastname" type="text" name="lastname" value="{{user.lastname}}" required></div>
 <div class="form-group">
     <label for="firstname">votre prénom</label>
-    <input id="firstname" type="text" name="firstname" value="" required></div>
+    <input id="firstname" type="text" name="firstname" value="{{user.firstname}}" required></div>
 <div class="form-group">
     <label for="address">votre adresse</label>
-    <input id="address" type="text" name="address" value="" required></div>
+    <input id="address" type="text" name="address" value="{{user.address}}" required></div>
 <div class="form-group">
     <label for="zipCode">votre code postal</label>
-    <input id="zipCode" type="text" name="zipCode" value="" required></div>
+    <input id="zipCode" type="text" name="zipCode" value="{{user.zipCode}}" required></div>
 <div class="form-group">
     <label for="city">votre ville</label>
-    <input id="city" type="text" name="city" value="" required></div>
+    <input id="city" type="text" name="city" value="{{user.city}}" required></div>
 <div class="form-group">
     <label for="country">votre pays</label>
-    <input id="country" type="text" name="country" value="" required></div>
+    <input id="country" type="text" name="country" value="{{user.country}}" required></div>
 <div class="form-group">
     <label for="phone">votre numéro de portable</label>
-    <input id="phone" type="tel" name="phone" value="" required></div>
+    <input id="phone" type="tel" name="phone" value="{{user.phone}}" required></div>
 <div class="form-group">
     <label for="password">votre mot de passe</label>
     <input id="password" type="password" name="password" value="" required></div>
@@ -40,7 +37,6 @@
     <input id="passwordVerify" type="password" name="passwordVerify" value="" required></div>
 
 <button type="submit">Envoyez</button>
-<h1 class="titreduhaut">{{title}}</h1>
 
 </form>
 {% endblock content %}
