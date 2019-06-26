@@ -16,6 +16,7 @@ class UsersTable extends Table
     public function insert(UsersEntity $userEntity): int
     {
         $token = TextController::rand_pwd(24);
+        $dateverify = time();
 
         return $this->query(
             "INSERT INTO `users` (`lastname`, 
@@ -27,7 +28,8 @@ class UsersTable extends Table
                                 `phone`, 
                                 `mail`, 
                                 `password`, 
-                                `token`) 
+                                `token`,
+                               `verify`) 
                 VALUES (
                     :lastname,				 
                     :firstname,
@@ -38,7 +40,8 @@ class UsersTable extends Table
                     :phone,
                     :mail,
                     :password,
-                    :token)
+                    :token,
+                    :verify)
                     ",
             [
                 ":lastname"        => htmlspecialchars($userEntity->getLastname()),
@@ -50,7 +53,9 @@ class UsersTable extends Table
                 ":phone"        => htmlspecialchars($userEntity->getPhone()),
                 ":mail"            => htmlspecialchars($userEntity->getMail()),
                 ":password"        => $userEntity->getPassword(),
-                ":token"        => $token
+                ":token"        => $token,
+                //":createdAt"    => $dateverify,
+                ":verify"        => 0
             ]
         );
     }
@@ -70,32 +75,6 @@ class UsersTable extends Table
     }
 
     /**
-     * modification d'un enregistrement dans la base
-     */
-/*     public function updateUser($user, $post)
-    {
-       //dd($post);
-        $sqlparts = []; //:Array
-        $fields = []; //:Array
-        foreach ($post as $key => $userInfo) {
-            if ($key != 'robot' && $key != 'id') {
-                //On push "$key = ?" dans array $sqlparts
-                $sqlparts[] = $key . ' = ?';
-                //On push la valeur de $userInfo dans $fields
-                $fields[] = $userInfo;
-                
-            }
-        }
-        $fields[] = $post['id'];
-
-        //On push l'id de l'utilisateur en dernier
-        //On convertit le tableau $sqlparts en String en séparant ses cases par des virgules ',' 
-        $sqlparts = implode(',', $sqlparts);
-        $sql = "UPDATE users SET $sqlparts WHERE id = ?";
-        return $this->query($sql, $fields);
-    }
- */
-    /**
      * Connecte le user par vérification de son mdp
      * @return boolean|object
      */
@@ -103,7 +82,8 @@ class UsersTable extends Table
     {
         $user = $this->query(" SELECT * FROM users WHERE `mail`  = ?", [$mail], true);
 
-        if ($user && password_verify(htmlspecialchars($password), $user->getPassword())) {
+        if ($user && password_verify(htmlspecialchars($password), $user->getPassword())
+        && $user->getVerify()) {
             return $user;
         } else {
             return null;

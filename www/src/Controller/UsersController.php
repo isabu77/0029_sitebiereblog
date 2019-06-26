@@ -3,6 +3,7 @@ namespace App\Controller;
 
 use \Core\Controller\Controller;
 use \Core\Controller\Helpers\MailController;
+use \Core\Controller\Helpers\TextController;
 use App\Model\Entity\UsersEntity;
 use phpDocumentor\Reflection\Types\Boolean;
 
@@ -23,25 +24,91 @@ class UsersController extends Controller
      * la page d'accueil du site bière
      *      
      */
-    public function inscription($post = null)
+    public function inscription($post = null, $idUser = 0, $token = "", $createdAt = "")
     {
         if (!empty($post)) {
-            // créer l'objet
-            $post["password"] = password_hash(htmlspecialchars($post["password"]), PASSWORD_BCRYPT);
-            $userEntity = new UsersEntity($post);
+            if (
+                isset($post["lastname"]) && !empty($post["lastname"]) &&
+                isset($post["firstname"]) && !empty($post["firstname"]) &&
+                isset($post["address"]) && !empty($post["address"]) &&
+                isset($post["zipCode"]) && !empty($post["zipCode"]) &&
+                isset($post["city"]) && !empty($post["city"]) &&
+                isset($post["country"]) && !empty($post["country"]) &&
+                isset($post["phone"]) && !empty($post["phone"]) &&
+                isset($post["mail"]) && !empty($post["mail"]) &&
+                isset($post["mailVerify"]) && !empty($post["mailVerify"]) &&
+                isset($post["password"]) && !empty($post["password"]) &&
+                isset($post["passwordVerify"]) && !empty($post["passwordVerify"])
+            ) {
+                if (
+                    (filter_var($post["mail"], FILTER_VALIDATE_EMAIL) &&
+                        $_POST["mail"] == $post["mailVerify"]) && ($_POST["password"] == $post["passwordVerify"])
+                ) {
+                    // créer l'objet users
+                    $userEntity = new UsersEntity($post);
 
-            // insérer l'objet en base
-            $result = $this->users->insert($userEntity);
-            if ($result) {
-                // TODO : mail de confirmation
+                    // vérifier l'existence du user en base
+                    $user = $this->users->userConnect($userEntity->getMail(), $userEntity->getPassword(), false);
 
-                // en attendant : profil
-                header('Location: /profil');
-            } else {
-                //TODO : signaler erreur
-                header('Location: /inscription');
+                    if (!$user) {
+                        // il n'existe pas : insertion en base
+                        $post["password"] = password_hash(htmlspecialchars($post["password"]), PASSWORD_BCRYPT);
+                        $userEntity = new UsersEntity($post);
+
+                        // insérer l'objet en base
+                        $userId = $this->users->insert($userEntity);
+                        if ($userId) {
+                            // TODO : mail de confirmation
+                            $user = $this->users->find($userId);
+                            // envoyer le mail de confirmation
+                            $texte = ["html" => '<h1>Bienvenue sur notre site Beer Shop</h1><p>Pour activer votre compte, veuillez cliquer sur le lien ci-dessous ou copier/coller dans votre navigateur internet:</p><br /><a href="http://localhost/identification/verify/'
+                                . $userId
+                                . "&" . $user->getToken()
+                                . '">Cliquez ICI pour valider votre compte</a><hr><p>Ceci est un mail automatique, Merci de ne pas y répondre.</p>'];
+
+                            $res = MailController::sendMail($_POST["mail"], "Confirmation Inscription Beer Shop",  $texte);
+                            if ($res) {
+                                $_SESSION['success'] = "Veuillez confirmer votre inscription en cliquant sur le lien qui vous a été envoyé par mail";
+                            } else {
+                                $_SESSION['error'] = "Erreur d'envoi du mail de confirmation, recommencez.";
+                                //header('location: /inscription');
+                            }
+                        } else {
+                            //TODO : signaler erreur
+                            header('Location: /inscription');
+                            exit();
+                        }
+                    } else {
+                        $this->connexion($post);
+                        exit();
+                    }
+                }
             }
-            exit();
+        } else {
+
+            if (
+                isset($idUser) && !empty($idUser) &&
+                isset($token) && !empty($token)
+            ) {
+                // confirmation d'inscription
+                $user = $this->users->find($idUser);
+
+                if ($user) {
+                    if ($user->getToken() == $token) {
+                        // validation en base
+                        $res = $this->users->update($user->getId(), ["verify" => 1]);
+                        if ($res) {
+                            $_SESSION['success'] = 'Votre inscription est validée, vous pouvez vous connecter.';
+                            header('location: /connexion');
+                            exit();
+                        } else {
+                            $_SESSION['error'] = "Votre inscription n'est pas validée, veuillez recommencer.";
+                        }
+                    }
+                } else {
+                    $_SESSION['error'] = "Cet utilisateur n'existe pas, veuillez recommencer votre inscription.";
+                }
+            }
         }
 
         $title = 'Inscription';
@@ -49,6 +116,9 @@ class UsersController extends Controller
         $this->render('users/inscription', [
             'title' => $title
         ]);
+        
+        unset($_SESSION["success"]); //Supprime la SESSION['success']
+        unset($_SESSION["error"]); //Supprime la SESSION['error']
     }
 
     /**
@@ -80,6 +150,9 @@ class UsersController extends Controller
         $this->render('users/connexion', [
             'title' => $title
         ]);
+
+        unset($_SESSION["success"]); //Supprime la SESSION['success']
+        unset($_SESSION["error"]); //Supprime la SESSION['error']
     }
 
     /**
@@ -134,7 +207,8 @@ class UsersController extends Controller
                         // modification du mot de passe en base
                         $password = password_hash(htmlspecialchars($post["password"]), PASSWORD_BCRYPT);
 
-                        $res = $this->users->updatePassword($user, $password);
+                        //$res = $this->users->updatePassword($user, $password);
+                        $res = $this->users->update($userConnect->getId(), ["password" => $password]);
                         if ($res) {
                             //message modif ok
                             $_SESSION['success'] = 'Votre mot de passe a bien été modifié';
@@ -269,5 +343,5 @@ class UsersController extends Controller
         $this->render('users/contact', [
             'title' => $title
         ]);
-}
+    }
 }

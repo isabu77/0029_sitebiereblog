@@ -30,9 +30,20 @@
       </ul>
     </nav>
   </header >
-        {% block content %}
+  {% if session.success %}
+    <div style="background-color: lightgreen; text-align: center;">
+    {{session.success}}
+    </div>
+  {% endif %}
 
-        {% endblock content %}
+  {% if session.error %}
+    <div style="background-color: red; text-align: center; color: #FFFFFF;">
+    {{session.error}}
+    </div>
+  {% endif %}
+  {% block content %}
+
+  {% endblock content %}
 	<footer>
 		<nav>
 			<ul>

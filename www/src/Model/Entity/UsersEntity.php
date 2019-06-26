@@ -19,6 +19,7 @@ class UsersEntity extends Entity
     private $password;
     private $token;
     private $createdAt;
+    private $verify;
 
     /**
      *  id
@@ -126,6 +127,15 @@ class UsersEntity extends Entity
     public function getCreatedAt()
     {
         return ((string)$this->createdAt);
+    }
+        
+     /**
+     *  contenu
+     *  @return int
+     **/
+    public function getVerify(): int
+    {
+        return ((int)$this->verify);
     }
         
     
