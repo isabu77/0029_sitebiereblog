@@ -1,7 +1,7 @@
 {% extends "layout/sitebiere.twig" %}
 
 {% block content %}
-<section id="commandSection">
+<section id="formPurchase">
 	<table>
 		<thead>
 			<tr>
@@ -24,6 +24,13 @@
 					<td>{{prix|number_format(2, ',', '.')}}€</td>
 				</tr>
             {% endfor %}
+			<tr>
+				<td><strong>FRAIS de PORT</strong></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><strong>{{fraisport|number_format(2, ',', '.')}}€</strong></td>
+			</tr>
 			<tr>
 				<td><strong>Total TTC</strong></td>
 				<td></td>

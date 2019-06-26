@@ -103,6 +103,12 @@ class BeerController extends Controller
                     $priceTTC += $valueQty * $price * getenv('ENV_TVA');
                 }
             }
+            $FraisPort = 5.40;
+            if ($priceTTC < 30){
+                $priceTTC += $FraisPort;
+            }else{
+                   $priceTTC = 0.00;
+            }
             $serialCommande = serialize($qty); //On convertit le tableau $qty en String pour 												l'envoyer en bdd plus tard.
 
             // créer l'objet
@@ -169,19 +175,27 @@ class BeerController extends Controller
         foreach ($lines as $line) {
             $priceTTC += (float)(($line["price"] * $line["qty"]) * getenv('ENV_TVA'));
         }
-        //On vérifie le prix total TTC
-        if ((string)$priceTTC != (string)$order->getPriceTTC()) {
-            //dd("price ".$priceTTC."    order ".$order->getPriceTTC());
-            header('location: /profil');
-            exit();
+        $FraisPort = 5.40;
+        if ($priceTTC < 30){
+            $priceTTC += $FraisPort;
+        }else{
+             $FraisPort = 0.00;
         }
 
+        //On vérifie le prix total TTC
+        
+        if (number_format($priceTTC, 2, ',', '.') != number_format($order->getPriceTTC(), 2, ',', '.')) {
+           header('location: /profil');
+            exit();
+        }
+    
         $title = 'Confirmation de commande';
 
         $this->render('beer/purchaseconfirm', [
             'tva' => getenv('ENV_TVA'),
             'user' => $user,
             'order' => $order,
+            'fraisport' => $FraisPort,
             'bieres' => $beers,
             'lines' => $lines,
             'title' => $title
