@@ -10,6 +10,7 @@ body .menu {
     position: fixed;
     width: 100%;
     top: 0;
+    margin-bottom: 10px;
 }
 
 body .menu .burger {
@@ -74,6 +75,7 @@ body .menu nav ul li a {
 
 body section {
     margin-bottom: 5%;
+    margin-top: 5%;
 }
 
 body section h1,

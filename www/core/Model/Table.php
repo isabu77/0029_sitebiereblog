@@ -69,14 +69,15 @@ class Table
      */
     public function allByLimit(int $limit, int $offset)
     {
-        return $this->query("SELECT * FROM {$this->table} LIMIT {$limit} OFFSET {$offset}", null);
+        return $this->query("SELECT * FROM {$this->table} LIMIT {$limit} OFFSET {$offset}");
     }
+
     /**
      * lecture de tous les enregistrement d'une table par page
      */
     public function all()
     {
-        return $this->query("SELECT * FROM {$this->table}", null);
+        return $this->query("SELECT * FROM {$this->table}");
     }
 
     /**
@@ -88,7 +89,33 @@ class Table
         return $this->query("SELECT * FROM {$this->table} WHERE id=?", [$id], true);
     }
 
-   /**
+    /**
+     * lecture d'un enregistrement par son id
+     * valable pour n'importe quelle table
+     */
+    public function delete(int $id)
+    {
+        return $this->query("DELETE FROM {$this->table} WHERE id=?", [$id]);
+    }
+
+    /**
+     * insert d'un enregistrement par son id
+     * valable pour n'importe quelle table
+     */
+    public function insert($fields)
+    {
+        $sql_parts = [];
+        $attributes = [];
+        foreach ($fields as $k => $v) {
+            $sql_cols[] = "$k";
+            $sql_parts[] = ":$k";
+            $attributes[":$k"] = $v;
+        }
+        $sql_part = implode(', ', $sql_parts);
+        $sql_col = implode(', ', $sql_cols);
+        return $this->query("INSERT INTO {$this->table} ({$sql_col}) VALUES ({$sql_part})", $attributes);
+    }
+    /**
      * update d'un enregistrement par son id
      * valable pour n'importe quelle table
      */

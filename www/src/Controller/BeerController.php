@@ -88,8 +88,6 @@ class BeerController extends Controller
 
         if (!empty($post)) {
             // enregistremet de la commande
-
-
             $beerArray = $this->beer->all();
             $beerTotal = [];
             foreach ($beerArray as $beer) {
@@ -120,7 +118,13 @@ class BeerController extends Controller
             $orderEntity->setIdsProduct($serialCommande);
 
             // insérer l'objet en base
-            $result = $this->orders->insert($orderEntity);
+            $attributes = [
+                "id_user"        => $orderEntity->getIdUser(),
+                "ids_product"    => $orderEntity->getIdsProduct(),
+                "priceTTC"        => $orderEntity->getPriceTTC()
+            ];
+            
+            $result = $this->orders->insert($attributes);
             if ($result) {
                 header('Location: /purchaseconfirm/' . $result);
             } else {

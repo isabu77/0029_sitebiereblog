@@ -84,7 +84,8 @@ class UsersController extends Controller
     public function inscription($post = null, $idUser = 0, $token = "", $createdAt = "")
     {
         if (!empty($post)) {
-            if (isset($post["lastname"]) && !empty($post["lastname"]) &&
+            if (
+                isset($post["lastname"]) && !empty($post["lastname"]) &&
                 isset($post["firstname"]) && !empty($post["firstname"]) &&
                 isset($post["address"]) && !empty($post["address"]) &&
                 isset($post["zipCode"]) && !empty($post["zipCode"]) &&
@@ -108,7 +109,25 @@ class UsersController extends Controller
                     if (!$user) {
                         // il n'existe pas : insertion en base
                         $userEntity->setPassword(password_hash(htmlspecialchars($post["password"]), PASSWORD_BCRYPT));
-                        $userId = $this->users->insert($userEntity);
+                        $token = TextController::randpwd(24);
+
+                        // insérer l'objet en base
+                        $attributes =
+                            [
+                                "lastname"     => htmlspecialchars($userEntity->getLastname()),
+                                "firstname"    => htmlspecialchars($userEntity->getFirstname()),
+                                "address"      => htmlspecialchars($userEntity->getAddress()),
+                                "zipCode"      => htmlspecialchars($userEntity->getZipCode()),
+                                "city"         => htmlspecialchars($userEntity->getCity()),
+                                "country"      => htmlspecialchars($userEntity->getCountry()),
+                                "phone"        => htmlspecialchars($userEntity->getPhone()),
+                                "mail"         => htmlspecialchars($userEntity->getMail()),
+                                "password"     => $userEntity->getPassword(),
+                                "token"        => $token,
+                                "verify"       => 0
+                            ];
+
+                        $userId = $this->users->insert($attributes);
 
                         if ($userId) {
                             $user = $this->users->find($userId);
@@ -131,7 +150,7 @@ class UsersController extends Controller
                             if ($res) {
                                 $_SESSION['success'] =
                                     "Veuillez confirmer votre inscription "
-                                    ."en cliquant sur le lien qui vous a été envoyé par mail";
+                                    . "en cliquant sur le lien qui vous a été envoyé par mail";
                             } else {
                                 $_SESSION['error'] = "Erreur d'envoi du mail de confirmation, recommencez.";
                             }
@@ -160,7 +179,8 @@ class UsersController extends Controller
             }
         } else {
             // confirmation d'inscription
-            if (isset($idUser) && !empty($idUser) &&
+            if (
+                isset($idUser) && !empty($idUser) &&
                 isset($token) && !empty($token)
             ) {
                 $user = $this->users->find($idUser);
@@ -206,7 +226,8 @@ class UsersController extends Controller
             // vérifier l'existence du user en base
             $user = $this->users->getUserByMail($userEntity->getMail());
             // vérifier le mot de passe de l'objet en base
-            if ($user  && !empty($userEntity->getPassword())
+            if (
+                $user  && !empty($userEntity->getPassword())
                 && password_verify(htmlspecialchars($userEntity->getPassword()), $user->getPassword())
                 && $user->getVerify()
             ) {
@@ -276,15 +297,16 @@ class UsersController extends Controller
 
         // traitement de la modification du profil
         if (!empty($post)) {
-            if (isset($post["passwordOld"]) && !empty($post["passwordOld"]) &&
+            if (
+                isset($post["passwordOld"]) && !empty($post["passwordOld"]) &&
                 isset($post["password"]) && !empty($post["password"]) &&
-                isset($post["passwordVerify"]) && !empty($post["passwordVerify"]) &&
-                isset($post["robot"]) && empty($post["robot"]) //protection robot
+                isset($post["passwordVerify"]) && !empty($post["passwordVerify"])
             ) {
                 // vérifier l'existence du user en base
                 $user = $this->users->getUserByMail($userConnect->getMail());
                 // vérifier le mot de passe de l'objet en base
-                if ($user  && !empty($post["passwordOld"])
+                if (
+                    $user  && !empty($post["passwordOld"])
                     && password_verify(htmlspecialchars($post["passwordOld"]), $user->getPassword())
                     && $user->getVerify()
                 ) {
@@ -293,6 +315,7 @@ class UsersController extends Controller
                         $password = password_hash(htmlspecialchars($post["password"]), PASSWORD_BCRYPT);
 
                         $res = $this->users->update($userConnect->getId(), ["password" => $password]);
+
                         if ($res) {
                             //message modif ok
                             $_SESSION['success'] = 'Votre mot de passe a bien été modifié';
@@ -307,11 +330,13 @@ class UsersController extends Controller
                     //erreur
                     $_SESSION['error'] = 'Mot de passe incorrect';
                 }
-            } elseif (isset($post["lastname"]) && !empty($post["lastname"]) &&
+            } elseif (
+                isset($post["lastname"]) && !empty($post["lastname"]) &&
                 isset($post["firstname"]) && !empty($post["firstname"]) &&
                 isset($post["address"]) && !empty($post["address"])
             ) {
-                if (isset($post["lastname"]) && !empty($post["lastname"]) &&
+                if (
+                    isset($post["lastname"]) && !empty($post["lastname"]) &&
                     isset($post["firstname"]) && !empty($post["firstname"]) &&
                     isset($post["address"]) && !empty($post["address"]) &&
                     isset($post["zipCode"]) && !empty($post["zipCode"]) &&
@@ -326,7 +351,6 @@ class UsersController extends Controller
                             //message modif ok
                             $_SESSION['success'] = 'Votre profil a bien été modifié';
                         } else {
-                            dd($res);
                             $_SESSION['error'] = "Votre profil n'a pas été modifié";
                         }
                     }
@@ -335,7 +359,6 @@ class UsersController extends Controller
         }
 
         $user = $this->users->find($userConnect->getId());
-
         // ses commandes
         $orders = $this->orders->allinId($userConnect->getId());
 
@@ -357,7 +380,8 @@ class UsersController extends Controller
     public function contact($post = null)
     {
         if (!empty($post)) {
-            if (isset($_POST["send"]) &&
+            if (
+                isset($_POST["send"]) &&
                 isset($_POST["from"]) &&
                 isset($_POST["object"]) &&
                 isset($_POST["message"])
