@@ -37,8 +37,8 @@
                 </li>
             </ul>
             <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="text" placeholder="Search">
-                <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+                <input class="form-control mr-sm-2" id="searchSaisie" onchange="search()" type="text" placeholder="Search">
+                <button class="btn btn-secondary my-2 my-sm-0" onclick="search() type="submit">Search</button>
             </form>
         </div>
     </nav>
@@ -46,8 +46,10 @@
         <header class="jumbotron  mb-5">
             <h1 class="text-center display-4">{% block title %} Bread Beer Blog - {{title}}{% endblock %}</h1>
         </header>
+        <div class="contenu">
         {% block content %}
         {% endblock content %}
+        </div>
     </section>
     <footer class="footer bg-dark fixed-bottom py-1">
         <div class="text-center">
@@ -55,6 +57,8 @@
             <span class="text-white">By Isa in {{debugTime}} ms</span>
         </div>
     </footer>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript" src="/assets/js/script.js"></script>
 </body>
 
 </html>

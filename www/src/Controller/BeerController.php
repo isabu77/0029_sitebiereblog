@@ -17,6 +17,7 @@ class BeerController extends Controller
         $this->loadModel('beer');
         $this->loadModel('orders');
         $this->loadModel('users');
+        $this->loadModel('client');
     }
 
     /**
@@ -84,7 +85,7 @@ class BeerController extends Controller
     {
         // le client connecté
         $user = $this->connectedSession();
-        $user = $this->users->find($user->getId());
+        $client = $this->client->find($user->getId());
 
         if (!empty($post)) {
             // enregistremet de la commande
@@ -145,6 +146,7 @@ class BeerController extends Controller
 
         $this->render('beer/purchase', [
             'user' => $user,
+            'client' => $client,
             'bieres' => $bieres,
             'paginate' => $paginatedQuery->getNavHTML(),
             'title' => $title
@@ -159,6 +161,7 @@ class BeerController extends Controller
         $order = $this->orders->find($idOrder);
         // le client
         $user = $this->connectedSession();
+        $client = $this->client->find($user->getId());
 
         //On vérifie l'id de l'utilisateur
         //Et l'existence de la commande
@@ -199,7 +202,7 @@ class BeerController extends Controller
 
         $this->render('beer/purchaseconfirm', [
             'tva' => getenv('ENV_TVA'),
-            'user' => $user,
+            'user' => $client,
             'order' => $order,
             'fraisport' => $FraisPort,
             'bieres' => $beers,

@@ -6,9 +6,9 @@ function search() {
     var re = new RegExp('(' + texte + ')(?![^<]*>)', "gi");
     $('span').contents().unwrap();
 
-    var content = $('#contenu').html();
+    var content = $('.contenu').html();
     content = content.replace(re, span + '$&' + span2);
-    $('#contenu').html(content);
+    $('.contenu').html(content);
 
     $("#searchSaisie").val("");
 }

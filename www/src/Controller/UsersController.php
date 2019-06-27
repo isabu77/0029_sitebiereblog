@@ -5,6 +5,7 @@ use \Core\Controller\Controller;
 use \Core\Controller\Helpers\MailController;
 use \Core\Controller\Helpers\TextController;
 use App\Model\Entity\UsersEntity;
+use App\Model\Entity\ClientEntity;
 use phpDocumentor\Reflection\Types\Boolean;
 
 class UsersController extends Controller
@@ -17,6 +18,7 @@ class UsersController extends Controller
         // crée une instance de la classe UsersTable dans la propriété
         // $this->users qui est créée dynamiquement
         $this->loadModel('users');
+        $this->loadModel('client');
         $this->loadModel('orders');
     }
 
@@ -111,16 +113,9 @@ class UsersController extends Controller
                         $userEntity->setPassword(password_hash(htmlspecialchars($post["password"]), PASSWORD_BCRYPT));
                         $token = TextController::randpwd(24);
 
-                        // insérer l'objet en base
+                        // insérer l'objet en base dans la table users
                         $attributes =
                             [
-                                "lastname"     => htmlspecialchars($userEntity->getLastname()),
-                                "firstname"    => htmlspecialchars($userEntity->getFirstname()),
-                                "address"      => htmlspecialchars($userEntity->getAddress()),
-                                "zipCode"      => htmlspecialchars($userEntity->getZipCode()),
-                                "city"         => htmlspecialchars($userEntity->getCity()),
-                                "country"      => htmlspecialchars($userEntity->getCountry()),
-                                "phone"        => htmlspecialchars($userEntity->getPhone()),
                                 "mail"         => htmlspecialchars($userEntity->getMail()),
                                 "password"     => $userEntity->getPassword(),
                                 "token"        => $token,
@@ -128,6 +123,24 @@ class UsersController extends Controller
                             ];
 
                         $userId = $this->users->insert($attributes);
+
+                        // insérer l'objet en base dans la table clients
+
+                        // créer l'objet client
+                        $clientEntity = new ClientEntity($post);
+
+                        $attributes =
+                            [
+                                "id"           => $userId,
+                                "lastname"     => htmlspecialchars($clientEntity->getLastname()),
+                                "firstname"    => htmlspecialchars($clientEntity->getFirstname()),
+                                "address"      => htmlspecialchars($clientEntity->getAddress()),
+                                "zipCode"      => htmlspecialchars($clientEntity->getZipCode()),
+                                "city"         => htmlspecialchars($clientEntity->getCity()),
+                                "country"      => htmlspecialchars($clientEntity->getCountry()),
+                                "phone"        => htmlspecialchars($clientEntity->getPhone()),
+                            ];
+                        $clientId = $this->client->insert($attributes);
 
                         if ($userId) {
                             $user = $this->users->find($userId);
@@ -191,7 +204,15 @@ class UsersController extends Controller
                         $res = $this->users->update($user->getId(), ["verify" => 1]);
                         if ($res) {
                             $_SESSION['success'] = 'Votre inscription est validée, vous pouvez vous connecter.';
-                            header('location: /connexion');
+                            // Page de connexion
+                            $title = 'Connexion';
+
+                            $this->render('users/connexion', [
+                                'title' => $title
+                            ]);
+
+                            unset($_SESSION["success"]); //Supprime la SESSION['success']
+                            unset($_SESSION["error"]); //Supprime la SESSION['error']
                             exit();
                         } else {
                             $_SESSION['error'] = "Votre inscription n'est pas validée, veuillez recommencer.";
@@ -297,11 +318,13 @@ class UsersController extends Controller
 
         // traitement de la modification du profil
         if (!empty($post)) {
-            if (isset($post["delete"]) && !empty($post["delete"])
-            && isset($post["id"]) && !empty($post["id"])) { 
+            if (
+                isset($post["delete"]) && !empty($post["delete"])
+                && isset($post["id"]) && !empty($post["id"])
+            ) {
                 // suppression de la commande id
                 $order = $this->orders->find($post["id"]);
-                if ($order){
+                if ($order) {
                     $this->orders->delete($post["id"]);
                 }
             } elseif (
@@ -340,39 +363,33 @@ class UsersController extends Controller
             } elseif (
                 isset($post["lastname"]) && !empty($post["lastname"]) &&
                 isset($post["firstname"]) && !empty($post["firstname"]) &&
-                isset($post["address"]) && !empty($post["address"])
+                isset($post["address"]) && !empty($post["address"]) &&
+                isset($post["zipCode"]) && !empty($post["zipCode"]) &&
+                isset($post["city"]) && !empty($post["city"]) &&
+                isset($post["country"]) && !empty($post["country"]) &&
+                isset($post["phone"]) && !empty($post["phone"])
             ) {
-                if (
-                    isset($post["lastname"]) && !empty($post["lastname"]) &&
-                    isset($post["firstname"]) && !empty($post["firstname"]) &&
-                    isset($post["address"]) && !empty($post["address"]) &&
-                    isset($post["zipCode"]) && !empty($post["zipCode"]) &&
-                    isset($post["city"]) && !empty($post["city"]) &&
-                    isset($post["country"]) && !empty($post["country"]) &&
-                    isset($post["phone"]) && !empty($post["phone"])
-                ) {
-                    if ($userConnect) {
-                        // update du user dans la table users
-                        $res = $this->users->update($userConnect->getId(), $post);
-                        if ($res) {
-                            //message modif ok
-                            $_SESSION['success'] = 'Votre profil a bien été modifié';
-                        } else {
-                            $_SESSION['error'] = "Votre profil n'a pas été modifié";
-                        }
+                if ($userConnect) {
+                    // update du user dans la table users
+                    $res = $this->client->update($userConnect->getId(), $post);
+                    if ($res) {
+                        //message modif ok
+                        $_SESSION['success'] = 'Votre profil a bien été modifié';
+                    } else {
+                        $_SESSION['error'] = "Votre profil n'a pas été modifié";
                     }
                 }
             }
         }
 
-        $user = $this->users->find($userConnect->getId());
+        $client = $this->client->find($userConnect->getId());
         // ses commandes
         $orders = $this->orders->allinId($userConnect->getId());
 
         $title = 'Profil';
 
         $this->render('users/profil', [
-            'user' => $user,
+            'user' => $client,
             'orders' => $orders,
             'title' => $title
         ]);

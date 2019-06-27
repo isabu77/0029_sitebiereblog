@@ -3,6 +3,8 @@ require_once '/var/www/vendor/autoload.php';
 $pdo = new PDO('mysql:host=blog.mysql;dbname=blog', 'userblog', 'blogpwd');
 //creation tables
 echo "[";
+$etape = $pdo->exec("DROP TABLE post");
+
 $etape = $pdo->exec("CREATE TABLE post(
             id INT UNSIGNED NOT NULL AUTO_INCREMENT,
             name VARCHAR(255) NOT NULL,
@@ -12,6 +14,7 @@ $etape = $pdo->exec("CREATE TABLE post(
             PRIMARY KEY(id)
         )");
 echo "-||-".$etape;
+$etape = $pdo->exec("DROP TABLE category");
 $etape = $pdo->exec("CREATE TABLE category(
             id INT UNSIGNED NOT NULL AUTO_INCREMENT,
             name VARCHAR(255) NOT NULL,
@@ -19,13 +22,15 @@ $etape = $pdo->exec("CREATE TABLE category(
             PRIMARY KEY(id)
         )");
 echo "-||-".$etape;
-$etape = $pdo->exec("CREATE TABLE user(
+$etape = $pdo->exec("DROP TABLE userblog");
+$etape = $pdo->exec("CREATE TABLE userblog(
             id INT UNSIGNED NOT NULL AUTO_INCREMENT,
             username VARCHAR(255) NOT NULL,
             password VARCHAR(255) NOT NULL,
             PRIMARY KEY(id)
         )");
 echo "-||-".$etape;
+$etape = $pdo->exec("DROP TABLE post_category");
 $pdo->exec("CREATE TABLE post_category(
             post_id INT UNSIGNED NOT NULL,
             category_id INT UNSIGNED NOT NULL,
@@ -43,8 +48,10 @@ $pdo->exec("CREATE TABLE post_category(
         )");
 echo "-||-".$etape;
 
-// le site bière
+//=================== le site bière
+
 // la table des bières
+$etape = $pdo->exec("DROP TABLE beer");
 $etape = $pdo->exec("CREATE TABLE `beer` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `title` varchar(255) NOT NULL,
@@ -56,17 +63,20 @@ $etape = $pdo->exec("CREATE TABLE `beer` (
 echo "-||-".$etape;
 
 // la table des commandes
+$etape = $pdo->exec("DROP TABLE orders");
 $etape = $pdo->exec("CREATE TABLE `orders` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `id_user` int(11) NOT NULL,
     `ids_product` longtext NOT NULL,
     `priceTTC` float NOT NULL,
+    `verify` tinyint(1) NOT NULL DEFAULT 0,
             PRIMARY KEY(id)
   ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 echo "-||-".$etape;
   
-$etape = $pdo->exec("CREATE TABLE `users` (
-    `id` int(11) NOT NULL AUTO_INCREMENT,
+$etape = $pdo->exec("DROP TABLE client");
+$etape = $pdo->exec("CREATE TABLE `client` (
+    `id` int(11) NOT NULL,
     `lastname` varchar(255) NOT NULL,
     `firstname` varchar(255) NOT NULL,
     `address` varchar(255) NOT NULL,
@@ -74,6 +84,13 @@ $etape = $pdo->exec("CREATE TABLE `users` (
     `city` varchar(255) NOT NULL,
     `country` varchar(255) NOT NULL,
     `phone` varchar(255) NOT NULL,
+            PRIMARY KEY(id)
+  ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
+echo "-||-".$etape;
+
+$etape = $pdo->exec("DROP TABLE users");
+$etape = $pdo->exec("CREATE TABLE `users` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
     `mail` varchar(255) NOT NULL,
     `password` varchar(255) NOT NULL,
     `token` varchar(24) NOT NULL,
@@ -88,11 +105,12 @@ echo "-||-".$etape;
 $pdo->exec('SET FOREIGN_KEY_CHECKS = 0');
 $pdo->exec('TRUNCATE TABLE post_category');
 $pdo->exec('TRUNCATE TABLE post');
-$pdo->exec('TRUNCATE TABLE user');
+$pdo->exec('TRUNCATE TABLE userblog');
 $pdo->exec('TRUNCATE TABLE category');
 $pdo->exec('TRUNCATE TABLE beer');
 $pdo->exec('TRUNCATE TABLE orders');
 $pdo->exec('TRUNCATE TABLE users');
+$pdo->exec('TRUNCATE TABLE clients');
 $pdo->exec('SET FOREIGN_KEY_CHECKS = 1');
 echo "||||||||||||";
 $faker = Faker\Factory::create('fr_FR');
@@ -128,7 +146,7 @@ foreach ($posts as $post) {
 }
 $password = password_hash('admin', PASSWORD_BCRYPT);
 echo "||";
-$pdo->exec("INSERT INTO user SET
+$pdo->exec("INSERT INTO userblog SET
         username='admin',
         password='{$password}'");
 echo "-||-";

@@ -2,6 +2,9 @@
 
 {% block content %}
 <section id="formPurchase">
+	<div class="centrer">
+		<p>Bonjour {{user.firstname}} {{user.lastname}}, merci pour votre commande</p>
+	</div>
 	<table>
 		<thead>
 			<tr>
@@ -40,10 +43,14 @@
 			</tr>
 		</tbody>
 	</table>
-	<p style="text-align: center;">Celle-ci vous sera livrée au {{user.address}} {{user.zipCode}} {{user.city}} sous deux jours</p>
-		<p style="text-align:center;">
+	<div class="centrer">
+		<p>Celle-ci vous sera livrée au {{user.address}} {{user.zipCode}} {{user.city}} sous deux jours</p>
+	</div>
+	<div class="centrer">
+		<p>
 			<small>Si vous ne réglez pas sous 10 jours, le prix de votre commande sera majoré (25%/jour de retard)</small>
 		</p>
+	</div>
 </section>
 
 {% endblock content %}
