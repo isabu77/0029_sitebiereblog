@@ -297,7 +297,14 @@ class UsersController extends Controller
 
         // traitement de la modification du profil
         if (!empty($post)) {
-            if (
+            if (isset($post["delete"]) && !empty($post["delete"])
+            && isset($post["id"]) && !empty($post["id"])) { 
+                // suppression de la commande id
+                $order = $this->orders->find($post["id"]);
+                if ($order){
+                    $this->orders->delete($post["id"]);
+                }
+            } elseif (
                 isset($post["passwordOld"]) && !empty($post["passwordOld"]) &&
                 isset($post["password"]) && !empty($post["password"]) &&
                 isset($post["passwordVerify"]) && !empty($post["passwordVerify"])

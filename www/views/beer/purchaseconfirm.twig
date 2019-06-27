@@ -14,15 +14,15 @@
 		</thead>
 		<tbody>
         {% for key,line in lines %}
-				<tr>
-					<td>{{bieres[key].title}}</td>
-					<td>{{line["price"]|number_format(2, ',', '.')}}€</td>
-                    {% set prix = line["price"] * tva %}
-					<td>{{prix|number_format(2, ',', '.')}}€</td>
-					<td>{{line["qty"]}}</td>
-                    {% set prix = line["price"] * line["qty"] * tva %}
-					<td>{{prix|number_format(2, ',', '.')}}€</td>
-				</tr>
+			<tr>
+				<td>{{bieres[key].title}}</td>
+				<td>{{line["price"]|number_format(2, ',', '.')}}€</td>
+				{% set prix = line["price"] * tva %}
+				<td>{{prix|number_format(2, ',', '.')}}€</td>
+				<td>{{line["qty"]}}</td>
+				{% set prix = line["price"] * line["qty"] * tva %}
+				<td>{{prix|number_format(2, ',', '.')}}€</td>
+			</tr>
             {% endfor %}
 			<tr>
 				<td><strong>FRAIS de PORT</strong></td>

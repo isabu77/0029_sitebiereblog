@@ -123,7 +123,7 @@ class BeerController extends Controller
                 "ids_product"    => $orderEntity->getIdsProduct(),
                 "priceTTC"        => $orderEntity->getPriceTTC()
             ];
-            
+
             $result = $this->orders->insert($attributes);
             if ($result) {
                 header('Location: /purchaseconfirm/' . $result);

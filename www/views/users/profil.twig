@@ -44,11 +44,26 @@
         <div><button type="submit">Envoyer</button></div>
     </div>
 </form>
-<br />
 <section id="commandes">
-<p>Les commandes</p>
-    {% for order in orders %}
-	<a href="/purchaseconfirm/{{order.id}}">commande n°{{order.id}} - {{order.priceTTC|number_format(2, ',' ,'.')}}€</a><br />
+	<table>
+		<thead>
+			<tr>
+                <th scope='row'>Commande</th>
+				<th>Total TTC</th>
+                <th></th>
+			</tr>
+		</thead>
+		<tbody>
+    {% for cmd in orders %}
+            <td><a href='/purchaseconfirm/{{ cmd.id }}'>Commande n°{{ cmd.id }}</a></td>
+            <td>{{ cmd.priceTTC|number_format(2, ',' ,'.') }} €</td>
+                <form action="/profil" method="POST">
+                    <input type="hidden" name="id" value="{{cmd.id}}" />
+                    <td><input type="submit" name="delete" value="Supprimer" /></td>
+                </form>
+            </tr>
     {% endfor %}
-    </section>
+		</tbody>
+    </table>
+</section>
 {% endblock content %}
