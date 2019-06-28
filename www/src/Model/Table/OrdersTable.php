@@ -8,6 +8,9 @@ use \Core\Model\Table;
  **/
 class OrdersTable extends Table
 {
+    public static $STATUS_ATTENTE = 1;
+    public static $STATUS_ENCOURS = 1;
+    public static $STATUS_LIVREE = 1;
     /**
      * lecture de toutes les commandes d'un client
      */

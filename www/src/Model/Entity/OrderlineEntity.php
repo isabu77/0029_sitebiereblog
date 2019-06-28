@@ -5,16 +5,16 @@ use \Core\Controller\Helpers\TextController;
 use \Core\Model\Entity;
 
 /**
- *  Classe Orders : une commande de bières
+ *  Classe Orderline : une ligne de commande de bières
  **/
-class OrdersEntity extends Entity
+class OrderlineEntity extends Entity
 {
     private $id;
-    private $id_user;
-    private $number;
-    private $ids_product;
+    private $id_order;
+    private $id_product;
+    private $quantity;
+    private $priceHT;
     private $priceTTC;
-    private $createdAt;
 
     /**
      *  id
@@ -29,40 +29,39 @@ class OrdersEntity extends Entity
      *  id_user
      *  @return int
      **/
-    public function getIdUser(): int
+    public function getIdOrder(): int
     {
-        return ((int)$this->id_user);
+        return ((int)$this->id_order);
     }
 
     /**
-     *  number
-     *  @return string
+     *  id_product
+     *  @return int
      **/
 
-    public function getNumber()
+    public function getIdProduct()
     {
-        return ((string)$this->number);
-    }
-
-     /**
-     *  ids_product
-     *  @return string
-     **/
-
-    public function getIdsProduct()
-    {
-        return ((string)$this->ids_product);
+        return ((int)$this->id_product);
     }
 
    /**
      *  contenu
-     *  @return string
+     *  @return int
      **/
-    public function getCreatedAt()
+    public function getQuantity()
     {
-        return ((string)$this->createdAt);
+        return ((int)$this->quantity);
     }
     
+    /**
+     *  prix
+     *  @return float
+     **/
+    public function getPriceHT():float
+    {
+        return ((float)$this->priceHT);
+    }
+
     /**
      *  prix
      *  @return float
@@ -88,9 +87,34 @@ class OrdersEntity extends Entity
      *  contenu
      *  @return 
      **/
-    public function setIdUser(int $id_user)
+    public function setIdOrder(int $id_order)
     {
-        $this->id_user = $id_user;
+        $this->id_order = $id_order;
+    }
+  
+    /**
+     *  contenu
+     *  @return 
+     **/
+    public function setIdProduct(int $ids_product)
+    {
+        $this->id_product =$id_product;
+    }
+    /**
+     *  contenu
+     *  @return 
+     **/
+    public function setQuantity(int $quantity)
+    {
+        $this->quantity =$quantity;
+    }
+    /**
+     *  contenu
+     *  @return 
+     **/
+    public function setPriceHT(float $priceHT)
+    {
+        $this->priceHT =$priceHT;
     }
   
     /**
@@ -102,28 +126,4 @@ class OrdersEntity extends Entity
         $this->priceTTC =$priceTTC;
     }
   
-    /**
-     *  contenu
-     *  @return 
-     **/
-    public function setNumber(string $number)
-    {
-        $this->ids_product =$number;
-    }
-   /**
-     *  contenu
-     *  @return 
-     **/
-    public function setIdsProduct(string $ids_product)
-    {
-        $this->ids_product =$ids_product;
-    }
-    /**
-     *  contenu
-     *  @return 
-     **/
-    public function setCreatedAt(string $createdAt)
-    {
-        $this->createdAt =$createdAt;
-    }
 }

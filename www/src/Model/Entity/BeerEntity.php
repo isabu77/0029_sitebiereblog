@@ -83,7 +83,7 @@ class BeerEntity extends Entity
      **/
     public function getPrixTTC()
     {
-        return (String)number_format($this->price*1.2, 2, ',', ' ').'€';
+        return (String)number_format($this->price*getenv('ENV_TVA'), 2, ',', ' ').'€';
     }
 
     /**
