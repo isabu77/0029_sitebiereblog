@@ -13,6 +13,7 @@ class OrdersEntity extends Entity
     private $id_user;
     private $number;
     private $ids_product;
+    private $priceHT;
     private $priceTTC;
     private $createdAt;
 
@@ -67,6 +68,15 @@ class OrdersEntity extends Entity
      *  prix
      *  @return float
      **/
+    public function getPriceHT():float
+    {
+        return ((float)$this->priceHT);
+    }
+
+    /**
+     *  prix
+     *  @return float
+     **/
     public function getPriceTTC():float
     {
         return ((float)$this->priceTTC);
@@ -91,6 +101,15 @@ class OrdersEntity extends Entity
     public function setIdUser(int $id_user)
     {
         $this->id_user = $id_user;
+    }
+  
+    /**
+     *  contenu
+     *  @return 
+     **/
+    public function setPriceHT(float $priceHT)
+    {
+        $this->priceHT =$priceHT;
     }
   
     /**

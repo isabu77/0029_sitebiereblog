@@ -16,6 +16,7 @@ class BeerController extends Controller
         // $this->beer est créée dynamiquement
         $this->loadModel('beer');
         $this->loadModel('orders');
+        $this->loadModel('orderline');
         $this->loadModel('users');
         $this->loadModel('client');
     }
@@ -86,63 +87,96 @@ class BeerController extends Controller
         // le client connecté
         $user = $this->connectedSession();
         $client = $this->client->find($user->getId());
-
-        if (!empty($post)) {
-            // enregistremet de la commande
-            $beerArray = $this->beer->all();
-            $beerTotal = [];
-            foreach ($beerArray as $beer) {
-                $beerTotal[$beer->getId()] = $beer;
-            }
-            $priceTTC = 0;
-            foreach ($post['qty'] as $key => $valueQty) { //on boucle sur le tableau $_POST["qty"]
-                if ($valueQty > 0) {
-                    $price = $beerTotal[$key]->getPrice();
-                    $qty[$key] = ['qty' => $valueQty, "price" => $price];
-                    $priceTTC += $valueQty * $price * getenv('ENV_TVA');
-                }
-            }
-            $FraisPort = 5.40;
-            if ($priceTTC < 30) {
-                $priceTTC += $FraisPort;
-            } else {
-                $priceTTC = 0.00;
-            }
-
-            //On convertit le tableau $qty en String pour l'envoyer en bdd plus tard.
-            $serialCommande = serialize($qty);
-
-            // créer l'objet
-            $orderEntity = new OrdersEntity();
-            $orderEntity->setIdUser($user->getId());
-            $orderEntity->setPriceTTC($priceTTC);
-            $orderEntity->setIdsProduct($serialCommande);
-
-            // insérer l'objet en base
-            $attributes = [
-                "id_user"        => $orderEntity->getIdUser(),
-                "ids_product"    => $orderEntity->getIdsProduct(),
-                "priceTTC"        => $orderEntity->getPriceTTC()
-            ];
-
-            $result = $this->orders->insert($attributes);
-            if ($result) {
-                header('Location: /purchaseconfirm/' . $result);
-            } else {
-                //TODO : signaler erreur
-                header('Location: /purchase');
-            }
-            exit();
-        }
-
         // $this->beer contient une instance de la classe PostTable
         $paginatedQuery = new PaginatedQueryAppController(
             $this->beer,
             $this->generateUrl('purchase')
         );
         $bieres = $paginatedQuery->getItems();
-
         $title = 'Bon de commande';
+
+        if (!empty($post)) {
+            if (isset($post["add"]) || isset($post["del"]) || isset($post["update"])) {
+                // gérer la ligne à la commande panier
+                dd($post);
+                if (isset($post["add"])) { } elseif (isset($post["update"])) { } elseif (isset($post["del"])) { }
+                // mise à jour du panier
+                $idOrder = 0;
+                // vérifier si une commande existe en session panier
+                if (isset($_SESSION["panier"])) {
+                    $idOrder = $_SESSION["panier"];
+                }
+                $orderEntity =  null;
+                if ($idOrder > 0) {
+                    // lecture en base de la commande
+                    $orderEntity = $this->orders->find($idOrder);
+                } else {
+                    // insertion en base de la commande panier
+                    $attributes = [
+                        "id_user"        => $user->getId(),
+                        "status"        => $this->orders::$STATUS_ATTENTE,
+                    ];
+
+                    $result = $this->orders->insert($attributes);
+                    if ($result) {
+                        // succès
+                    }
+                }
+                // gérer la ligne à la commande panier
+                if (isset($post["add"])) { } elseif (isset($post["update"])) { } elseif (isset($post["del"])) { }
+            } else {
+
+                // enregistremet de la commande
+                $beerArray = $this->beer->all();
+                $beerTotal = [];
+                foreach ($beerArray as $beer) {
+                    $beerTotal[$beer->getId()] = $beer;
+                }
+                $priceTTC = 0;
+                $priceHT = 0;
+                foreach ($post['qty'] as $key => $valueQty) { //on boucle sur le tableau $_POST["qty"]
+                    if ($valueQty > 0) {
+                        $price = $beerTotal[$key]->getPrice();
+                        $qty[$key] = ['qty' => $valueQty, "price" => $price];
+                        $priceTTC += $valueQty * $price * getenv('ENV_TVA');
+                        $priceHT += $valueQty * $price;
+                    }
+                }
+                $FraisPort = 5.40;
+                if ($priceTTC < 30) {
+                    $priceTTC += $FraisPort;
+                } else {
+                    $priceTTC = 0.00;
+                }
+
+                //On convertit le tableau $qty en String pour l'envoyer en bdd plus tard.
+                $serialCommande = serialize($qty);
+                // créer l'objet
+                $orderEntity = new OrdersEntity();
+                $orderEntity->setIdUser($user->getId());
+                $orderEntity->setPriceHT($priceHT);
+                $orderEntity->setPriceTTC($priceTTC);
+                $orderEntity->setIdsProduct($serialCommande);
+
+                // insérer l'objet en base
+                $attributes = [
+                    "id_user"        => $orderEntity->getIdUser(),
+                    "ids_product"    => $orderEntity->getIdsProduct(),
+                    "priceHT"        => $orderEntity->getPriceHT(),
+                    "priceTTC"        => $orderEntity->getPriceTTC()
+                ];
+
+
+                $result = $this->orders->insert($attributes);
+                if ($result) {
+                    header('Location: /purchaseconfirm/' . $result);
+                } else {
+                    //TODO : signaler erreur
+                    header('Location: /purchase');
+                }
+                exit();
+            }
+        }
 
         $this->render('beer/purchase', [
             'user' => $user,
@@ -152,6 +186,7 @@ class BeerController extends Controller
             'title' => $title
         ]);
     }
+
     /**
      * confirmation de commande des produits bière
      */
@@ -176,7 +211,6 @@ class BeerController extends Controller
         foreach ($bieres as $beer) {
             $beers[$beer->getId()] = $beer;
         }
-        //dd($beers);
 
         // Rétablit le tableau à sa forme originale
         $lines = unserialize($order->getIdsProduct());

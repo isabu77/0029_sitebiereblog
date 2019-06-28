@@ -197,6 +197,11 @@ form textarea:hover {
     background-color: #ccc;
 }
 
+.QTY,
+.PQTY {
+    width: 50px;
+}
+
 .centrer {
     display: flex;
     flex-direction: row;

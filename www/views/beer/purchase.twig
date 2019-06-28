@@ -43,21 +43,75 @@
 		<table>
 			<thead>
 				<tr>
-					<th>Nomination</th>
+					<th>PRODUITS</th>
+					<th></th>
+					<th></th>
+					<th></th>
+					<th></th>
+					<th>PANIER</th>
+					<th></th>
+					<th></th>
+					<th></th>
+					<th></th>
+					<th></th>
+				</tr>
+				<tr>
+					<th>Nom</th>
 					<th>Prix HT</th>
 					<th>Prix TTC</th>
 					<th>Quantité</th>
+					<th></th>
+					<th></th>
+					<th></th>
+					<th></th>
+					<th>Quantité</th>
+					<th>Total HT</th>
+					<th>Total TTC</th>
 				</tr>
 			</thead>
 			<tbody>
             {% for biere in bieres %}
                 <tr>
                     <td>{{biere.title}}</td>
-                    <td id="PHT_{{biere.id}}">{{biere.getPrixHt()}}</td>
-                    <td id="PTTC_{{biere.id}}">{{biere.getPrixTTC()}}</td>
-                    <td><input type="number" min="0" name="qty[{{biere.id}}]" value="0" oninput="calcPrice(this, {{biere.id}}, {{biere.price}});" /></td>
+                    <td id="HT_{{biere.id}}">{{biere.getPrixHt()}}</td>
+                    <td id="TTC_{{biere.id}}">{{biere.getPrixTTC()}}</td>
+                    <td><input id="QTY_{{biere.id}}" class="QTY" type="number" min="0" value="0" oninput="calcPrice(this, {{biere.id}}, {{biere.price}});" /></td>
+					<td></td>
+                    <td><input type="button" name="add[{{biere.id}}]" value="Ajouter" onclick="addToCart({{biere.id}}, {{biere.price}});"/></td>
+                    <td><input type="button" name="update[{{biere.id}}]" value="Modifier" onclick="updateCart({{biere.id}}, {{biere.price}});"/></td>
+                    <td><input type="button" name="del[{{biere.id}}]" value="Retirer" onclick="deleteOfCart({{biere.id}}, {{biere.price}});"/></td>
+                    <td><input id="PQTY_{{biere.id}}" class="PQTY" type="number" name="qty[{{biere.id}}]" min="0" value="0" oninput="calcPriceCart(this, {{biere.id}}, {{biere.price}});"/></td>
+                    <td id="PHT_{{biere.id}}"></td>
+                    <td id="PTTC_{{biere.id}}"></td>
+                    <input type="hidden" name="id" value="{{biere.id}}" />
+                    <input class="HT" type="hidden" name="price" value="{{biere.price}}" />
                 </tr>
             {% endfor %}
+			<tr>
+				<td><strong>Total</strong></td>
+				<td id="HT"></td>
+				<td id="TTC"><strong></strong></td>
+				<td id="QTY"><strong></strong></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td id="PQTY"><strong></strong></td>
+				<td id="PHT"></td>
+				<td id="PTTC"><strong></strong></td>
+			</tr>
+			<tr>
+				<td><strong>Frais de port</strong></td>
+				<td></td>
+				<td id="FRAIS"><strong></strong></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td id="PFRAIS"><strong></strong></td>
+			</tr>
 			</tbody>
 		</table>
 <div class="centrer">
