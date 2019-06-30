@@ -132,43 +132,7 @@ function deleteOfCart(id, originalPrice) {
     totaux();
 }
 
-// totalCommande calcule le total côté commande
-function totalCommande() {
-    var totalHT = 0.0;
-    var totalTTC = 0.0;
-    var total = 0;
-    var frais = 5.40;
-
-    var qtys = document.getElementsByClassName("QTY");
-    var prixHT = document.getElementsByClassName("HT");
-    for (var i = 0; i < qtys.length; i++) {
-        var pqty = parseInt(qtys[i].value);
-        var ht = parseFloat(prixHT[i].value);
-        var ttc = ht * 1.2;
-        if (pqty > 0) {
-            total += pqty;
-            totalHT += ht * pqty;
-            totalTTC += ttc * pqty;
-        }
-    }
-    if (totalTTC > 30) {
-        frais = 0;
-    }
-    // les totaux coté commande
-    document.getElementById('FRAIS').innerHTML = String(frais.toFixed(2)).replace('.', ',') + "€";
-    if (total > 0) {
-        document.getElementById('HT').innerHTML = String(totalHT.toFixed(2)).replace('.', ',') + "€";
-        document.getElementById('TTC').innerHTML = String(totalTTC.toFixed(2)).replace('.', ',') + "€";
-        document.getElementById('QTY').innerHTML = Number(total);
-    } else {
-        document.getElementById('HT').innerHTML = "";
-        document.getElementById('TTC').innerHTML = "";
-        document.getElementById('QTY').innerHTML = "";
-    }
-
-}
-
-// totaux calcule le total du panier ou de la partie commande
+// totaux calcule le total du panier (si $prefix = 'P') ou du coté commande
 function totaux($prefix = "") {
     var totalHT = 0.0;
     var totalTTC = 0.0;
@@ -187,6 +151,9 @@ function totaux($prefix = "") {
             totalTTC += ttc * pqty;
         }
     }
+    //if ($prefix !== "")
+    //    document.getElementById('commander').disabled = (total == 0);
+
     if (totalTTC > 30) {
         frais = 0;
     }
