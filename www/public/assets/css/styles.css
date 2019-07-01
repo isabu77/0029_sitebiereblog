@@ -202,6 +202,24 @@ form textarea:hover {
     width: 50px;
 }
 
+.msgerror {
+    background-color: red;
+    text-align: center;
+    color: black;
+    width: 60%;
+    line-height: 30px;
+    margin: auto;
+}
+
+.msgsuccess {
+    background-color: lightgreen;
+    color: black;
+    text-align: center;
+    width: 60%;
+    line-height: 30px;
+    margin: auto;
+}
+
 .centrer {
     display: flex;
     flex-direction: row;

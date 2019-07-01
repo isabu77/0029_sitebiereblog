@@ -15,4 +15,11 @@ class OrderlineTable extends Table
     {
         return $this->query("SELECT * FROM {$this->table} WHERE id_order = {$idOrder}");
     }
+    /**
+     * lecture de toutes les lignes d'une commande
+     */
+    public function allInToken(String $token)
+    {
+        return $this->query("SELECT * FROM {$this->table} WHERE token = ?",[$token]);
+    }
 }

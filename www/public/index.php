@@ -36,4 +36,7 @@ $app->getRouter($basepath)
     ->post('/purchase', 'Beer#purchase', 'purchase_order')
     ->post('/contact', 'users#contact', 'contact_send')
     ->post('/resetpwd', 'users#resetpwd', 'resetpwd_send')
+    ->post('/deletecart', 'Beer#deletecart', 'purchase_deletecart')
+    ->get('/addcart', 'Beer#addcart', 'purchase_addcart')
+    ->post('/addcart', 'Beer#addcart', 'purchase_addcart_post')
     ->run();

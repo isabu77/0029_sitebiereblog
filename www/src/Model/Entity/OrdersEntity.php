@@ -12,6 +12,7 @@ class OrdersEntity extends Entity
     private $id;
     private $id_user;
     private $number;
+    private $token;
     private $ids_product;
     private $priceHT;
     private $priceTTC;
@@ -43,6 +44,15 @@ class OrdersEntity extends Entity
     public function getNumber()
     {
         return ((string)$this->number);
+    }
+
+    /**
+     *  token
+     *  @return string
+     **/
+    public function getToken()
+    {
+        return ((string)$this->token);
     }
 
      /**
@@ -127,7 +137,15 @@ class OrdersEntity extends Entity
      **/
     public function setNumber(string $number)
     {
-        $this->ids_product =$number;
+        $this->number =$number;
+    }
+    /**
+     *  contenu
+     *  @return 
+     **/
+    public function setToken(string $token)
+    {
+        $this->token =$token;
     }
    /**
      *  contenu

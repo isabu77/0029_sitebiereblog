@@ -40,6 +40,10 @@ class App
             $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
             $whoops->register();
         }
+        
+        if (session_status() != PHP_SESSION_ACTIVE) {
+            session_start();
+        }
 
         $numPage = URLController::getPositiveInt("page");
 

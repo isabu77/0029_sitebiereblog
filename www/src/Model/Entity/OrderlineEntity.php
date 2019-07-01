@@ -12,6 +12,7 @@ class OrderlineEntity extends Entity
     private $id;
     private $id_order;
     private $id_product;
+    private $token;
     private $quantity;
     private $priceHT;
     private $priceTTC;
@@ -44,6 +45,14 @@ class OrderlineEntity extends Entity
         return ((int)$this->id_product);
     }
 
+    /**
+     *  token
+     *  @return string
+     **/
+    public function getToken()
+    {
+        return ((string)$this->token);
+    }
    /**
      *  contenu
      *  @return int
@@ -96,7 +105,15 @@ class OrderlineEntity extends Entity
      *  contenu
      *  @return 
      **/
-    public function setIdProduct(int $ids_product)
+    public function setToken(string $token)
+    {
+        $this->token =$token;
+    }
+    /**
+     *  contenu
+     *  @return 
+     **/
+    public function setIdProduct(int $id_product)
     {
         $this->id_product =$id_product;
     }

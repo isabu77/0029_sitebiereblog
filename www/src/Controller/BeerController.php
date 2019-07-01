@@ -97,98 +97,79 @@ class BeerController extends Controller
         $title = 'Bon de commande';
 
         if (!empty($post)) {
-            if (isset($post["add"]) || isset($post["del"]) || isset($post["update"])) {
-                // gérer la ligne à la commande panier
-                dd($post);
-                if (isset($post["add"])) { } elseif (isset($post["update"])) { } elseif (isset($post["del"])) { }
-                // mise à jour du panier
-                $idOrder = 0;
-                // vérifier si une commande existe en session panier
-                if (isset($_SESSION["panier"])) {
-                    $idOrder = $_SESSION["panier"];
+            if (isset($post['qty']) && count($post['qty']) > 0) {
+                // enregistrement de la commande
+                $beerArray = $this->beer->all();
+                $beerTotal = [];
+                foreach ($beerArray as $beer) {
+                    $beerTotal[$beer->getId()] = $beer;
                 }
-                $orderEntity =  null;
-                if ($idOrder > 0) {
-                    // lecture en base de la commande
-                    $orderEntity = $this->orders->find($idOrder);
-                } else {
-                    // insertion en base de la commande panier
+                $priceTTC = 0;
+                $priceHT = 0;
+                //on boucle sur le tableau $_POST["qty"]
+                foreach ($post['qty'] as $key => $valueQty) {
+                    if ($valueQty > 0) {
+                        $price = $beerTotal[$key]->getPrice();
+                        $qty[$key] = ['qty' => $valueQty, "price" => $price];
+                        $priceTTC += $valueQty   * $price * getenv('ENV_TVA');
+                        $priceHT += $valueQty * $price;
+                    }
+                }
+                if ($priceTTC > 0) {
+                    $FraisPort = 5.40;
+                    if ($priceTTC < 30) {
+                        $priceTTC += $FraisPort;
+                    } else {
+                        $FraisPort = 0.00;
+                    }
+
+                    //On convertit le tableau $qty en String pour l'envoyer en bdd plus tard.
+                    $serialCommande = serialize($qty);
+                    // créer l'objet
+                    $orderEntity =   new OrdersEntity();
+                    $orderEntity->setIdUser($user->getId());
+                    $orderEntity->setPriceHT($priceHT);
+                    $orderEntity->setPriceTTC($priceTTC);
+                    $orderEntity->setIdsProduct($serialCommande);
+
+                    // insérer l'objet en base
                     $attributes = [
-                        "id_user"        => $user->getId(),
-                        "status"        => $this->orders::$STATUS_ATTENTE,
+                        "token"        => $_SESSION["panier"],
+                        "id_user" => $orderEntity->getIdUser(),
+                        "ids_product"    => $orderEntity->getIdsProduct(),
+                        "priceHT"        => $orderEntity->getPriceHT(),
+                        "priceTTC"        => $orderEntity->getPriceTTC()
                     ];
 
                     $result = $this->orders->insert($attributes);
                     if ($result) {
-                        // succès
+                        unset($_SESSION["panier"]);
+                        header('Location: /purchaseconfirm/' . $result);
+                    } else {
+                        //TODO : signaler erreur
+                        $_SESSION['error'] = "Erreur d'enregistrement de la commande dans la base";
+                        header('Location: /purchase');
                     }
-                }
-                // gérer la ligne à la commande panier
-                if (isset($post["add"])) { } elseif (isset($post["update"])) { } elseif (isset($post["del"])) { }
-            } else {
-
-                if (isset($post['qty']) && count($post['qty']) > 0) {
-                    // enregistremet de la commande
-                    $beerArray = $this->beer->all();
-                    $beerTotal = [];
-                    foreach ($beerArray as $beer) {
-                        $beerTotal[$beer->getId()] = $beer;
-                    }
-                    $priceTTC = 0;
-                    $priceHT = 0;
-
-                    //on boucle sur le tableau $_POST["qty"]
-                    foreach ($post['qty'] as $key => $valueQty) {
-                        if ($valueQty > 0) {
-                            $price = $beerTotal[$key]->getPrice();
-                            $qty[$key] = ['qty' => $valueQty, "price" => $price];
-                            $priceTTC += $valueQty   * $price * getenv('ENV_TVA');
-                            $priceHT += $valueQty * $price;
-                        }
-                    }
-                    if ($priceTTC > 0) {
-                        $FraisPort = 5.40;
-                        if ($priceTTC < 30) {
-                            $priceTTC += $FraisPort;
-                        } else {
-                            $FraisPort = 0.00;
-                        }
-
-                        //On convertit le tableau $qty en String pour l'envoyer en bdd plus tard.
-                        $serialCommande = serialize($qty);
-                        // créer l'objet
-                        $orderEntity =   new OrdersEntity();
-                        $orderEntity->setIdUser($user->getId());
-                        $orderEntity->setPriceHT($priceHT);
-                        $orderEntity->setPriceTTC($priceTTC);
-                        $orderEntity->setIdsProduct($serialCommande);
-
-                        // insérer l'objet en base
-
-                        $attributes = [
-                            "id_user" => $orderEntity->getIdUser(),
-                            "ids_product"    => $orderEntity->getIdsProduct(),
-                            "priceHT"        => $orderEntity->getPriceHT(),
-                            "priceTTC"        => $orderEntity->getPriceTTC()
-                        ];
-
-                        $result = $this->orders->insert($attributes);
-                        if ($result) {
-                            header('Location: /purchaseconfirm/' . $result);
-                        } else {
-                            //TODO : signaler erreur
-                            header('Location: /purchase');
-                        }
-                        exit();
-                    }else{
-                        $_SESSION['error'] = "Le panier est vide. Recommencez";
-                    }
+                    exit();
+                } else {
+                    $_SESSION['error'] = "Le panier est vide. Recommencez";
                 }
             }
         }
 
+        // vérifier si une commande existe en session panier
+        if (isset($_SESSION["panier"])) {
+            $token = $_SESSION["panier"];
+            $orderlines = [];
+            if (!empty($token)) {
+                // lecture en base des lignes de commande du token
+                $orderlines = $this->orderline->allInToken($token);
+            }
+            //dd($orderlines);
+        }
         $this->render('beer/purchase', [
             'user' => $user,
+            'orderlines' => $orderlines,
             'client' => $client,
             'bieres' => $bieres,
             'paginate' => $paginatedQuery->getNavHTML(),
@@ -196,6 +177,103 @@ class BeerController extends Controller
         ]);
 
         unset($_SESSION["error"]); //Supprime la SESSION['error']
+    }
+
+    /**
+     * Insertion d'une ligne dans le panier par jquery $.post
+     */
+    public function addcart()
+    {
+        if (!empty($_POST)) {
+            if (isset($_POST["idBeer"]) && isset($_POST["quantity"]) && isset($_POST["price"])) {
+                // gérer la ligne de panier
+                // mise à jour du panier
+                $token = "";
+                // vérifier si une commande existe en session panier
+                if (isset($_SESSION["panier"])) {
+                    $token = $_SESSION["panier"];
+                }
+                $nouveau = true;
+                $orderlines = [];
+                if (!empty($token)) {
+                    // lecture en base des lignes de commande du token
+                    $orderlines = $this->orderline->allInToken($token);
+                    foreach ($orderlines as $line) {
+                        if ($line->getIdProduct() == $_POST["idBeer"]) {
+                            $qty = $_POST["quantity"] + $line->getQuantity();
+                            $priceTTC = $qty * $_POST["price"] * getenv('ENV_TVA');
+                            $priceHT = $qty * $_POST["price"];
+                            $attributes = [
+                                "quantity"        => $qty,
+                                "priceHT"         => $priceHT,
+                                "priceTTC"         => $priceTTC
+                            ];
+                            $result = $this->orderline->update($line->getId(), $attributes);
+                            if ($result) {
+                                // succès
+                                echo "ok";
+                                return;
+                            }
+                        }
+                    }
+                }
+                // insertion en base de la ligne panier
+                $priceTTC = $_POST["quantity"] * $_POST["price"] * getenv('ENV_TVA');
+                $priceHT = $_POST["quantity"] * $_POST["price"];
+                if (empty($token)) {
+                    $token = substr(md5(uniqid()), 0, 24);
+                }
+                $attributes = [
+                    "id_product"    => $_POST["idBeer"],
+                    "quantity"        => $_POST["quantity"],
+                    "token"        => $token,
+                    "priceHT"         => $priceHT,
+                    "priceTTC"         => $priceTTC
+                ];
+
+                $result = $this->orderline->insert($attributes);
+                if ($result) {
+                    $_SESSION["panier"] = $token;
+                    // succès
+                    echo "ok";
+                    return;
+                }
+            }
+        }
+        return;
+    }
+
+    /**
+     * vérification pour suppression dans le panier par jquery $.post
+     */
+    public function deletecart()
+    {
+        if (!empty($_POST)) {
+            if (isset($_POST["idBeer"])) {
+                // gérer la ligne de panier
+                // mise à jour du panier
+                $token = "";
+                // vérifier si une commande existe en session panier
+                if (isset($_SESSION["panier"])) {
+                    $token = $_SESSION["panier"];
+                }
+                $orderlines = [];
+                if (!empty($token)) {
+                    // lecture en base des lignes de commande du token
+                    $orderlines = $this->orderline->allInToken($token);
+                    foreach ($orderlines as $line) {
+                        if ($line->getIdProduct() == $_POST["idBeer"]) {
+                            $result = $this->orderline->delete($line->getId());
+                            if ($result) {
+                                // succès
+                                echo "ok";
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**

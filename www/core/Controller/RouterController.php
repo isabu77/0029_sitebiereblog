@@ -50,7 +50,7 @@ class RouterController
         // on définit une variable avec l'instance pour appeler url()
         // dans toutes les vues qui sont incluses ci-dessous (dans le dossier views)
         $router = $this;
-
+        //dd($match);
         if (is_array($match)) {
             if (strpos($match['target'], "#")) {
                 [$controller, $methode] = explode("#", $match['target']);

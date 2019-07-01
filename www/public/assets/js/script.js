@@ -72,29 +72,39 @@ function addToCart(id, originalPrice) {
     if (qty == 0) {
         return;
     }
-    var pqty = parseInt(document.getElementById('PQTY_' + id).value);
 
-    // ajouter la quantité saisie à celle du panier  
-    console.log(pqty);
-    if (pqty > 0 && pqty != NaN) {
-        qty += pqty;
-    }
-    var pHT = originalPrice * qty;
-    var pTTC = pHT * 1.2;
+    // appel AJAX pour lancer un post d'insertion en base de la ligne de commande du panier
+    $.post("/addcart", { idBeer: id, quantity: qty, price: originalPrice },
+        function(data) {
+            //alert(data);
+            if (data == "ok") {
+                // ajouter la quantité saisie à celle du panier  
+                var pqty = parseInt(document.getElementById('PQTY_' + id).value);
+                if (pqty > 0 && pqty != NaN) {
+                    qty += pqty;
+                }
+                var pHT = originalPrice * qty;
+                var pTTC = pHT * 1.2;
 
-    // on vide la partie commande
-    document.getElementById('HT_' + id).innerHTML = String(originalPrice.toFixed(2)).replace('.', ',') + "€";
-    document.getElementById('TTC_' + id).innerHTML = String((originalPrice * 1.2).toFixed(2)).replace('.', ',') + "€";
-    document.getElementById('QTY_' + id).value = 0;
+                // on vide la partie commande
+                document.getElementById('HT_' + id).innerHTML = String(originalPrice.toFixed(2)).replace('.', ',') + "€";
+                document.getElementById('TTC_' + id).innerHTML = String((originalPrice * 1.2).toFixed(2)).replace('.', ',') + "€";
+                document.getElementById('QTY_' + id).value = 0;
 
-    // on remplit la ligne du panier
-    document.getElementById('PQTY_' + id).value = qty;
-    document.getElementById('PHT_' + id).innerHTML = String(pHT.toFixed(2)).replace('.', ',') + "€";
-    document.getElementById('PTTC_' + id).innerHTML = String(pTTC.toFixed(2)).replace('.', ',') + "€";
+                // on remplit la ligne du panier
+                document.getElementById('PQTY_' + id).value = qty;
+                document.getElementById('PHT_' + id).innerHTML = String(pHT.toFixed(2)).replace('.', ',') + "€";
+                document.getElementById('PTTC_' + id).innerHTML = String(pTTC.toFixed(2)).replace('.', ',') + "€";
 
-    // totaux panier
-    totaux('P');
-    totaux();
+                // totaux panier
+                totaux('P');
+                totaux();
+
+            }
+        });
+
+
+
 
 }
 // update la ligne du panier
@@ -122,14 +132,20 @@ function updateCart(id, originalPrice) {
 // delete la ligne du panier
 function deleteOfCart(id, originalPrice) {
 
-    // on vide la partie panier
-    document.getElementById('PHT_' + id).innerHTML = "";
-    document.getElementById('PTTC_' + id).innerHTML = "";
-    document.getElementById('PQTY_' + id).value = "";
+    // appel AJAX pour lancer un post de vérification de la ligne de commande du panier
+    $.post("/deletecart", { idBeer: id },
+        function(data) {
+            if (data == "ok") {
+                // on vide la partie panier
+                document.getElementById('PHT_' + id).innerHTML = "";
+                document.getElementById('PTTC_' + id).innerHTML = "";
+                document.getElementById('PQTY_' + id).value = "";
 
-    // totaux panier et commande
-    totaux('P');
-    totaux();
+                // totaux panier et commande
+                totaux('P');
+                totaux();
+            }
+        });
 }
 
 // totaux calcule le total du panier (si $prefix = 'P') ou du coté commande

@@ -124,14 +124,15 @@ class UsersController extends Controller
 
                         $userId = $this->users->insert($attributes);
 
-                        // insérer l'objet en base dans la table clients
+                        if ($userId) {
+                            // insérer l'objet en base dans la table clients
 
-                        // créer l'objet client
-                        $clientEntity = new ClientEntity($post);
+                            // créer l'objet client
+                            $clientEntity = new ClientEntity($post);
 
-                        $attributes =
+                            $attributes =
                             [
-                                "id"           => $userId,
+                                "id_user"      => $userId,
                                 "lastname"     => htmlspecialchars($clientEntity->getLastname()),
                                 "firstname"    => htmlspecialchars($clientEntity->getFirstname()),
                                 "address"      => htmlspecialchars($clientEntity->getAddress()),
@@ -140,9 +141,8 @@ class UsersController extends Controller
                                 "country"      => htmlspecialchars($clientEntity->getCountry()),
                                 "phone"        => htmlspecialchars($clientEntity->getPhone()),
                             ];
-                        $clientId = $this->client->insert($attributes);
+                            $clientId = $this->client->insert($attributes);
 
-                        if ($userId) {
                             $user = $this->users->find($userId);
 
                             // envoyer le mail de confirmation

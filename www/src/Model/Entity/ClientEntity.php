@@ -10,6 +10,7 @@ use \Core\Model\Entity;
 class ClientEntity extends Entity
 {
     private $id;
+    private $id_user;
     private $lastname;
     private $firstname;
     private $address;
@@ -25,6 +26,15 @@ class ClientEntity extends Entity
     public function getId(): int
     {
         return ((int)$this->id);
+    }
+
+    /**
+     *  id_user
+     *  @return int
+     **/
+    public function getIdUser(): int
+    {
+        return ((int)$this->id_user);
     }
 
     /**
@@ -92,7 +102,7 @@ class ClientEntity extends Entity
         
     /**
      *  id
-     *  @return int
+     *  @return 
      **/
     public function setId(string $id)
     {
@@ -100,8 +110,17 @@ class ClientEntity extends Entity
     }
 
     /**
+     *  id_user
+     *  @return 
+     **/
+    public function setIdUser(string $id_user)
+    {
+        $this->id_user = $id_user;
+    }
+
+    /**
      *  title
-     *  @return string
+     *  @return 
      **/
     public function setLastname(string $lastname)
     {
@@ -110,7 +129,7 @@ class ClientEntity extends Entity
 
     /**
      *  img
-     *  @return string
+     *  @return 
      **/
 
     public function setFirstname(string $firstname)
@@ -120,7 +139,7 @@ class ClientEntity extends Entity
 
     /**
      *  contenu
-     *  @return string
+     *  @return 
      **/
     public function setZipCode(string $zipCode)
     {
@@ -128,7 +147,7 @@ class ClientEntity extends Entity
     }
     /**
      *  contenu
-     *  @return string
+     *  @return 
      **/
     public function setAddress(string $address)
     {
@@ -137,7 +156,7 @@ class ClientEntity extends Entity
         
     /**
      *  contenu
-     *  @return string
+     *  @return 
      **/
     public function setCity(string $address)
     {
@@ -146,7 +165,7 @@ class ClientEntity extends Entity
         
     /**
      *  contenu
-     *  @return string
+     *  @return 
      **/
     public function setCountry(string $country)
     {
@@ -155,7 +174,7 @@ class ClientEntity extends Entity
         
     /**
      *  contenu
-     *  @return string
+     *  @return 
      **/
     public function setPhone(string $phone)
     {

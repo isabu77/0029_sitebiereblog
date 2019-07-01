@@ -35,13 +35,13 @@
   <h1 class="titreduhaut">{% block title %}Bread Beer Shop - {{title}}{% endblock %}</h1>
 <div>
   {% if session.success %}
-  <div style="background-color: lightgreen; color: black; text-align: center;">
+  <div class="msgsuccess">
     {{session.success}}
     </div>
   {% endif %}
 
   {% if session.error %}
-    <div style="background-color: red; text-align: center; color: black;">
+    <div class="msgerror">
     {{session.error}}
     </div>
   {% endif %}
@@ -59,6 +59,7 @@
 		</nav>
 	</footer>
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script type="text/javascript" src="/assets/js/script.js"></script>
 </body>
 </html>
