@@ -45,7 +45,7 @@
     </div>
 </form>
 <section id="commandes">
-	<table>
+	<table class="table-striped">
 		<thead>
 			<tr>
                 <th scope='row'>Commande</th>
@@ -55,12 +55,13 @@
 		</thead>
 		<tbody>
     {% for cmd in orders %}
-            <td><a href='/purchaseconfirm/{{ cmd.id }}'>Commande n°{{ cmd.id }}</a></td>
-            <td>{{ cmd.priceTTC|number_format(2, ',' ,'.') }} €</td>
-                <form action="/profil" method="POST">
+			<tr>
+                <td><a href='/purchaseconfirm/{{ cmd.id }}'>Commande n°{{ cmd.id }}</a></td>
+                <td>{{ cmd.priceTTC|number_format(2, ',' ,'.') }} €</td>
+{#                <form action="/profil" method="POST">
                     <input type="hidden" name="id" value="{{cmd.id}}" />
                     <td><input type="submit" name="delete" value="Supprimer" /></td>
-                </form>
+                </form>#}
             </tr>
     {% endfor %}
 		</tbody>

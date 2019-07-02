@@ -65,7 +65,7 @@ body .menu nav ul {
 }
 
 body .menu nav ul li {
-    text-align: center;
+    text-align: left;
 }
 
 body .menu nav ul li a {
@@ -115,6 +115,16 @@ body #boutiques .bieres p {
 
 body #boutiques .bieres .price {
     text-align: right;
+    border: 1px solid black;
+}
+
+.commande {
+    display: block;
+    border: 1px solid black;
+}
+
+.panier {
+    display: block;
 }
 
 body #formPurchase .form label {
@@ -145,7 +155,6 @@ body #formPurchase table tr td {
 #commandes table {
     width: 60%;
     margin: auto;
-    border: 1px solid black;
 }
 
 body footer {
@@ -267,6 +276,7 @@ form button[type="reset"]:hover {
     body .menu nav ul {
         display: flex;
         justify-content: space-around;
+        margin-top: 10px;
     }
     /* PAGE HOME */
     section h1 {

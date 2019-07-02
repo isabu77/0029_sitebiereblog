@@ -102,39 +102,46 @@ function addToCart(id, originalPrice) {
 
             }
         });
-
-
-
-
 }
 // update la ligne du panier
 function updateCart(id, originalPrice) {
-    var qty = document.getElementById('QTY_' + id).value;
-    var pHT = originalPrice * qty;
-    var pTTC = pHT * 1.2;
-    var frais = 5.40;
+    var qty = parseInt(document.getElementById('QTY_' + id).value);
+    if (qty == 0) {
+        return;
+    }
+    // appel AJAX pour lancer un post de modification de la ligne de commande du panier
+    $.post("/updatecart", { idBeer: id, quantity: qty, price: originalPrice },
+        function(data) {
+            if (data == "ok") {
+                var qty = document.getElementById('QTY_' + id).value;
+                var pHT = originalPrice * qty;
+                var pTTC = pHT * 1.2;
+                var frais = 5.40;
 
-    // on vide la partie commande
-    document.getElementById('HT_' + id).innerHTML = String(originalPrice.toFixed(2)).replace('.', ',') + "€";
-    document.getElementById('TTC_' + id).innerHTML = String((originalPrice * 1.2).toFixed(2)).replace('.', ',') + "€";
-    document.getElementById('QTY_' + id).value = 0;
+                // on vide la partie commande
+                document.getElementById('HT_' + id).innerHTML = String(originalPrice.toFixed(2)).replace('.', ',') + "€";
+                document.getElementById('TTC_' + id).innerHTML = String((originalPrice * 1.2).toFixed(2)).replace('.', ',') + "€";
+                document.getElementById('QTY_' + id).value = 0;
 
-    // on remplit la ligne du panier
-    document.getElementById('PQTY_' + id).value = qty;
-    document.getElementById('PHT_' + id).innerHTML = String(pHT.toFixed(2)).replace('.', ',') + "€";
-    document.getElementById('PTTC_' + id).innerHTML = String(pTTC.toFixed(2)).replace('.', ',') + "€";
+                // on remplit la ligne du panier
+                document.getElementById('PQTY_' + id).value = qty;
+                document.getElementById('PHT_' + id).innerHTML = String(pHT.toFixed(2)).replace('.', ',') + "€";
+                document.getElementById('PTTC_' + id).innerHTML = String(pTTC.toFixed(2)).replace('.', ',') + "€";
 
-    // totaux panier
-    totaux('P');
-    totaux();
+                // totaux panier
+                totaux('P');
+                totaux();
+            }
+        });
 }
 
 // delete la ligne du panier
 function deleteOfCart(id, originalPrice) {
-
-    // appel AJAX pour lancer un post de vérification de la ligne de commande du panier
+    // appel AJAX pour lancer un post de suppression de la ligne de commande du panier
     $.post("/deletecart", { idBeer: id },
         function(data) {
+            //console.log("delete");
+            //alert(data);
             if (data == "ok") {
                 // on vide la partie panier
                 document.getElementById('PHT_' + id).innerHTML = "";

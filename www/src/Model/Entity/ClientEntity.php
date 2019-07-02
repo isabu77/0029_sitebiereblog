@@ -101,6 +101,17 @@ class ClientEntity extends Entity
     }
         
     /**
+     * getUrl()
+     */
+    public function getUrl():string
+    {
+        return \App\App::getInstance()
+            ->getRouter()
+            ->url('client',[
+            'id' => $this->getId()
+            ]);
+    }
+    /**
      *  id
      *  @return 
      **/

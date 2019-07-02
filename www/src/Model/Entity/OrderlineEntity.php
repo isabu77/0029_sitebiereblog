@@ -87,7 +87,7 @@ class OrderlineEntity extends Entity
     {
         return \App\App::getInstance()
             ->getRouter()
-            ->url('orders', [
+            ->url('orderline', [
             'id' => $this->getId()
             ]);
     }

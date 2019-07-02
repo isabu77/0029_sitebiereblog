@@ -40,17 +40,17 @@
 				<input type="text" name="mail" value="{{user.mail}}" disabled/>
 			</div>
 		</div>
-		<table>
+		<table class="table-striped bg-info">
 			<thead>
 				<tr>
-					<th>les PRODUITS :</th>
+					<th>les PRODUITS:</th>
 					<th></th>
 					<th></th>
 					<th></th>
 					<th></th>
 					<th></th>
-					<th>Votre PANIER :</th>
-					{#<th></th>#}
+					<th>Votre PANIER:</th>
+					<th></th>
 					<th></th>
 					<th></th>
 					<th></th>
@@ -62,9 +62,9 @@
 					<th>Quantité</th>
 					<th></th>
 					<th></th>
-					<th>Quantité</th>
-					{#<th></th>#}
 					<th></th>
+					<th></th>
+					<th>Quantité</th>
 					<th>Total HT</th>
 					<th>Total TTC</th>
 				</tr>
@@ -81,12 +81,12 @@
 					{% set line = orderline %}
 					{% endif %}
            			{% endfor %}
-                     <td><input id="QTY_{{biere.id}}" class="QTY" type="number" min="0" value="" oninput="calcPrice(this, {{biere.id}}, {{biere.price}});" /></td>
+                    <td><input id="QTY_{{biere.id}}" class="QTY" type="number" min="0" value="" oninput="calcPrice(this, {{biere.id}}, {{biere.price}});" /></td>
 					<td></td>
                     <td><input type="button" name="add[{{biere.id}}]" value="Ajouter" onclick="addToCart({{biere.id}}, {{biere.price}});"/></td>
-                    <td><input id="PQTY_{{biere.id}}" class="PQTY" type="number" name="qty[{{biere.id}}]" min="0" value="{{line.quantity}}" oninput="calcPriceCart(this, {{biere.id}}, {{biere.price}});"/></td>
-                    {#<td><input type="button" name="update[{{biere.id}}]" value="Modifier" onclick="updateCart({{biere.id}}, {{biere.price}});"/></td>#}
+                    <td><input type="button" name="update[{{biere.id}}]" value="Modifier" onclick="updateCart({{biere.id}}, {{biere.price}});"/></td>
                     <td><input type="button" name="del[{{biere.id}}]" value="Retirer" onclick="deleteOfCart({{biere.id}}, {{biere.price}});"/></td>
+                    <td><input id="PQTY_{{biere.id}}" class="PQTY" type="number" name="qty[{{biere.id}}]" min="0" value="{{line.quantity}}" oninput="calcPriceCart(this, {{biere.id}}, {{biere.price}});"/></td>
                     <td id="PHT_{{biere.id}}">{{line.priceHT}}</td>
                     <td id="PTTC_{{biere.id}}">{{line.priceTTC}}</td>
                     <input type="hidden" name="id" value="{{biere.id}}" />
@@ -100,9 +100,9 @@
 				<td id="QTY"><strong></strong></td>
 				<td></td>
 				<td></td>
-				<td id="PQTY"><strong></strong></td>
-					{#<th></th>#}
 				<td></td>
+				<td></td>
+				<td id="PQTY"><strong></strong></td>
 				<td id="PHT"></td>
 				<td id="PTTC"><strong></strong></td>
 			</tr>
@@ -110,6 +110,7 @@
 				<td><strong>Frais de port</strong></td>
 				<td></td>
 				<td id="FRAIS"><strong></strong></td>
+				<td></td>
 				<td></td>
 				<td></td>
 				<td></td>
