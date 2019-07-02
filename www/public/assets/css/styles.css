@@ -118,15 +118,6 @@ body #boutiques .bieres .price {
     border: 1px solid black;
 }
 
-.commande {
-    display: block;
-    border: 1px solid black;
-}
-
-.panier {
-    display: block;
-}
-
 body #formPurchase .form label {
     display: block;
 }
@@ -138,6 +129,7 @@ body #formPurchase .form input {
 
 body #formPurchase table {
     width: 100%;
+    margin: auto;
 }
 
 body #formPurchase table tr th {
@@ -153,7 +145,7 @@ body #formPurchase table tr td {
 }
 
 #commandes table {
-    width: 60%;
+    width: 80%;
     margin: auto;
 }
 
@@ -174,7 +166,7 @@ body footer nav ul li a {
 }
 
 form {
-    width: 60%;
+    width: 90%;
     margin: auto;
 }
 

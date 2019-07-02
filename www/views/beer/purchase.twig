@@ -43,13 +43,9 @@
 		<table class="table-striped bg-info">
 			<thead>
 				<tr>
-					<th>les PRODUITS:</th>
+					<th>les bières:</th>
 					<th></th>
 					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
-					<th>Votre PANIER:</th>
 					<th></th>
 					<th></th>
 					<th></th>
@@ -61,12 +57,8 @@
 					<th>Prix TTC</th>
 					<th>Quantité</th>
 					<th></th>
+					<th>PANIER:</th>
 					<th></th>
-					<th></th>
-					<th></th>
-					<th>Quantité</th>
-					<th>Total HT</th>
-					<th>Total TTC</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -85,10 +77,6 @@
 					<td></td>
                     <td><input type="button" name="add[{{biere.id}}]" value="Ajouter" onclick="addToCart({{biere.id}}, {{biere.price}});"/></td>
                     <td><input type="button" name="update[{{biere.id}}]" value="Modifier" onclick="updateCart({{biere.id}}, {{biere.price}});"/></td>
-                    <td><input type="button" name="del[{{biere.id}}]" value="Retirer" onclick="deleteOfCart({{biere.id}}, {{biere.price}});"/></td>
-                    <td><input id="PQTY_{{biere.id}}" class="PQTY" type="number" name="qty[{{biere.id}}]" min="0" value="{{line.quantity}}" oninput="calcPriceCart(this, {{biere.id}}, {{biere.price}});"/></td>
-                    <td id="PHT_{{biere.id}}">{{line.priceHT}}</td>
-                    <td id="PTTC_{{biere.id}}">{{line.priceTTC}}</td>
                     <input type="hidden" name="id" value="{{biere.id}}" />
                     <input class="HT" type="hidden" name="price" value="{{biere.price}}" />
                 </tr>
@@ -101,10 +89,6 @@
 				<td></td>
 				<td></td>
 				<td></td>
-				<td></td>
-				<td id="PQTY"><strong></strong></td>
-				<td id="PHT"></td>
-				<td id="PTTC"><strong></strong></td>
 			</tr>
 			<tr>
 				<td><strong>Frais de port</strong></td>
@@ -113,11 +97,58 @@
 				<td></td>
 				<td></td>
 				<td></td>
+			</tr>
+			</tbody>
+		</table>
+		</br>
+		<table class="table-striped bg-success">
+			<thead>
+				<tr>
+					<th>Votre PANIER:</th>
+					<th></th>
+					<th></th>
+					<th></th>
+					<th></th>
+				</tr>
+				<tr>
+                    <td>Nom</td>
+					<th>Quantité</th>
+					<th>Total HT</th>
+					<th>Total TTC</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+            {% for biere in bieres %}
+                <tr>
+                    <td>{{biere.title}}</td>
+					{% set line = 0 %}
+					{% for orderline in orderlines %}
+					{% if biere.id == orderline.idProduct %}
+					{% set line = orderline %}
+					{% endif %}
+           			{% endfor %}
+                     <td><input id="PQTY_{{biere.id}}" class="PQTY" type="number" name="qty[{{biere.id}}]" min="0" value="{{line.quantity}}" oninput="calcPriceCart(this, {{biere.id}}, {{biere.price}});"/></td>
+                    <td id="PHT_{{biere.id}}">{{line.priceHT}}</td>
+                    <td id="PTTC_{{biere.id}}">{{line.priceTTC}}</td>
+                   <td><input type="button" name="del[{{biere.id}}]" value="Retirer" onclick="deleteOfCart({{biere.id}}, {{biere.price}});"/></td>
+                    <input type="hidden" name="id" value="{{biere.id}}" />
+                    <input class="HT" type="hidden" name="price" value="{{biere.price}}" />
+                </tr>
+            {% endfor %}
+			<tr>
 				<td></td>
+				<td id="PQTY"><strong></strong></td>
+				<td id="PHT"></td>
+				<td id="PTTC"><strong></strong></td>
 				<td></td>
+			</tr>
+			<tr>
+				<td><strong>Frais de port</strong></td>
 				<td></td>
 				<td></td>
 				<td id="PFRAIS"><strong></strong></td>
+				<td></td>
 			</tr>
 			</tbody>
 		</table>
