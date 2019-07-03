@@ -405,10 +405,9 @@ class UsersController extends Controller
     {
         if (!empty($post)) {
             if (
-                isset($_POST["send"]) &&
-                isset($_POST["from"]) &&
-                isset($_POST["object"]) &&
-                isset($_POST["message"])
+                isset($post["from"]) &&
+                isset($post["object"]) &&
+                isset($post["message"])
             ) {
                 define('MAIL_TO', getenv('GMAIL_USER'));
                 define('MAIL_FROM', ''); // valeur par défaut

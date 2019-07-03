@@ -24,6 +24,17 @@ services:
     env_file:
       - .env
 
+  mailCatcher:
+    container_name: mailCatcher
+    restart: unless-stopped
+    image: tophfr/mailcatcher
+    ports:
+      - 1080:80
+    networks:
+      - blog
+    env_file:
+      - .env
+
 networks:
   blog:
     driver: bridge

@@ -20,10 +20,14 @@ class MailController
             $mailTo = [$emailTo];
         }
         // Crée le Transport
-        $transport = new \Swift_SmtpTransport('smtp.gmail.com', 587, 'tls');
-        $transport->setUsername(getenv('GMAIL_USER'));
-        $transport->setPassword(getenv('GMAIL_PWD'));
-    
+        if (getenv('ENV_DEV')){
+            $transport = new \Swift_SmtpTransport('mailCatcher', 25);
+        }else{
+            $transport = new \Swift_SmtpTransport('smtp.gmail.com', 587, 'tls');
+            $transport->setUsername(getenv('GMAIL_USER'));
+            $transport->setPassword(getenv('GMAIL_PWD'));
+
+        }
         // Crée le Mailer utilisant le Transport
         $mailer = new \Swift_Mailer($transport);
         // Crée le message en HTML et texte
