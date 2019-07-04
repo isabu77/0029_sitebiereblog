@@ -7,6 +7,16 @@ class Controller
     private $twig;
 
     /**
+     * getenv : retourne une variable d'environnement de l'application
+     * définie dans config.php
+     */
+    public function getenv(string $name)
+    {
+        require 'config.php';
+        return $env[$name]; 
+    }
+
+    /**
      * Rendu d'une page en .twig
      */
     protected function render(string $view, array $variable = [])

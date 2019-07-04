@@ -1,5 +1,6 @@
 <?php
 namespace Core\Controller\Helpers;
+use Core\Controller\Controller;
 
 /**
  *  Classe Text
@@ -7,7 +8,7 @@ namespace Core\Controller\Helpers;
  * @access public
  * @static
  **/
-class MailController
+class MailController extends Controller
 {
 /**
 * envoi d'un mail par swift_mailer
@@ -20,19 +21,19 @@ class MailController
             $mailTo = [$emailTo];
         }
         // Crée le Transport
-        if (getenv('ENV_DEV')){
+        if (parent::getenv('ENV_DEV')){
             $transport = new \Swift_SmtpTransport('mailCatcher', 25);
         }else{
             $transport = new \Swift_SmtpTransport('smtp.gmail.com', 587, 'tls');
-            $transport->setUsername(getenv('GMAIL_USER'));
-            $transport->setPassword(getenv('GMAIL_PWD'));
+            $transport->setUsername(parent::getenv('GMAIL_USER'));
+            $transport->setPassword(parent::getenv('GMAIL_PWD'));
 
         }
         // Crée le Mailer utilisant le Transport
         $mailer = new \Swift_Mailer($transport);
         // Crée le message en HTML et texte
         $message = new \Swift_Message($sujet);
-        $message->setFrom([getenv('GMAIL_USER') => getenv('GMAIL_PSEUDO')]);
+        $message->setFrom([parent::getenv('GMAIL_USER') => parent::getenv('GMAIL_PSEUDO')]);
         if ($cci) {
             $message->setBcc($mailTo);
         } else {

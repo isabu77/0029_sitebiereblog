@@ -1,10 +1,10 @@
 <?php
 namespace App;
 
+use \Core\Controller\Controller;
 use \Core\Controller\RouterController;
 use \Core\Controller\URLController;
 use \Core\Controller\Database\DatabaseMysqlController;
-
 /**
  * classe SINGLETON : classe PRINCIPALE de l'application
  */
@@ -18,6 +18,7 @@ class App
     private $router;
     private $startTime;
     private $db_instance;
+    private $config_instance;
 
     /**
      * retourne l'instance UNIQUE de la classe App
@@ -35,7 +36,9 @@ class App
      */
     public static function load()
     {
-        if (getenv("ENV_DEV")) {
+        $config_instance = new Controller();
+
+        if ($config_instance->getenv("ENV_DEV")) {
             $whoops = new \Whoops\Run;
             $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
             $whoops->register();
@@ -62,6 +65,18 @@ class App
                 exit();
             }
         }
+    }
+
+    /**
+     * crée l'instance de la config générale
+     * et la retourne
+     */
+    public function getConfig()
+    {
+        if (is_null($this->config_instance)) {
+            $this->config_instance = new Controller();
+        }
+        return $this->config_instance;
     }
 
     /**
@@ -100,10 +115,10 @@ class App
     {
         if (is_null($this->db_instance)) {
             $this->db_instance = new DatabaseMysqlController(
-                getenv('MYSQL_DATABASE'),
-                getenv('MYSQL_USER'),
-                getenv('MYSQL_PASSWORD'),
-                getenv('CONTAINER_MYSQL')
+                $this->getConfig()->getenv('MYSQL_DATABASE'),
+                $this->getConfig()->getenv('MYSQL_USER'),
+                $this->getConfig()->getenv('MYSQL_PASSWORD'),
+                $this->getConfig()->getenv('MYSQL_HOSTNAME')
             );
         }
         return $this->db_instance;

@@ -6,5 +6,4 @@ createBlog.sql
 www/tests/Exotest/
 SchemaMvc.pdf
 www/composer.lock
-
-
+www/core/controller/config.php

@@ -110,7 +110,7 @@ class BeerController extends Controller
                     if ($valueQty > 0) {
                         $price = $beerTotal[$key]->getPrice();
                         $qty[$key] = ['qty' => $valueQty, "price" => $price];
-                        $priceTTC += $valueQty   * $price * getenv('ENV_TVA');
+                        $priceTTC += $valueQty   * $price * parent::getenv('ENV_TVA');
                         $priceHT += $valueQty * $price;
                     }
                 }
@@ -206,7 +206,7 @@ class BeerController extends Controller
                     foreach ($orderlines as $line) {
                         if ($line->getIdProduct() == $_POST["idBeer"]) {
                             $qty = $_POST["quantity"] + $line->getQuantity();
-                            $priceTTC = $qty * $_POST["price"] * getenv('ENV_TVA');
+                            $priceTTC = $qty * $_POST["price"] * parent::getenv('ENV_TVA');
                             $priceHT = $qty * $_POST["price"];
                             $attributes = [
                                 "quantity"        => $qty,
@@ -223,7 +223,7 @@ class BeerController extends Controller
                     }
                 }
                 // insertion en base de la ligne panier
-                $priceTTC = $_POST["quantity"] * $_POST["price"] * getenv('ENV_TVA');
+                $priceTTC = $_POST["quantity"] * $_POST["price"] * parent::getenv('ENV_TVA');
                 $priceHT = $_POST["quantity"] * $_POST["price"];
                 if (empty($token)) {
                     $token = substr(md5(uniqid()), 0, 24);
@@ -269,7 +269,7 @@ class BeerController extends Controller
                     foreach ($orderlines as $line) {
                         if ($line->getIdProduct() == $_POST["idBeer"]) {
                             $qty = $_POST["quantity"];
-                            $priceTTC = $qty * $_POST["price"] * getenv('ENV_TVA');
+                            $priceTTC = $qty * $_POST["price"] * parent::getenv('ENV_TVA');
                             $priceHT = $qty * $_POST["price"];
                             $attributes = [
                                 "quantity"        => $qty,
@@ -286,7 +286,7 @@ class BeerController extends Controller
                     }
                 }
                 // insertion en base de la ligne panier
-                $priceTTC = $_POST["quantity"] * $_POST["price"] * getenv('ENV_TVA');
+                $priceTTC = $_POST["quantity"] * $_POST["price"] * parent::getenv('ENV_TVA');
                 $priceHT = $_POST["quantity"] * $_POST["price"];
                 if (empty($token)) {
                     $token = substr(md5(uniqid()), 0, 24);
@@ -379,7 +379,7 @@ class BeerController extends Controller
             exit();
         }
         foreach ($lines as $line) {
-            $priceTTC  += (float) (($line["price"] * $line["qty"]) * getenv('ENV_TVA'));
+            $priceTTC  += (float) (($line["price"] * $line["qty"]) * parent::getenv('ENV_TVA'));
         }
         $FraisPort = 5.40;
         if ($priceTTC < 30) {
@@ -399,7 +399,7 @@ class BeerController extends Controller
         $title = 'Confirmation de commande';
 
         $this->render('beer/purchaseconfirm', [
-            'tva' => getenv('ENV_TVA'),
+            'tva' => parent::getenv('ENV_TVA'),
             'user' => $client,
             'order' => $order,
             'fraisport' => $FraisPort,

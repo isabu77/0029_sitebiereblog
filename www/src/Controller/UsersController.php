@@ -409,7 +409,7 @@ class UsersController extends Controller
                 isset($post["object"]) &&
                 isset($post["message"])
             ) {
-                define('MAIL_TO', getenv('GMAIL_USER'));
+                define('MAIL_TO', parent::getenv('GMAIL_USER'));
                 define('MAIL_FROM', ''); // valeur par défaut
                 define('MAIL_OBJECT', 'objet du message'); // valeur par défaut
                 define('MAIL_MESSAGE', 'votre message'); // valeur par défaut
