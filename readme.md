@@ -2,26 +2,37 @@
 
 Modèle MVC avec dossier 'Core' contenant les classes génériques réutilisables en MVC
 
+- Les variables d'environnement sont définies dans le fichier www/core/Controller/config.php, 
+à créer sur le modèle de www/core/Controller/config.sample.php
+
+- le fichier .env.sample était utilisé au début dans un environnement Docker sur Linux, 
+    il est remplacé par config.php pour la portabilité
+
 ## LE SITE "Bread Beer Shop" : la page d'accueil
 Un menu dans le Header de toutes les pages :
 - Home
 - Boutique
 - Connexion
+- Inscription
 - Bon de commande
 - Profil
 - Déconnexion
-- Inscription
 - Contact
+- Blog
 
 ### - "Boutique" : Affiche les produits (bières)
 
 ### - "Connexion" permet de saisir son adresse mail et son mot de passe pour se connecter, et disparait si la connexion réussit pour faire apparaitre "Bon de commande", "Profil" et "Déconnexion"
 
+### - "Inscription" permet de saisir ses coordonnées, son adresse mail et son mot de passe pour s'inscrire', envoie un mail de confirmation pour valider l'inscription.
+
+### - La validation de l'inscription affiche la page de connexion
+
 ### - "Bon de Commande" affiche le bon de commande à envoyer :
 #### un formulaire contient le nom et les coordonnées de l'acheteur
 et un tableau contient le nom de la bière, le prix HT et TTC et la quantité à saisir par ligne
 #### le changement de quantité calcule automatiquement les prix HT et TTC de la ligne
-#### un bouton "envoyer" affiche la page de confirmation de la commande :
+#### un bouton "Commander" affiche la page de confirmation de la commande :
 un tableau qui récapitule les bières commandées, les frais de port (5.40 € si le total TTC est inférieur à 30 €) et le total à payer
 
 ### - La page 'Profil' contient :
@@ -32,16 +43,14 @@ un tableau qui récapitule les bières commandées, les frais de port (5.40 € 
 
 ### - "Déconnexion" déconnecte l'utilisateur et affiche la page "Identification"
 
-### - "Inscription" permet de saisir ses coordonnées, son adresse mail et son mot de passe pour s'inscrire', envoie un mail de confirmation pour valider l'inscription.
-
-### - La validation de l'inscription affiche la page de connexion
-
 ### - Contact affiche un formulaire de contact
+    ce formulaire envoie un email à l'adresse définie dans config.php
 
 ### Le BLOG :
-- Navigation : un menu 'Home Catégories'
+- Navigation : un menu contenant 'Bread Beer Shop' 'Home' 'Catégories'
 - Page d'accueil : Liste des articles avec leurs catégories et un lien 'lire plus"
 - Page Catégories : liste des catégories avec lien sur chacune et la liste de ses articles
+- Page Catégorie : Une catégorie avec la liste de ses articles
 - Page d'un article : contenu et catégories de l'article
 
 ### L'ENVIRONNEMENT physique de TRAVAIL

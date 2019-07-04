@@ -1,3 +1,6 @@
+var tva = 1.2;
+var fraisPort = 5.40;
+
 function removeAccents(strAccents) {
     var strAccents = strAccents.split('');
     var strAccentsOut = new Array();
@@ -76,33 +79,10 @@ function addToCart(id, originalPrice) {
     // appel AJAX pour lancer un post d'insertion en base de la ligne de commande du panier
     $.post("/addcart", { idBeer: id, quantity: qty, price: originalPrice },
         function(data) {
-            //alert(data);
-            if (data == "ok") {
-                // ajouter la quantité saisie à celle du panier  
-                var pqty = parseInt(document.getElementById('PQTY_' + id).value);
-                if (pqty > 0 && pqty != NaN) {
-                    qty += pqty;
-                }
-                var pHT = originalPrice * qty;
-                var pTTC = pHT * 1.2;
-
-                // on vide la partie commande
-                document.getElementById('HT_' + id).innerHTML = String(originalPrice.toFixed(2)).replace('.', ',') + "€";
-                document.getElementById('TTC_' + id).innerHTML = String((originalPrice * 1.2).toFixed(2)).replace('.', ',') + "€";
-                document.getElementById('QTY_' + id).value = 0;
-
-                // on remplit la ligne du panier
-                document.getElementById('PQTY_' + id).value = qty;
-                document.getElementById('PHT_' + id).innerHTML = String(pHT.toFixed(2)).replace('.', ',') + "€";
-                document.getElementById('PTTC_' + id).innerHTML = String(pTTC.toFixed(2)).replace('.', ',') + "€";
-
-                // totaux panier
-                totaux('P');
-                totaux();
-
-            }
+            afficheCart(data, id, originalPrice);
         });
 }
+
 // update la ligne du panier
 function updateCart(id, originalPrice) {
     var qty = parseInt(document.getElementById('QTY_' + id).value);
@@ -112,36 +92,38 @@ function updateCart(id, originalPrice) {
     // appel AJAX pour lancer un post de modification de la ligne de commande du panier
     $.post("/updatecart", { idBeer: id, quantity: qty, price: originalPrice },
         function(data) {
-            if (data == "ok") {
-                var qty = document.getElementById('QTY_' + id).value;
-                var pHT = originalPrice * qty;
-                var pTTC = pHT * 1.2;
-                var frais = 5.40;
-
-                // on vide la partie commande
-                document.getElementById('HT_' + id).innerHTML = String(originalPrice.toFixed(2)).replace('.', ',') + "€";
-                document.getElementById('TTC_' + id).innerHTML = String((originalPrice * 1.2).toFixed(2)).replace('.', ',') + "€";
-                document.getElementById('QTY_' + id).value = 0;
-
-                // on remplit la ligne du panier
-                document.getElementById('PQTY_' + id).value = qty;
-                document.getElementById('PHT_' + id).innerHTML = String(pHT.toFixed(2)).replace('.', ',') + "€";
-                document.getElementById('PTTC_' + id).innerHTML = String(pTTC.toFixed(2)).replace('.', ',') + "€";
-
-                // totaux panier
-                totaux('P');
-                totaux();
-            }
+            afficheCart(data, id, originalPrice);
         });
 }
 
+function afficheCart(data, id, originalPrice) {
+    obj = JSON.parse(data);
+    if (obj) {
+        var pHT = originalPrice * obj.quantity;
+        var pTTC = pHT * tva;
+
+        // on vide la partie commande
+        document.getElementById('HT_' + id).innerHTML = String(originalPrice.toFixed(2)).replace('.', ',') + "€";
+        document.getElementById('TTC_' + id).innerHTML = String((originalPrice * tva).toFixed(2)).replace('.', ',') + "€";
+        document.getElementById('QTY_' + id).value = 0;
+
+        // on remplit la ligne du panier
+        document.getElementById('PQTY_' + id).value = obj.quantity; //qty;
+        document.getElementById('PHT_' + id).innerHTML = String(pHT.toFixed(2)).replace('.', ',') + "€";
+        document.getElementById('PTTC_' + id).innerHTML = String(pTTC.toFixed(2)).replace('.', ',') + "€";
+
+        // totaux panier
+        totaux('P');
+        totaux();
+
+    }
+
+}
 // delete la ligne du panier
 function deleteOfCart(id, originalPrice) {
     // appel AJAX pour lancer un post de suppression de la ligne de commande du panier
     $.post("/deletecart", { idBeer: id },
         function(data) {
-            //console.log("delete");
-            //alert(data);
             if (data == "ok") {
                 // on vide la partie panier
                 document.getElementById('PHT_' + id).innerHTML = "";
@@ -160,7 +142,7 @@ function totaux($prefix = "") {
     var totalHT = 0.0;
     var totalTTC = 0.0;
     var total = 0;
-    var frais = 5.40;
+    var frais = fraisPort;
 
     var qtys = document.getElementsByClassName($prefix + "QTY");
     var prixHT = document.getElementsByClassName("HT");
