@@ -5,6 +5,8 @@ use \Core\Controller\Controller;
 use \Core\Controller\RouterController;
 use \Core\Controller\URLController;
 use \Core\Controller\Database\DatabaseMysqlController;
+use \src\model\table\ConfigTable;
+
 /**
  * classe SINGLETON : classe PRINCIPALE de l'application
  */
@@ -15,10 +17,11 @@ class App
 
     public $title;
 
+    private $config;
     private $router;
     private $startTime;
     private $db_instance;
-    private $config_instance;
+    private $configTable;
 
     /**
      * retourne l'instance UNIQUE de la classe App
@@ -65,6 +68,18 @@ class App
                 exit();
             }
         }
+    }
+
+    /**
+     * crée l'instance de la config Boutique
+     * et la retourne
+     */
+    public function getConfigTable()
+    {
+        if (is_null($this->configTable)) {
+            $this->configTable = new ConfigTable();
+        }
+        return $this->configTable;
     }
 
     /**

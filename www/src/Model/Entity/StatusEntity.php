@@ -1,13 +1,12 @@
 <?php
 namespace App\Model\Entity;
 
-use \Core\Controller\Helpers\TextController;
 use \Core\Model\Entity;
 
 /**
- *  Classe Users : un user du site bière
+ *  Classe Status : un status de commande du site bière
  **/
-class UsersEntity extends Entity
+class StatusEntity extends Entity
 {
     private $id;
     private $libelle;

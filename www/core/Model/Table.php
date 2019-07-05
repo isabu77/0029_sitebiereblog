@@ -58,10 +58,15 @@ class Table
      */
     public function count(?int $id = null)
     {
-        $nbpage =  $this->query("SELECT COUNT(id) as nbrow FROM $this->table", null, true, null);
-        // recupere un objet PostEntity
-        //dd($nbpage);
-        return $nbpage;
+        return $this->query("SELECT COUNT(id) as nbrow FROM $this->table", null, true, null);
+    }
+    
+    /**
+     * retourne le dernier id de la table
+     */
+    public function last()
+    {
+        return $this->query("SELECT MAX(id) as lastId FROM {$this->table}", null, true)->lastId;
     }
 
     /**

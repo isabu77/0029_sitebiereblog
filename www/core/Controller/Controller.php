@@ -82,7 +82,8 @@ class Controller
         }
         // n'est pas defini et false
         if (!$_SESSION["auth"]) {
-            return null;
+            header('Location: /');
+            exit();
         }
         return $_SESSION["auth"];
     }

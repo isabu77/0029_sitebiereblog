@@ -50,6 +50,18 @@ echo "-||-" . $etape;
 
 //=================== le site bière
 
+// la table de configuration
+$etape = $pdo->exec("DROP TABLE config");
+$etape = $pdo->exec("CREATE TABLE `config` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `date` timestamp NULL DEFAULT current_timestamp(),
+    `tva` float NOT NULL,
+    `port` float,
+    `ship_limit` float,
+            PRIMARY KEY(id)
+  ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
+echo "-||-" . $etape;
+
 // la table des bières
 $etape = $pdo->exec("DROP TABLE beer");
 $etape = $pdo->exec("CREATE TABLE `beer` (
@@ -136,6 +148,7 @@ $pdo->exec('TRUNCATE TABLE post_category');
 $pdo->exec('TRUNCATE TABLE post');
 $pdo->exec('TRUNCATE TABLE userblog');
 $pdo->exec('TRUNCATE TABLE category');
+$pdo->exec('TRUNCATE TABLE config');
 $pdo->exec('TRUNCATE TABLE beer');
 $pdo->exec('TRUNCATE TABLE status');
 $pdo->exec('TRUNCATE TABLE orders');
@@ -195,12 +208,16 @@ $pdo->exec("INSERT INTO `beer` (`id`, `title`, `img`, `content`, `price`, `stock
 
 echo "-||-";
 
+$pdo->exec("INSERT INTO `config` (`tva` , `port`, `ship_limit`) VALUES
+(1.2, 5.4, 30)
+");
+echo "-||-";
+
 $pdo->exec("INSERT INTO `status` (`libelle`) VALUES
 ('En cours de préparation'),
 ('En attente de paiement'),
 ('Expédiée'),
 ('Terminée')
-");
-echo "-||-";
+");echo "-||-";
 
 echo "||]";
