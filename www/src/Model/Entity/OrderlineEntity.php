@@ -10,8 +10,8 @@ use \Core\Model\Entity;
 class OrderlineEntity extends Entity
 {
     private $id;
-    private $id_order;
     private $id_product;
+    private $id_user;
     private $token;
     private $quantity;
     private $priceHT;
@@ -30,9 +30,9 @@ class OrderlineEntity extends Entity
      *  id_user
      *  @return int
      **/
-    public function getIdOrder(): int
+    public function getIdUser(): int
     {
-        return ((int)$this->id_order);
+        return ((int)$this->id_user);
     }
 
     /**
@@ -96,9 +96,9 @@ class OrderlineEntity extends Entity
      *  contenu
      *  @return 
      **/
-    public function setIdOrder(int $id_order)
+    public function setIdUser(int $id_user)
     {
-        $this->id_order = $id_order;
+        $this->id_user = $id_user;
     }
   
     /**

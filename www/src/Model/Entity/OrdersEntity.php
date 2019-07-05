@@ -10,10 +10,10 @@ use \Core\Model\Entity;
 class OrdersEntity extends Entity
 {
     private $id;
-    private $id_user;
+    private $id_client;
     private $number;
     private $token;
-    private $ids_product;
+    private $id_status;
     private $priceHT;
     private $priceTTC;
     private $createdAt;
@@ -31,9 +31,9 @@ class OrdersEntity extends Entity
      *  id_user
      *  @return int
      **/
-    public function getIdUser(): int
+    public function getIdClient(): int
     {
-        return ((int)$this->id_user);
+        return ((int)$this->id_client);
     }
 
     /**
@@ -56,15 +56,14 @@ class OrdersEntity extends Entity
     }
 
      /**
-     *  ids_product
+     *  id_status
      *  @return string
      **/
-
-    public function getIdsProduct()
+    public function getIdStatus()
     {
-        return ((string)$this->ids_product);
+        return ((string)$this->id_status);
     }
-
+ 
    /**
      *  contenu
      *  @return string
@@ -108,9 +107,9 @@ class OrdersEntity extends Entity
      *  contenu
      *  @return 
      **/
-    public function setIdUser(int $id_user)
+    public function setIdClient(int $id_client)
     {
-        $this->id_user = $id_user;
+        $this->id_client = $id_client;
     }
   
     /**
@@ -151,9 +150,9 @@ class OrdersEntity extends Entity
      *  contenu
      *  @return 
      **/
-    public function setIdsProduct(string $ids_product)
+     public function setIdStatus(string $id_status)
     {
-        $this->ids_product =$ids_product;
+        $this->id_status =$id_status;
     }
     /**
      *  contenu

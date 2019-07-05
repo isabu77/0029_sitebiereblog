@@ -14,8 +14,8 @@ class OrdersTable extends Table
     /**
      * lecture de toutes les commandes d'un client
      */
-    public function allInId(int $idUser)
+    public function allInId(int $idClient)
     {
-        return $this->query("SELECT * FROM {$this->table} WHERE id_user = {$idUser}");
+        return $this->query("SELECT * FROM {$this->table} WHERE id_client = {$idClient}");
     }
 }

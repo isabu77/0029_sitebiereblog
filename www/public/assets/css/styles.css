@@ -115,7 +115,6 @@ body #boutiques .bieres p {
 
 body #boutiques .bieres .price {
     text-align: right;
-    border: 1px solid black;
 }
 
 body #formPurchase .form label {
@@ -134,9 +133,11 @@ body #formPurchase table {
 
 body #formPurchase table tr th {
     font-family: initial;
+    text-align: center;
 }
 
 body #formPurchase table tr td {
+    font-family: initial;
     text-align: center;
 }
 

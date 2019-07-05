@@ -50,6 +50,7 @@
 			<tr>
                 <th scope='row'>Commande</th>
 				<th>Total TTC</th>
+				<th>Status</th>
                 <th></th>
 			</tr>
 		</thead>
@@ -58,6 +59,7 @@
 			<tr>
                 <td><a href='/purchaseconfirm/{{ cmd.id }}'>Commande n°{{ cmd.id }}</a></td>
                 <td>{{ cmd.priceTTC|number_format(2, ',' ,'.') }} €</td>
+                <td>{{ cmd.getIdStatus() }}</td>
 {#                <form action="/profil" method="POST">
                     <input type="hidden" name="id" value="{{cmd.id}}" />
                     <td><input type="submit" name="delete" value="Supprimer" /></td>

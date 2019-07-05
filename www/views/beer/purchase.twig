@@ -2,6 +2,7 @@
 
 {% block content %}
 	<form method="POST" action="/purchase" id="formPurchase">
+        <input type="hidden" name="idClient" value="{{client.id}}" />
 		<div class="form_row">
 			<div class="form">
 				<label>NOM</label>
@@ -128,7 +129,7 @@
 					{% set line = orderline %}
 					{% endif %}
            			{% endfor %}
-                     <td><input id="PQTY_{{biere.id}}" class="PQTY" type="number" name="qty[{{biere.id}}]" min="0" value="{{line.quantity}}" oninput="calcPriceCart(this, {{biere.id}}, {{biere.price}});"/></td>
+                     <td><input id="PQTY_{{biere.id}}" class="PQTY" type="number" name="qty[{{biere.id}}]" min="0" value="{{line.quantity}}" disabled/></td>
                     <td id="PHT_{{biere.id}}">{{line.priceHT}}</td>
                     <td id="PTTC_{{biere.id}}">{{line.priceTTC}}</td>
                    <td><input type="button" name="del[{{biere.id}}]" value="Retirer" onclick="deleteOfCart({{biere.id}}, {{biere.price}});"/></td>

@@ -77,7 +77,7 @@ function addToCart(id, originalPrice) {
     }
 
     // appel AJAX pour lancer un post d'insertion en base de la ligne de commande du panier
-    $.post("/addcart", { idBeer: id, quantity: qty, price: originalPrice },
+    $.post("/updatecart", { idBeer: id, quantity: qty, price: originalPrice, addqty: true },
         function(data) {
             afficheCart(data, id, originalPrice);
         });
@@ -90,13 +90,14 @@ function updateCart(id, originalPrice) {
         return;
     }
     // appel AJAX pour lancer un post de modification de la ligne de commande du panier
-    $.post("/updatecart", { idBeer: id, quantity: qty, price: originalPrice },
+    $.post("/updatecart", { idBeer: id, quantity: qty, price: originalPrice, addqty: false },
         function(data) {
             afficheCart(data, id, originalPrice);
         });
 }
 
 function afficheCart(data, id, originalPrice) {
+    //console.log(data);
     obj = JSON.parse(data);
     if (obj) {
         var pHT = originalPrice * obj.quantity;

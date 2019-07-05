@@ -16,9 +16,9 @@
 			</tr>
 		</thead>
 		<tbody>
-        {% for key,line in lines %}
+        {% for line in lines %}
 			<tr>
-				<td>{{bieres[key].title}}</td>
+				<td>{{bieres[line.getIdProduct()].getTitle()}}</td>
 				<td>{{line.priceHT | number_format(2, ',', '.')}}€</td>
 				{% set prix = line.priceHT * tva %}
 				<td>{{prix|number_format(2, ',', '.')}}€</td>

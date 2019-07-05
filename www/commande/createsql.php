@@ -76,10 +76,9 @@ echo "-||-" . $etape;
 $etape = $pdo->exec("DROP TABLE orders");
 $etape = $pdo->exec("CREATE TABLE `orders` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
-    `id_user` int(11) NOT NULL,
+    `id_client` int(11) NOT NULL,
     `token` varchar(24) NOT NULL,
     `number` varchar(24),
-    `ids_product` longtext NOT NULL,
     `priceHT` float NOT NULL,
     `priceTTC` float NOT NULL,
     `createdAt` timestamp NULL DEFAULT current_timestamp(),
@@ -92,6 +91,7 @@ echo "-||-" . $etape;
 $etape = $pdo->exec("DROP TABLE orderline");
 $etape = $pdo->exec("CREATE TABLE `orderline` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
+    `id_user` int(11) NOT NULL,
     `id_product` int(11) NOT NULL,
     `token` varchar(24) NOT NULL,
     `quantity` int NOT NULL,
@@ -195,10 +195,11 @@ $pdo->exec("INSERT INTO `beer` (`id`, `title`, `img`, `content`, `price`, `stock
 
 echo "-||-";
 
-$pdo->exec("INSERT INTO `status` (`id`, `libelle`) VALUES
-(1, 'en attente de livraison'),
-(2, 'en cours de livraison'),
-(3, 'livrée')
+$pdo->exec("INSERT INTO `status` (`libelle`) VALUES
+('En cours de préparation'),
+('En attente de paiement'),
+('Expédiée'),
+('Terminée')
 ");
 echo "-||-";
 
