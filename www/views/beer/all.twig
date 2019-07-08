@@ -5,13 +5,41 @@
 <section id="boutiques">
     <!-- BOUCLE de lecture du tableau pour afficher un article par bière -->
     {% for biere in bieres %}
-      <article class='bieres'>
+      <article class='bieres productField' onclick="getProductsModal('{{ biere.title }}', '{{ biere.img }}', '{{ biere.content }}', '{{ (biere.price * constant.TVA)| number_format(2, ',', '.') }}', {{ biere.id }})" data-toggle="modal" data-target="#modal">
         <h2>{{biere.title}}</h2>
         <div><img src="{{biere.img}}" alt="{{biere.title}}"/></div>
         <p>{{biere.excerpt}}</p>
         <p class="price">{{biere.getPrixTTC()}}</p>
     </article>
     {% endfor %}
+    <div id="modal" class="modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modal-title">Modal title</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body row">
+            <div class="col-12 col-sm-3">
+              <img class="w-100" id="modal-body-img" src="" alt="">
+            </div>
+            <div class="col-12 col-sm-9 d-flex flex-column justify-content-between">
+              <span id="modal-message"></span>	
+              <p id="modal-body">Modal body text goes here.</p>
+              <p class="text-right" id="modal-body-price"></p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button id="product_id" type="button" class="btn btn-primary" onclick="addToCart()">Ajouter au panier</button>
+            <a href="/purchase" class="btn btn-info" >Voir mon panier</a>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+          </div>
+        </div>
+      </div>
+	</div>
+
 </section>
 
 {{ paginate | raw }}

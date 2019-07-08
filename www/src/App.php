@@ -46,7 +46,10 @@ class App
             $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
             $whoops->register();
         }
-        
+
+        // dans Twig : constant.TVA
+        define('TVA', 1.2);
+
         if (session_status() != PHP_SESSION_ACTIVE) {
             session_start();
         }
@@ -71,7 +74,7 @@ class App
     }
 
     /**
-     * crée l'instance de la config Boutique
+     * crée l'instance de la config 
      * et la retourne
      */
     public function getConfigTable()

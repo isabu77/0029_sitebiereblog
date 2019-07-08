@@ -70,6 +70,33 @@ function calcPriceCart(obj, id, originalPrice) {
 }
 
 // ajouter au panier
+function commander(id, originalPrice) {
+    var qty = parseInt(document.getElementById('QTY_' + id).value);
+    if (qty == 0) {
+        return;
+    }
+
+    // appel AJAX pour lancer un post d'insertion en base de la ligne de commande du panier
+    $.post("/updatecart", { idBeer: id, quantity: qty, price: originalPrice, addqty: true },
+        function(data) {
+            afficheQtyCart(data, id, originalPrice);
+        });
+}
+
+function afficheQtyCart(data, id, originalPrice) {
+    //console.log(data);
+    obj = JSON.parse(data);
+    if (obj) {
+        // on vide la partie commande
+        document.getElementById('QTY_' + id).value = 0;
+
+        // on remplit la ligne du panier
+        document.getElementById('PQTY_' + id).value = obj.quantity; //qty;
+
+        // totaux panier
+    }
+}
+// ajouter au panier
 function addToCart(id, originalPrice) {
     var qty = parseInt(document.getElementById('QTY_' + id).value);
     if (qty == 0) {
@@ -116,10 +143,9 @@ function afficheCart(data, id, originalPrice) {
         // totaux panier
         totaux('P');
         totaux();
-
     }
-
 }
+
 // delete la ligne du panier
 function deleteOfCart(id, originalPrice) {
     // appel AJAX pour lancer un post de suppression de la ligne de commande du panier
@@ -176,4 +202,25 @@ function totaux($prefix = "") {
         document.getElementById($prefix + 'QTY').innerHTML = "";
     }
 
+}
+
+// affichage de la page modale d'une bière pour l'ajouter au panier
+function getProductsModal(title, img, content, price, id) {
+    $('#modal-message').removeAttr('class').text('');
+
+    $('#modal-title').text(title);
+    $('#modal-body-img').attr('src', img).attr('alt', title);
+    $('#modal-body').text(content);
+    $('#modal-body-price').text(price + '€');
+    $('#product_id').attr('onclick', 'addCart(' + id + ')');
+
+}
+
+// ajouter une bière au panier
+function addCart(id) {
+    // appel AJAX pour lancer un post d'insertion en base de la ligne de commande du panier
+    $.post("/addToCart", { idBeer: id, quantity: 1 },
+        function(data) {
+            document.getElementById('panier').innerHTML = "Panier(" + data + ")";
+        });
 }

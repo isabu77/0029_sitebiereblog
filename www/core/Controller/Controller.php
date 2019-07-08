@@ -34,8 +34,10 @@ class Controller
             // initialisation de Twig : moteur de template PHP
             $loader = new \Twig\Loader\FilesystemLoader(dirname(dirname(__dir__)) . '/views/');
             $this->twig = new \Twig\Environment($loader);
-            $this->twig->addGlobal("session", $_SESSION);
-        }
+            // passage des variables globales de session et de constantes
+            $this->twig->addGlobal('session', $_SESSION);
+            $this->twig->addGlobal('constant', get_defined_constants());
+            }
 
         return $this->twig;
     }

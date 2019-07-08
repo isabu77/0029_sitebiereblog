@@ -204,6 +204,26 @@ form textarea:hover {
     width: 50px;
 }
 
+.productField:hover {
+    cursor: pointer;
+    transform: scale(1.01);
+}
+
+
+/* PANIER */
+
+.w-5 {
+    width: 10%!important;
+}
+
+.cartImgRow {
+    width: 20%;
+}
+
+.cartImgRow i {
+    cursor: pointer;
+}
+
 .msgerror {
     background-color: red;
     text-align: center;

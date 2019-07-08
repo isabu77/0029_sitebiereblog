@@ -68,14 +68,25 @@ class BeerController extends Controller
         // $this->beer contient une instance de la classe BeerTable
         $paginatedQuery = new PaginatedQueryAppController(
             $this->beer,
-            $this->generateUrl('boutique'),3
+            $this->generateUrl('boutique'),9
         );
         $bieres = $paginatedQuery->getItems();
 
         $title = 'Nos produits';
 
+        // vérifier si une commande existe en session panier
+        if (isset($_SESSION["panier"])) {
+            $token = $_SESSION["panier"];
+            $orderlines = [];
+            if (!empty($token)) {
+                // lecture en base des lignes de commande du token
+                $orderlines = $this->orderline->allInToken($token);
+            }
+        }
+
         $this->render('beer/all', [
             'bieres' => $bieres,
+            'orderlines' => $orderlines,
             'paginate' => $paginatedQuery->getNavHTML(),
             'title' => $title
         ]);
@@ -152,6 +163,7 @@ class BeerController extends Controller
                                 if ($result) {
                                     // vider le panier
                                     unset($_SESSION["panier"]);
+                                    unset($_SESSION["qtypanier"]);
                                     return $this->purchaseconfirm(null, $result);
                                     //header('Location: /purchaseconfirm/' . $result);
                                     exit();
@@ -195,7 +207,7 @@ class BeerController extends Controller
     public function updatecart()
     {
         if (!empty($_POST)) {
-            if (isset($_POST["idBeer"]) && isset($_POST["quantity"]) && isset($_POST["price"])) {
+            if (isset($_POST["idBeer"]) && isset($_POST["quantity"])) {
                 // gérer la ligne de panier
                 // mise à jour du panier
                 $token = "";
@@ -309,6 +321,94 @@ class BeerController extends Controller
                 }
             }
         }
+    }
+/**
+     * Ajout par la page modale d'une ligne dans le panier par jquery $.post
+     * total panier dans session["qtypanier"]
+     */
+    public function addToCart()
+    {
+        if (!empty($_POST)) {
+            if (isset($_POST["idBeer"]) && isset($_POST["quantity"])) {
+                // gérer la ligne de panier
+                // mise à jour du panier
+                $token = "";
+                // vérifier si une commande existe en session panier
+                if (isset($_SESSION["panier"])) {
+                    $token = $_SESSION["panier"];
+                }
+                $orderlines = [];
+                if (!empty($token)) {
+                    // lecture en base des lignes de commande du token
+                    $orderlines = $this->orderline->allInToken($token);
+                    foreach ($orderlines as $line) {
+                        if ($line->getIdProduct() == $_POST["idBeer"]) {
+                            $qty = $_POST["quantity"];
+
+                            // demande d'ajout ou de modification de la quantité ?
+                            $qty += $line->getQuantity();
+ 
+                            // le prix HT de la bière en base
+                            $biere = $this->beer->find($line->getIdProduct());
+                            if ($biere){
+                                $priceHT = $biere->getPrice();
+                            }else{
+                                $priceHT = $_POST["price"];
+                            }
+
+                            $priceTTC = $priceHT * parent::getenv('ENV_TVA');
+                            //$priceHT = $_POST["price"];
+                            $attributes = [
+                                "quantity"        => $qty,
+                                "priceHT"         => $priceHT,
+                                "priceTTC"         => $priceTTC
+                            ];
+                            $result = $this->orderline->update($line->getId(), $attributes);
+                            if ($result) {
+                                // succès
+                                $_SESSION["qtypanier"] += $_POST["quantity"];
+                                echo $_SESSION["qtypanier"]; 
+                                return;
+                            }
+                        }
+                    }
+                }
+                // le prix HT de la bière en base
+                $biere = $this->beer->find($_POST["idBeer"]);
+                if ($biere){
+                    $priceHT = $biere->getPrice();
+
+                    // insertion en base de la ligne panier
+                    $priceTTC = $priceHT * parent::getenv('ENV_TVA');
+                    //$priceHT = $_POST["price"];
+                    if (empty($token)) {
+                        $token = substr(md5(uniqid()), 0, 24);
+                    }
+                    // le client connecté
+                    $user = $this->connectedSession();
+
+                    $attributes = [
+                        "id_user"    => $user->getId(),
+                        "id_product"    => $_POST["idBeer"],
+                        "quantity"        => $_POST["quantity"],
+                        "token"        => $token,
+                        "priceHT"         => $priceHT,
+                        "priceTTC"         => $priceTTC
+                    ];
+
+                    $result = $this->orderline->insert($attributes);
+                    if ($result) {
+                        $_SESSION["panier"] = $token;
+                        setcookie("panier",$token,time()+10000);
+                        // succès
+                        $_SESSION["qtypanier"] += $_POST["quantity"];
+                        echo $_SESSION["qtypanier"]; 
+                        return;
+                    }
+                }
+            }
+        }
+        return;
     }
 
     /**
