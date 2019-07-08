@@ -9,4 +9,13 @@ use App\Model\Entity\ConfigEntity;
  **/
 class ConfigTable extends Table
 {
+    /**
+     * retourne le dernier id de la table (config de la date la plus récente)
+     */
+    public function lastConfig()
+    {
+        $lastId = $this->query("SELECT MAX(id) as lastId FROM {$this->table}", null, true)->lastId;
+        return $this->find($lastId);
+    }
+
 }

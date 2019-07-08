@@ -307,6 +307,24 @@ class UsersController extends Controller
         return $user;
     }
 
+       
+    /**
+     * lecture d'un client par son id (appelée par javascript en ajax)
+     *
+     */
+    public function getClient()
+    {
+        if (!empty($_POST)) {
+            if (isset($_POST["idClient"])) {
+                // lecture en base des clients du user
+                $client = $this->client->find($_POST["idClient"]); 
+               echo json_encode($client->get_properties()); 
+
+            }
+        }
+
+    }
+
     /**
      * la page profil du site bière
      *
@@ -370,8 +388,10 @@ class UsersController extends Controller
                 isset($post["phone"]) && !empty($post["phone"])
             ) {
                 if ($userConnect) {
-                    // update du user dans la table users
-                    $res = $this->client->update($userConnect->getId(), $post);
+                    // update des coordonnées dans la table client
+                    //$clients = $this->client->getClientsByUserId($userConnect->getId());
+                    $client = $this->client->find($post["id"]);
+                    $res = $this->client->update($client->getId(), $post);
                     if ($res) {
                         //message modif ok
                         $_SESSION['success'] = 'Votre profil a bien été modifié';
@@ -382,14 +402,17 @@ class UsersController extends Controller
             }
         }
 
-        $client = $this->client->find($userConnect->getId());
-        // ses commandes
-        $orders = $this->orders->allinId($userConnect->getId());
+        // lire les clients associés à l'utilisateur (plusieurs adresses)
+        $clients = $this->client->getClientsByUserId($userConnect->getId());
+        
+        // les commandes du premier client associé à l'utilisateur
+        $orders = $this->orders->allinId($clients[0]->getId());
 
         $title = 'Profil';
 
         $this->render('users/profil', [
-            'user' => $client,
+            'user' => $clients[0],
+            'clients' => $clients,
             'orders' => $orders,
             'title' => $title
         ]);

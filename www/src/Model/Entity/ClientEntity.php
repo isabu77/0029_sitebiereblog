@@ -19,6 +19,11 @@ class ClientEntity extends Entity
     private $country;
     private $phone;
 
+    public function get_properties(): array
+    {
+        return get_object_vars($this);
+    }
+
     /**
      *  id
      *  @return int

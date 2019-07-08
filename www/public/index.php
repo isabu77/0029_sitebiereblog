@@ -44,4 +44,5 @@ $app->getRouter($basepath)
     ->post('/updatecart', 'Beer#updatecart', 'purchase_updatecart_post')
     ->get('/deletecart', 'Beer#deletecart', 'purchase_deletecart')
     ->post('/deletecart', 'Beer#deletecart', 'purchase_deletecart_post')
+    ->post('/getClient', 'Users#getClient', 'getClient')
     ->run();

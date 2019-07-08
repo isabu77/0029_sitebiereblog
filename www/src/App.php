@@ -5,7 +5,8 @@ use \Core\Controller\Controller;
 use \Core\Controller\RouterController;
 use \Core\Controller\URLController;
 use \Core\Controller\Database\DatabaseMysqlController;
-use \src\model\table\ConfigTable;
+use \App\Model\Table\ConfigTable;
+use \App\Controller\ConfigController;
 
 /**
  * classe SINGLETON : classe PRINCIPALE de l'application
@@ -39,6 +40,10 @@ class App
      */
     public static function load()
     {
+        // lecture dans le fichier config.php contenant des variables d'environnement
+        // situé dans core\controller
+        // chaque controller hérite de la classe Controller avec la méthode getenv()
+        // qui lit le fichier config.php situé au me endroit
         $config_instance = new Controller();
 
         if ($config_instance->getenv("ENV_DEV")) {
@@ -47,8 +52,20 @@ class App
             $whoops->register();
         }
 
+        // lecture dans la base de la table config contenant tva, port et shiplimit
         // dans Twig : constant.TVA
-        define('TVA', 1.2);
+        $config = new ConfigController();
+        $configObj = $config->config->lastConfig();
+        if ($configObj){
+            define('TVA', $configObj->getTva());
+            define('PORT', $configObj->getPort());
+            define('SHIPLIMIT', $configObj->getShipLimit());
+        }
+        else{
+            define('TVA', 1.2);
+            define('PORT', 3.5);
+            define('SHIPLIMIT',30);
+        }
 
         if (session_status() != PHP_SESSION_ACTIVE) {
             session_start();

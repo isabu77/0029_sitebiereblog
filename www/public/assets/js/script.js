@@ -231,3 +231,23 @@ function addCart(id) {
             document.getElementById('panier').innerHTML = "Panier(" + data + ")";
         });
 }
+
+function selectClient() {
+    var index = document.getElementById("clients").selectedIndex;
+    var id = document.getElementById("clients").options[index].value;
+    //console.log(id);
+    // appel AJAX pour lancer un post de suppression de la ligne de commande du panier
+    $.post("/getClient", { idClient: id },
+        function(data) {
+            obj = JSON.parse(data);
+            if (obj) {
+                for (var input in obj) {
+                    //console.log(obj[input]);
+                    if (document.getElementById(input)) {
+                        document.getElementById(input).value = obj[input];
+                    }
+                }
+            }
+
+        });
+}

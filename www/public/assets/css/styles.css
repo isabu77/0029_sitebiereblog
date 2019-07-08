@@ -175,6 +175,7 @@ form input[type="password"],
 form input[type="text"],
 form input[type="email"],
 form input[type="tel"],
+form input[type="checkbox"],
 form button[type="submit"],
 form textarea {
     width: 100%;
@@ -191,8 +192,8 @@ form input[type="password"]:hover,
 form input[type="text"]:focus,
 form input[type="text"]:hover,
 form input[type="email"]:focus,
-form input[type="tel"]:focus,
 form input[type="email"]:hover,
+form input[type="tel"]:focus,
 form input[type="tel"]:hover,
 form textarea:focus,
 form textarea:hover {
