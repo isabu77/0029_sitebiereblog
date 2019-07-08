@@ -1,5 +1,6 @@
 var tva = 1.2;
 var fraisPort = 5.40;
+var shiplimit = 30;
 
 function removeAccents(strAccents) {
     var strAccents = strAccents.split('');
@@ -44,7 +45,7 @@ function search() {
 function calcPrice(obj, id, originalPrice) {
     var qty = obj.value;
     var pHT = originalPrice * qty;
-    var pTTC = pHT * 1.2;
+    var pTTC = pHT * tva;
 
     // le total de la ligne
     document.getElementById('HT_' + id).innerHTML = String(pHT.toFixed(2)).replace('.', ',') + "€";
@@ -58,7 +59,7 @@ function calcPrice(obj, id, originalPrice) {
 function calcPriceCart(obj, id, originalPrice) {
     var qty = obj.value;
     var pHT = originalPrice * qty;
-    var pTTC = pHT * 1.2;
+    var pTTC = pHT * tva;
 
     // le total de la ligne
     document.getElementById('PHT_' + id).innerHTML = String(pHT.toFixed(2)).replace('.', ',') + "€";
@@ -165,41 +166,47 @@ function deleteOfCart(id, originalPrice) {
 }
 
 // totaux calcule le total du panier (si $prefix = 'P') ou du coté commande
-function totaux($prefix = "") {
+function totaux(prefix = "") {
     var totalHT = 0.0;
     var totalTTC = 0.0;
     var total = 0;
     var frais = fraisPort;
 
-    var qtys = document.getElementsByClassName($prefix + "QTY");
+    var qtys = document.getElementsByClassName(prefix + "QTY");
     var prixHT = document.getElementsByClassName("HT");
     for (var i = 0; i < qtys.length; i++) {
         var pqty = parseInt(qtys[i].value);
         var ht = parseFloat(prixHT[i].value);
-        var ttc = ht * 1.2;
+        var ttc = ht * tva;
         if (pqty > 0) {
             total += pqty;
             totalHT += ht * pqty;
             totalTTC += ttc * pqty;
         }
     }
+
+    if (prefix !== "") {
+        document.getElementById('panier').innerHTML = "Panier(" + Number(total) + ")";
+
+    }
+
     //if ($prefix !== "")
     //    document.getElementById('commander').disabled = (total == 0);
 
-    if (totalTTC > 30) {
+    if (totalTTC > shiplimit) {
         frais = 0;
     }
 
     // les totaux du panier
-    document.getElementById($prefix + 'FRAIS').innerHTML = String(frais.toFixed(2)).replace('.', ',') + "€";
+    document.getElementById(prefix + 'FRAIS').innerHTML = String(frais.toFixed(2)).replace('.', ',') + "€";
     if (total > 0) {
-        document.getElementById($prefix + 'HT').innerHTML = String(totalHT.toFixed(2)).replace('.', ',') + "€";
-        document.getElementById($prefix + 'TTC').innerHTML = String(totalTTC.toFixed(2)).replace('.', ',') + "€";
-        document.getElementById($prefix + 'QTY').innerHTML = Number(total);
+        document.getElementById(prefix + 'HT').innerHTML = String(totalHT.toFixed(2)).replace('.', ',') + "€";
+        document.getElementById(prefix + 'TTC').innerHTML = String(totalTTC.toFixed(2)).replace('.', ',') + "€";
+        document.getElementById(prefix + 'QTY').innerHTML = Number(total);
     } else {
-        document.getElementById($prefix + 'HT').innerHTML = "";
-        document.getElementById($prefix + 'TTC').innerHTML = "";
-        document.getElementById($prefix + 'QTY').innerHTML = "";
+        document.getElementById(prefix + 'HT').innerHTML = "";
+        document.getElementById(prefix + 'TTC').innerHTML = "";
+        document.getElementById(prefix + 'QTY').innerHTML = "";
     }
 
 }
