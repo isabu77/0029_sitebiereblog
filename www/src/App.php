@@ -67,6 +67,10 @@ class App
             define('SHIPLIMIT',30);
         }
 
+        // constantes de cookies pur le panier
+        define('PANIER', 'panier');
+        define('QTYPANIER', 'qtypanier');
+
         if (session_status() != PHP_SESSION_ACTIVE) {
             session_start();
         }

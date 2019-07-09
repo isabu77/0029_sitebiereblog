@@ -76,8 +76,8 @@ class BeerController extends Controller
         $title = 'Nos produits';
 
         // vérifier si une commande existe en session panier
-        if (isset($_SESSION["panier"])) {
-            $token = $_SESSION["panier"];
+        if (isset($_COOKIE[PANIER])) {
+            $token = $_COOKIE[PANIER];
             $orderlines = [];
             if (!empty($token)) {
                 // lecture en base des lignes de commande du token
@@ -105,8 +105,8 @@ class BeerController extends Controller
                 // mise à jour du panier
                 $token = "";
                 // vérifier si une commande existe en session panier
-                if (isset($_SESSION["panier"])) {
-                    $token = $_SESSION["panier"];
+                if (isset($_COOKIE[PANIER])) {
+                    $token = $_COOKIE[PANIER];
                 }
                 $orderlines = [];
                 if (!empty($token)) {
@@ -145,7 +145,7 @@ class BeerController extends Controller
                                     // le prix HT de la bière en base
                                     $total += $line->getQuantity();
                                 }
-                                $_SESSION["qtypanier"] = $total;
+                                $_COOKIE[QTYPANIER] = $total;
                                 // succès
                                 echo json_encode($attributes);
                                 return;
@@ -180,9 +180,8 @@ class BeerController extends Controller
 
                 $result = $this->orderline->insert($attributes);
                 if ($result) {
-                    $_SESSION["panier"] = $token;
+                    setcookie(PANIER, $token, time() + 3600*48);
 
-                    setcookie("panier", $token, time() + 10000);
                     // lecture en base des lignes de commande du token
                     $orderlines = $this->orderline->allInToken($token);
                     $total = 0;
@@ -190,7 +189,7 @@ class BeerController extends Controller
                         // le prix HT de la bière en base
                         $total += $line->getQuantity();
                     }
-                    $_SESSION["qtypanier"] = $total;
+                    setcookie(QTYPANIER, $total, time() + 3600*48);
                     // succès
                     echo json_encode($attributes);
                     return;
@@ -210,8 +209,8 @@ class BeerController extends Controller
                 // mise à jour du panier
                 $token = "";
                 // vérifier si une commande existe en session panier
-                if (isset($_SESSION["panier"])) {
-                    $token = $_SESSION["panier"];
+                if (isset($_COOKIE[PANIER])) {
+                    $token = $_COOKIE[PANIER];
                 }
                 //var_dump($token);
                 $orderlines = [];
@@ -244,8 +243,8 @@ class BeerController extends Controller
                 // mise à jour du panier
                 $token = "";
                 // vérifier si une commande existe en session panier
-                if (isset($_SESSION["panier"])) {
-                    $token = $_SESSION["panier"];
+                if (isset($_COOKIE[PANIER])) {
+                    $token = $_COOKIE[PANIER];
                 }
                 $orderlines = [];
                 if (!empty($token)) {
@@ -276,8 +275,8 @@ class BeerController extends Controller
                             $result = $this->orderline->update($line->getId(), $attributes);
                             if ($result) {
                                 // succès
-                                $_SESSION["qtypanier"] += $_POST["quantity"];
-                                echo $_SESSION["qtypanier"];
+                                $_COOKIE[QTYPANIER] += $_POST["quantity"];
+                                echo $_COOKIE[QTYPANIER];
                                 return;
                             }
                         }
@@ -308,11 +307,11 @@ class BeerController extends Controller
 
                     $result = $this->orderline->insert($attributes);
                     if ($result) {
-                        $_SESSION["panier"] = $token;
-                        setcookie("panier", $token, time() + 10000);
+                        setcookie(PANIER, $token, time() + 3600*48);
                         // succès
-                        $_SESSION["qtypanier"] += $_POST["quantity"];
-                        echo $_SESSION["qtypanier"];
+                        setcookie(QTYPANIER, $_COOKIE[QTYPANIER] + $_POST["quantity"], time() + 3600*48);
+
+                        echo $_COOKIE[QTYPANIER];
                         return;
                     }
                 }
@@ -391,8 +390,8 @@ class BeerController extends Controller
             $client = $this->client->find($idClient);
 
             // valider le panier enregistré dans la session et dans la table orderline
-            if (isset($_SESSION["panier"])) {
-                $token = $_SESSION["panier"];
+            if (isset($_COOKIE[PANIER])) {
+                $token = $_COOKIE[PANIER];
 
                 if (!empty($token)) {
                     // lecture en base des lignes de commande du token
@@ -429,8 +428,8 @@ class BeerController extends Controller
                             $result = $this->orders->insert($attributes);
                             if ($result) {
                                 // vider le panier
-                                unset($_SESSION["panier"]);
-                                unset($_SESSION["qtypanier"]);
+                                unset($_COOKIE[PANIER]);
+                                unset($_COOKIE[QTYPANIER]);
                                 return $this->purchaseconfirm(null, $this->orders->last());
                                 //header('Location: /purchaseconfirm/' . $result);
                                 exit();
@@ -446,8 +445,8 @@ class BeerController extends Controller
         }
 
         // vérifier si une commande existe en session panier
-        if (isset($_SESSION["panier"])) {
-            $token = $_SESSION["panier"];
+        if (isset($_COOKIE[PANIER])) {
+            $token = $_COOKIE[PANIER];
             $orderlines = [];
             if (!empty($token)) {
                 // lecture en base des lignes de commande du token
@@ -457,7 +456,7 @@ class BeerController extends Controller
                     // le prix HT de la bière en base
                     $total += $line->getQuantity();
                 }
-                $_SESSION["qtypanier"] = $total;
+                $_COOKIE[QTYPANIER] = $total;
             }
         }
         $this->render('beer/cart', [
@@ -472,7 +471,7 @@ class BeerController extends Controller
         unset($_SESSION["success"]); //Supprime la SESSION['success']
         unset($_SESSION["error"]); //Supprime la SESSION['error']
     }
-    
+
     /**
      * commande des produits bière
      */
@@ -544,8 +543,8 @@ class BeerController extends Controller
             $client = $this->client->find($idClient);
 
             // valider le panier enregistré dans la session et dans la table orderline
-            if (isset($_SESSION["panier"])) {
-                $token = $_SESSION["panier"];
+            if (isset($_COOKIE[PANIER])) {
+                $token = $_COOKIE[PANIER];
 
                 if (!empty($token)) {
                     // lecture en base des lignes de commande du token
@@ -582,8 +581,12 @@ class BeerController extends Controller
                             $result = $this->orders->insert($attributes);
                             if ($result) {
                                 // vider le panier
-                                unset($_SESSION["panier"]);
-                                unset($_SESSION["qtypanier"]);
+                                unset($_COOKIE[PANIER]);
+                                unset($_COOKIE[QTYPANIER]);
+
+                                setcookie(PANIER, "", time() - 3600*24);
+                                setcookie(QTYPANIER, 0, time() - 3600*24);
+
                                 return $this->purchaseconfirm(null, $this->orders->last());
                                 //header('Location: /purchaseconfirm/' . $result);
                                 exit();
@@ -599,8 +602,8 @@ class BeerController extends Controller
         }
 
         // vérifier si une commande existe en session panier
-        if (isset($_SESSION["panier"])) {
-            $token = $_SESSION["panier"];
+        if (isset($_COOKIE[PANIER])) {
+            $token = $_COOKIE[PANIER];
             $orderlines = [];
             if (!empty($token)) {
                 // lecture en base des lignes de commande du token
@@ -610,7 +613,7 @@ class BeerController extends Controller
                     // le prix HT de la bière en base
                     $total += $line->getQuantity();
                 }
-                $_SESSION["qtypanier"] = $total;
+                $_COOKIE[QTYPANIER] = $total;
             }
         }
         $this->render('beer/purchase', [
