@@ -145,7 +145,8 @@ class BeerController extends Controller
                                     // le prix HT de la bière en base
                                     $total += $line->getQuantity();
                                 }
-                                $_COOKIE[QTYPANIER] = $total;
+                                setcookie(QTYPANIER, $total, time() + 3600*48);
+
                                 // succès
                                 echo json_encode($attributes);
                                 return;
@@ -275,7 +276,7 @@ class BeerController extends Controller
                             $result = $this->orderline->update($line->getId(), $attributes);
                             if ($result) {
                                 // succès
-                                $_COOKIE[QTYPANIER] += $_POST["quantity"];
+                                setcookie(QTYPANIER, $_COOKIE[QTYPANIER] + $_POST["quantity"], time() + 3600*48);
                                 echo $_COOKIE[QTYPANIER];
                                 return;
                             }
@@ -428,8 +429,8 @@ class BeerController extends Controller
                             $result = $this->orders->insert($attributes);
                             if ($result) {
                                 // vider le panier
-                                unset($_COOKIE[PANIER]);
-                                unset($_COOKIE[QTYPANIER]);
+                                setcookie(PANIER, "", time() - 3600*24);
+                                setcookie(QTYPANIER, 0, time() - 3600*24);
                                 return $this->purchaseconfirm(null, $this->orders->last());
                                 //header('Location: /purchaseconfirm/' . $result);
                                 exit();
@@ -456,7 +457,7 @@ class BeerController extends Controller
                     // le prix HT de la bière en base
                     $total += $line->getQuantity();
                 }
-                $_COOKIE[QTYPANIER] = $total;
+                setcookie(QTYPANIER, $total, time() + 3600*48);
             }
         }
         $this->render('beer/cart', [
@@ -581,9 +582,6 @@ class BeerController extends Controller
                             $result = $this->orders->insert($attributes);
                             if ($result) {
                                 // vider le panier
-                                unset($_COOKIE[PANIER]);
-                                unset($_COOKIE[QTYPANIER]);
-
                                 setcookie(PANIER, "", time() - 3600*24);
                                 setcookie(QTYPANIER, 0, time() - 3600*24);
 
@@ -613,7 +611,7 @@ class BeerController extends Controller
                     // le prix HT de la bière en base
                     $total += $line->getQuantity();
                 }
-                $_COOKIE[QTYPANIER] = $total;
+                setcookie(QTYPANIER, $total, time() + 3600*48);
             }
         }
         $this->render('beer/purchase', [
