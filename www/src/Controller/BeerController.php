@@ -68,7 +68,8 @@ class BeerController extends Controller
         // $this->beer contient une instance de la classe BeerTable
         $paginatedQuery = new PaginatedQueryAppController(
             $this->beer,
-            $this->generateUrl('boutique'),9
+            $this->generateUrl('boutique'),
+            9
         );
         $bieres = $paginatedQuery->getItems();
 
@@ -116,15 +117,15 @@ class BeerController extends Controller
                             $qty = $_POST["quantity"];
 
                             // demande d'ajout ou de modification de la quantité ?
-                            if ($_POST["addqty"] == 'true'){
+                            if ($_POST["addqty"] == 'true') {
                                 $qty += $line->getQuantity();
                             }
 
                             // le prix HT de la bière en base
                             $biere = $this->beer->find($line->getIdProduct());
-                            if ($biere){
+                            if ($biere) {
                                 $priceHT = $biere->getPrice();
-                            }else{
+                            } else {
                                 $priceHT = $_POST["price"];
                             }
 
@@ -145,8 +146,8 @@ class BeerController extends Controller
                                     $total += $line->getQuantity();
                                 }
                                 $_SESSION["qtypanier"] = $total;
-                               // succès
-                                echo json_encode($attributes); 
+                                // succès
+                                echo json_encode($attributes);
                                 return;
                             }
                         }
@@ -154,12 +155,12 @@ class BeerController extends Controller
                 }
                 // le prix HT de la bière en base
                 $biere = $this->beer->find($_POST["idBeer"]);
-                if ($biere){
+                if ($biere) {
                     $priceHT = $biere->getPrice();
-                }else{
+                } else {
                     $priceHT = $_POST["price"];
                 }
-                 // insertion en base de la ligne panier
+                // insertion en base de la ligne panier
                 $priceTTC = $priceHT * parent::getenv('ENV_TVA');
                 //$priceHT = $_POST["price"];
                 if (empty($token)) {
@@ -181,7 +182,7 @@ class BeerController extends Controller
                 if ($result) {
                     $_SESSION["panier"] = $token;
 
-                    setcookie("panier",$token,time()+10000);
+                    setcookie("panier", $token, time() + 10000);
                     // lecture en base des lignes de commande du token
                     $orderlines = $this->orderline->allInToken($token);
                     $total = 0;
@@ -190,8 +191,8 @@ class BeerController extends Controller
                         $total += $line->getQuantity();
                     }
                     $_SESSION["qtypanier"] = $total;
-                   // succès
-                    echo json_encode($attributes); 
+                    // succès
+                    echo json_encode($attributes);
                     return;
                 }
             }
@@ -231,7 +232,7 @@ class BeerController extends Controller
             }
         }
     }
-/**
+    /**
      * Ajout par la page modale d'une ligne dans le panier par jquery $.post
      * total panier dans session["qtypanier"]
      */
@@ -256,12 +257,12 @@ class BeerController extends Controller
 
                             // demande d'ajout ou de modification de la quantité ?
                             $qty += $line->getQuantity();
- 
+
                             // le prix HT de la bière en base
                             $biere = $this->beer->find($line->getIdProduct());
-                            if ($biere){
+                            if ($biere) {
                                 $priceHT = $biere->getPrice();
-                            }else{
+                            } else {
                                 $priceHT = $_POST["price"];
                             }
 
@@ -276,7 +277,7 @@ class BeerController extends Controller
                             if ($result) {
                                 // succès
                                 $_SESSION["qtypanier"] += $_POST["quantity"];
-                                echo $_SESSION["qtypanier"]; 
+                                echo $_SESSION["qtypanier"];
                                 return;
                             }
                         }
@@ -284,7 +285,7 @@ class BeerController extends Controller
                 }
                 // le prix HT de la bière en base
                 $biere = $this->beer->find($_POST["idBeer"]);
-                if ($biere){
+                if ($biere) {
                     $priceHT = $biere->getPrice();
 
                     // insertion en base de la ligne panier
@@ -308,10 +309,10 @@ class BeerController extends Controller
                     $result = $this->orderline->insert($attributes);
                     if ($result) {
                         $_SESSION["panier"] = $token;
-                        setcookie("panier",$token,time()+10000);
+                        setcookie("panier", $token, time() + 10000);
                         // succès
                         $_SESSION["qtypanier"] += $_POST["quantity"];
-                        echo $_SESSION["qtypanier"]; 
+                        echo $_SESSION["qtypanier"];
                         return;
                     }
                 }
@@ -332,7 +333,7 @@ class BeerController extends Controller
         //$client = $this->client->find($user->getId());
         // lire les clients associés à l'utilisateur (plusieurs adresses)
         $clients = $this->client->getClientsByUserId($user->getId());
-        
+
 
         // $this->beer contient une instance de la classe PostTable
         $paginatedQuery = new PaginatedQueryAppController(
@@ -343,110 +344,100 @@ class BeerController extends Controller
         $title = 'Bon de commande';
 
         if (!empty($post)) {
-            //dd($post);
-            if (isset($post["idClient"])) {
-                // enregistrer le client dans la base
-                $client = $this->client->find($post["idClient"]);
+            $price = $post["price"];
+            $idBeer = $post["id"];
+            $idClient = 0;
+            if (isset($post["idClient"]) && is_numeric($post["idClient"])) {
+                $idClient = $post["idClient"];
+            }
+            unset($post["idClient"]);
+            unset($post["price"]);
+            unset($post["id"]);
+             // enregistrement de l'adresse du client
+            if (
+                isset($post["lastname"]) && !empty($post["lastname"]) &&
+                isset($post["firstname"]) && !empty($post["firstname"]) &&
+                isset($post["address"]) && !empty($post["address"]) &&
+                isset($post["zipCode"]) && !empty($post["zipCode"]) &&
+                isset($post["city"]) && !empty($post["city"]) &&
+                isset($post["country"]) && !empty($post["country"]) &&
+                isset($post["phone"]) && !empty($post["phone"])
+            ) {
+                if ($post["new"] || $idClient == 0) {
+                    // nouvelle adresse
+                    unset($post["new"]);
+                    $post["id_user"] = $user->getId();
+                    $res = $this->client->insert($post);
+                    if ($res) {
+                        //message modif ok
+                        $_SESSION['success'] = "l'adresse a bien été ajoutée";
+                    } else {
+                        $_SESSION['error'] = "l'adresse n'a pas été ajoutée";
+                    }
+                    $idClient = $this->client->last();
+                } else {
+                    // update du client dans la table client
+                    $res = $this->client->update($idClient, $post);
+                    if ($res) {
+                        //message modif ok
+                        $_SESSION['success'] = "l'adresse a bien été modifiée";
+                    } else {
+                        $_SESSION['error'] = "l'adresse n'a pas été modifiée";
+                    }
+                }
+            }
 
-                // valider le panier enregistré dans la session et dans la table orderline
-                if (isset($_SESSION["panier"])) {
-                    $token = $_SESSION["panier"];
+            // relire le client dans la base
+            $client = $this->client->find($idClient);
 
-                    if (!empty($token)) {
-                        // lecture en base des lignes de commande du token
-                        $orderlines = $this->orderline->allInToken($token);
-                        if (count($orderlines)){
-                            $priceHT=0;
-                            $priceTTC=0;
-                            foreach ($orderlines as $line) {
-                                // le prix HT de la bière en base
-                                $biere = $this->beer->find($line->getIdProduct());
+            // valider le panier enregistré dans la session et dans la table orderline
+            if (isset($_SESSION["panier"])) {
+                $token = $_SESSION["panier"];
 
-                                $priceHT += $biere->getPrice() * $line->getQuantity();
+                if (!empty($token)) {
+                    // lecture en base des lignes de commande du token
+                    $orderlines = $this->orderline->allInToken($token);
+                    if (count($orderlines)) {
+                        $priceHT = 0;
+                        $priceTTC = 0;
+                        foreach ($orderlines as $line) {
+                            // le prix HT de la bière en base
+                            $biere = $this->beer->find($line->getIdProduct());
+
+                            $priceHT += $biere->getPrice() * $line->getQuantity();
+                        }
+                        $priceTTC = $priceHT * TVA;
+
+                        if ($priceTTC > 0) {
+                            $FraisPort = PORT;
+                            if ($priceTTC < SHIPLIMIT) {
+                                $priceTTC += $FraisPort;
+                            } else {
+                                $FraisPort = 0.00;
                             }
-                            $priceTTC = $priceHT * TVA;
+                            // créer la commande dans la table orders avec totaux et token des lignes
 
-                            if ($priceTTC > 0) {
-                                $FraisPort = PORT;
-                                if ($priceTTC < SHIPLIMIT) {
-                                    $priceTTC += $FraisPort;
-                                } else {
-                                    $FraisPort = 0.00;
-                                }
-                                // créer la commande dans la table orders avec totaux et token des lignes
-                                // créer l'objet
-/*                                 $orderEntity =   new OrdersEntity();
-                                $orderEntity->setIdClient($client->getId());
-                                $orderEntity->setPriceHT($priceHT);
-                                $orderEntity->setPriceTTC($priceTTC);
- */
-                                // insérer l'objet en base
-                                $attributes = [
-                                    "token"        => $token,
-                                    "id_client" => $client->getId(),
-                                    "priceHT"        => $priceHT,
-                                    "id_status"        => 1,
-                                    "priceTTC"        => $priceTTC
-                                ];
+                            // insérer l'objet en base
+                            $attributes = [
+                                "token"        => $token,
+                                "id_client"    => $idClient,
+                                "priceHT"      => $priceHT,
+                                "id_status"    => 1,
+                                "priceTTC"     => $priceTTC
+                            ];
 
-                                $result = $this->orders->insert($attributes);
-                                if ($result) {
-                                    if (
-                                        isset($post["lastname"]) && !empty($post["lastname"]) &&
-                                        isset($post["firstname"]) && !empty($post["firstname"]) &&
-                                        isset($post["address"]) && !empty($post["address"]) &&
-                                        isset($post["zipCode"]) && !empty($post["zipCode"]) &&
-                                        isset($post["city"]) && !empty($post["city"]) &&
-                                        isset($post["country"]) && !empty($post["country"]) &&
-                                        isset($post["phone"]) && !empty($post["phone"])
-                                    ) {
-                                        unset($post["idClient"]);
-                                        unset($post["price"]);
-                                        unset($post["id"]);
-
-                                        if ($post["new"]){
-                                            // nouvelle adresse
-                                            unset($post["new"]);
-                                            $post["id_user"] = $user->getId();
-                                            $res = $this->client->insert($post);
-                                            if ($res) {
-                                                //message modif ok
-                                                $_SESSION['success'] = "l'adresse a bien été ajoutée";
-                                            } else {
-                                                $_SESSION['error'] = "l'adresse n'a pas été ajoutée";
-                                            }
-                                            $idClient = $this->client->last();
-                                            $idOrder = $this->orders->last();
-                                            $attributes = [
-                                                "id_client" => $idClient
-                                            ];
-                                            $result = $this->orders->update($idOrder, $attributes);
-                                            
-                                            
-                                        }else{
-
-                                            // update du user dans la table users
-                                            $res = $this->client->update($clients[0]->getId(), $post);
-                                            if ($res) {
-                                                //message modif ok
-                                                $_SESSION['success'] = "l'adresse a bien été modifiée";
-                                            } else {
-                                                $_SESSION['error'] = "l'adresse n'a pas été modifiée";
-                                            }
-                                        }
-                                        
-                                    }
-                                    // vider le panier
-                                    unset($_SESSION["panier"]);
-                                    unset($_SESSION["qtypanier"]);
-                                    return $this->purchaseconfirm(null, $this->orders->last());
-                                    //header('Location: /purchaseconfirm/' . $result);
-                                    exit();
-                                } else {
-                                    //TODO : signaler erreur
-                                    $_SESSION['error'] = "Erreur d'enregistrement de la commande dans la base";
-                                    //header('Location: /purchase');
-                                }
+                            $result = $this->orders->insert($attributes);
+                            if ($result) {
+                                // vider le panier
+                                unset($_SESSION["panier"]);
+                                unset($_SESSION["qtypanier"]);
+                                return $this->purchaseconfirm(null, $this->orders->last());
+                                //header('Location: /purchaseconfirm/' . $result);
+                                exit();
+                            } else {
+                                //TODO : signaler erreur
+                                $_SESSION['error'] = "Erreur d'enregistrement de la commande dans la base";
+                                //header('Location: /purchase');
                             }
                         }
                     }
@@ -467,13 +458,12 @@ class BeerController extends Controller
                     $total += $line->getQuantity();
                 }
                 $_SESSION["qtypanier"] = $total;
-
             }
         }
         $this->render('beer/purchase', [
             'user' => $user,
             'orderlines' => $orderlines,
-            'client' => $clients[0],
+            'clients' => $clients,
             'bieres' => $bieres,
             'paginate' => $paginatedQuery->getNavHTML(),
             'title' => $title
@@ -533,16 +523,16 @@ class BeerController extends Controller
         } else {
             $FraisPort = 0.00;
         }
- 
+
         //On vérifie le prix total TTC
 
-/*         if (number_format($priceTTC, 2, ',', '.') != number_format($order->getPriceTTC(), 2, ',', '.')) {
+        /*         if (number_format($priceTTC, 2, ',', '.') != number_format($order->getPriceTTC(), 2, ',', '.')) {
             $_SESSION['error'] = "prix différents";
             header('location: /purchase');
             exit();
         }
 
- */        
+ */
         $title = 'Confirmation de commande';
 
         $this->render('beer/purchaseconfirm', [

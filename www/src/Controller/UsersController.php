@@ -6,6 +6,7 @@ use \Core\Controller\Helpers\MailController;
 use \Core\Controller\Helpers\TextController;
 use App\Model\Entity\UsersEntity;
 use App\Model\Entity\ClientEntity;
+use App\Model\Entity\OrdersEntity;
 use phpDocumentor\Reflection\Types\Boolean;
 
 class UsersController extends Controller
@@ -318,7 +319,7 @@ class UsersController extends Controller
             if (isset($_POST["idClient"])) {
                 // lecture en base des clients du user
                 $client = $this->client->find($_POST["idClient"]); 
-               echo json_encode($client->get_properties()); 
+                echo json_encode($client->get_properties()); 
 
             }
         }
@@ -329,14 +330,14 @@ class UsersController extends Controller
      * la page profil du site bière
      *
      */
-    public function profil($post = null)
+    public function profil($post = null, int $idClient = null)
     {
         // le client connecté
         $userConnect = $this->userOnly(false);
 
         // traitement de la modification du profil
         if (!empty($post)) {
-            if (
+/*             if (
                 isset($post["delete"]) && !empty($post["delete"])
                 && isset($post["id"]) && !empty($post["id"])
             ) {
@@ -345,7 +346,8 @@ class UsersController extends Controller
                 if ($order) {
                     $this->orders->delete($post["id"]);
                 }
-            } elseif (
+            } else */
+            if (
                 isset($post["passwordOld"]) && !empty($post["passwordOld"]) &&
                 isset($post["password"]) && !empty($post["password"]) &&
                 isset($post["passwordVerify"]) && !empty($post["passwordVerify"])
@@ -391,6 +393,7 @@ class UsersController extends Controller
                     // update des coordonnées dans la table client
                     //$clients = $this->client->getClientsByUserId($userConnect->getId());
                     $client = $this->client->find($post["id"]);
+                    $post['id_user'] = $userConnect->getId();
                     $res = $this->client->update($client->getId(), $post);
                     if ($res) {
                         //message modif ok
@@ -402,16 +405,25 @@ class UsersController extends Controller
             }
         }
 
+ 
         // lire les clients associés à l'utilisateur (plusieurs adresses)
         $clients = $this->client->getClientsByUserId($userConnect->getId());
         
-        // les commandes du premier client associé à l'utilisateur
-        $orders = $this->orders->allinId($clients[0]->getId());
+        // les commandes du client affiché
+        $orders = [];
+        if ($idClient){
+            $client = $this->client->find($idClient);
+        }else{
+            $client = $this->client->find($clients[0]->getId());
+        }
+        if ($client){
+            $orders = $this->orders->allinId($client->getId());
+        }    
 
         $title = 'Profil';
 
         $this->render('users/profil', [
-            'user' => $clients[0],
+            'user'  => $client,
             'clients' => $clients,
             'orders' => $orders,
             'title' => $title

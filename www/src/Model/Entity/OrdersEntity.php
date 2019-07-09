@@ -17,6 +17,11 @@ class OrdersEntity extends Entity
     private $priceHT;
     private $priceTTC;
     private $createdAt;
+    
+    public function get_properties(): array
+    {
+        return get_object_vars($this);
+    }
 
     /**
      *  id

@@ -23,7 +23,6 @@ class ClientEntity extends Entity
     {
         return get_object_vars($this);
     }
-
     /**
      *  id
      *  @return int
