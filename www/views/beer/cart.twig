@@ -3,68 +3,8 @@
 {% block content %}
 
 
-<form method="POST" action="/purchase" id="formPurchase">
-	<table class="table-striped bg-info">
-		<thead>
-			<tr>
-				<th>les bières:</th>
-				<th></th>
-				<th></th>
-				<th></th>
-				<th></th>
-				<th></th>
-				<th></th>
-			</tr>
-			<tr>
-				<th>Nom</th>
-				<th>Prix HT</th>
-				<th>Prix TTC</th>
-				<th>Quantité</th>
-				<th></th>
-				<th>PANIER:</th>
-				<th></th>
-			</tr>
-		</thead>
-		<tbody>
-		{% for biere in bieres %}
-			<tr>
-				<td>{{biere.title}}</td>
-				<td id="HT_{{biere.id}}">{{biere.getPrixHt()}}</td>
-				<td id="TTC_{{biere.id}}">{{biere.getPrixTTC()}}</td>
-				{% set line = 0 %}
-				{% for orderline in orderlines %}
-					{% if biere.id == orderline.idProduct %}
-						{% set line = orderline %}
-					{% endif %}
-				{% endfor %}
-				<td><input id="QTY_{{biere.id}}" class="QTY" type="number" min="0" value="" oninput="calcPrice(this, {{biere.id}}, {{biere.price}});" /></td>
-				<td></td>
-				<td><input type="button" name="add[{{biere.id}}]" value="Ajouter" onclick="addToCart({{biere.id}}, {{biere.price}});"/></td>
-				<td><input type="button" name="update[{{biere.id}}]" value="Modifier" onclick="updateCart({{biere.id}}, {{biere.price}},"");"/></td>
-				<input type="hidden" name="id" value="{{biere.id}}" />
-				<input class="HT" type="hidden" name="price" value="{{biere.price}}" />
-			</tr>
-		{% endfor %}
-		<tr>
-			<td><strong>Total</strong></td>
-			<td id="HT"></td>
-			<td id="TTC"><strong></strong></td>
-			<td id="QTY"><strong></strong></td>
-			<td></td>
-			<td></td>
-			<td></td>
-		</tr>
-		<tr>
-			<td><strong>Frais de port</strong></td>
-			<td></td>
-			<td id="FRAIS"><strong></strong></td>
-			<td></td>
-			<td></td>
-			<td></td>
-		</tr>
-		</tbody>
-	</table>
-	</br>
+<form method="POST" action="/cart" id="formPurchase">
+    <input type="hidden" id="id" name="idClient" value="{{client.id}}" />
 	<table class="table-striped bg-success">
 		<thead>
 			<tr>
@@ -73,31 +13,34 @@
 				<th></th>
 				<th></th>
 				<th></th>
+				<th></th>
 			</tr>
 			<tr>
 				<td>Nom</td>
 				<th>Quantité</th>
-				<th>Total HT</th>
-				<th>Total TTC</th>
+				<th>Prix HT</th>
+				<th>Prix TTC</th>
+				<th></th>
 				<th></th>
 			</tr>
 		</thead>
 		<tbody>
 		{% for biere in bieres %}
 			<tr>
-				<td>{{biere.title}}</td>
 				{% set line = 0 %}
 				{% for orderline in orderlines %}
 					{% if biere.id == orderline.idProduct %}
 						{% set line = orderline %}
-					{% endif %}
-				{% endfor %}
-				<td><input id="PQTY_{{biere.id}}" class="PQTY" type="number" name="qty[{{biere.id}}]" min="0" value="{{line.quantity}}" disabled/></td>
+				<td>{{biere.title}}</td>
+				<td><input id="PQTY_{{biere.id}}" class="PQTY" type="number" min="0" value="{{line.quantity}}"/></td>
 				<td id="PHT_{{biere.id}}">{{(line.priceHT * line.quantity)| number_format(2, '.', ',')}}€</td>
 				<td id="PTTC_{{biere.id}}">{{(line.priceHT * line.quantity * constant.TVA)| number_format(2, '.', ',')}}€</td>
+				<td><input type="button" name="update[{{biere.id}}]" value="Modifier" onclick="updateCart({{biere.id}}, {{biere.price}},'P');"/></td>
 				<td><input type="button" name="del[{{biere.id}}]" value="Retirer" onclick="deleteOfCart({{biere.id}}, {{biere.price}});"/></td>
 				<input type="hidden" name="id" value="{{biere.id}}" />
 				<input class="HT" type="hidden" name="price" value="{{biere.price}}" />
+					{% endif %}
+				{% endfor %}
 			</tr>
 		{% endfor %}
 		<tr>
@@ -105,6 +48,7 @@
 			<td id="PQTY"><strong></strong></td>
 			<td id="PHT"></td>
 			<td id="PTTC"><strong></strong></td>
+			<td></td>
 			<td></td>
 		</tr>
 		<tr>
@@ -116,7 +60,6 @@
 		</tr>
 		</tbody>
 	</table>
-    <input type="hidden" id="id" name="idClient" value="{{client.id}}" />
 	<div class="form-group row">
 		<label for="clients">Vos adresses</label>
 		<select class="form-control" id="clients" onChange="selectClient()">
@@ -126,7 +69,7 @@
 			{% endfor %}
 		</select>	
 	</div>		
-	<div class="form-group row justify-content-center">
+	<div class="form-group row">
 	 	<div class="form-check">
 			<input class="form-check-input" type="checkbox" id="new" name="new">
 			<label class="form-check-label" for="new">Nouvelle adresse</label>

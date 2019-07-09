@@ -3,19 +3,20 @@
 {% block content %}
 <form method="POST" name="{{title}}" action="/profil">
     <div class="form-group">
-        <label for="passwordOld">votre ancien mot de passe</label>
-        <input id="passwordOld" type="password" name="passwordOld" value="" required></div>
+        <label class="form-control-sm" for="passwordOld">votre ancien mot de passe</label>
+        <input class="form-control form-control-sm" id="passwordOld" type="password" name="passwordOld" value="" required></div>
     <div class="form-group">
-        <label for="password">votre mot de passe</label>
-        <input id="password" type="password" name="password" value="" required></div>
+        <label class="form-control-sm" for="password">votre mot de passe</label>
+        <input  class="form-control form-control-sm" id="password" type="password" name="password" value="" required></div>
     <div class="form-group">
-        <label for="passwordVerify">confirmez votre mot de passe</label>
-        <input id="passwordVerify" type="password" name="passwordVerify" value="" required></div>
+        <label class="form-control-sm" for="passwordVerify">confirmez votre mot de passe</label>
+        <input  class="form-control form-control-sm" id="passwordVerify" type="password" name="passwordVerify" value="" required></div>
     <div class="centrer">
         <div><button type="submit">Envoyer</button></div>
     </div>
 </form>
-<ul class="nav nav-pills">
+<h1 class="titreduhaut">Vos adresses</h1>
+<ul class="nav nav-tabs nav-justified flex-column flex-sm-row">
     {% for client in clients %}
     {% if client.id == user.id %}
     <li class="nav-item"><a class="nav-link active" href="/profil/{{client.id}}">{{client.firstname}} {{client.lastname}}</a></li>
@@ -24,37 +25,58 @@
     {% endif %}
     {% endfor %}
 </ul>
-<form method="POST" name="{{title}}" action="/profil">
-    <div class="form-group">
-        <label for="lastname">votre nom</label>
-        <input id="lastname" type="text" name="lastname" value="{{user.lastname}}" required></div>
-    <div class="form-group">
-        <label for="firstname">votre prénom</label>
-        <input id="firstname" type="text" name="firstname" value="{{user.firstname}}" required></div>
-    <div class="form-group">
-        <label for="address">votre adresse</label>
-        <input id="address" type="text" name="address" value="{{user.address}}" required></div>
-    <div class="form-group">
-        <label for="zipCode">votre code postal</label>
-        <input id="zipCode" type="text" name="zipCode" value="{{user.zipCode}}" required></div>
-    <div class="form-group">
-        <label for="city">votre ville</label>
-        <input id="city" type="text" name="city" value="{{user.city}}" required></div>
-    <div class="form-group">
-        <label for="country">votre pays</label>
-        <input id="country" type="text" name="country" value="{{user.country}}" required></div>
-    <div class="form-group">
-        <label for="phone">votre numéro de portable</label>
-        <input id="phone" type="tel" name="phone" value="{{user.phone}}" required></div>
-    <div class="form-group">
-    <input id="id" type="hidden" name="id" value="{{user.id}}" /></div>
-    <input id="id_user" type="hidden" name="id_user" value="{{user.id_user}}" /></div>
 
+<form method="POST" name="{{title}}" action="/profil">
+	<div class="form-group row justify-content-center">
+	 	<div class="form-check">
+			<input class="form-check-input" type="checkbox" id="new" name="new">
+			<label class="form-check-label" for="new">Enregistrer une nouvelle adresse</label>
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col">
+			<label class="form-control-sm" for="lastname">NOM</label>
+			<input class="form-control form-control-sm" type="text" id="lastname" name="lastname" value="{{user.lastname}}" required/>
+		</div>
+		<div class="col">
+			<label class="form-control-sm" for="firstname">PRENOM</label>
+			<input class="form-control form-control-sm" type="text" id="firstname" name="firstname" value="{{user.firstname}}" required/>
+		</div>
+	</div>
+	<div class="form-group row">
+	<div class="col">
+		<label class="form-control-sm" for="address">ADRESSE</label>
+		<input class="form-control form-control-sm" type="text" id="address" name="address" value="{{user.address}}" required/>
+	</div>
+	</div>
+	<div class="form-group row">
+		<div class="col">
+			<label class="form-control-sm" for="zipCode">Code Postal</label>
+			<input class="form-control form-control-sm" type="text" id="zipCode" name="zipCode" value="{{user.zipcode}}" required/>
+		</div>
+		<div class="col">
+			<label class="form-control-sm" for="city">VILLE</label>
+			<input class="form-control form-control-sm" type="text" id="city" name="city" value="{{user.city}}" required/>
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col">
+			<label class="form-control-sm" for="country">PAYS</label>
+			<input class="form-control form-control-sm" type="text" id="country" name="country" value="{{user.country}}" required/>
+		</div>
+		<div class="col">
+			<label class="form-control-sm" for="phone">TEL</label>
+			<input class="form-control form-control-sm" type="tel" id="phone" name="phone" value="{{user.phone}}" required/>
+		</div>
+	</div>
     <div class="centrer">
         <div><button type="submit">Envoyer</button></div>
     </div>
+    <input id="id" type="hidden" name="id" value="{{user.id}}" /></div>
+    <input id="id_user" type="hidden" name="id_user" value="{{user.id_user}}" /></div>
 </form>
 
+<h1 class="titreduhaut">Les commandes de {{user.firstname}} {{user.lastname}}</h1>
 
 <section id="commandes">
 	<table class="table-striped">

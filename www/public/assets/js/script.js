@@ -112,8 +112,8 @@ function addToCart(id, originalPrice) {
 }
 
 // update la ligne du panier
-function updateCart(id, originalPrice) {
-    var qty = parseInt(document.getElementById('QTY_' + id).value);
+function updateCart(id, originalPrice, prefix = "") {
+    var qty = parseInt(document.getElementById(prefix + 'QTY_' + id).value);
     if (qty == 0) {
         return;
     }
@@ -132,15 +132,17 @@ function afficheCart(data, id, originalPrice) {
         var pTTC = pHT * tva;
 
         // on vide la partie commande
-        document.getElementById('HT_' + id).innerHTML = String(originalPrice.toFixed(2)).replace('.', ',') + "€";
-        document.getElementById('TTC_' + id).innerHTML = String((originalPrice * tva).toFixed(2)).replace('.', ',') + "€";
-        document.getElementById('QTY_' + id).value = 0;
-
+        if (document.getElementById('HT_' + id)) {
+            document.getElementById('HT_' + id).innerHTML = String(originalPrice.toFixed(2)).replace('.', ',') + "€";
+            document.getElementById('TTC_' + id).innerHTML = String((originalPrice * tva).toFixed(2)).replace('.', ',') + "€";
+            document.getElementById('QTY_' + id).value = 0;
+        }
         // on remplit la ligne du panier
-        document.getElementById('PQTY_' + id).value = obj.quantity; //qty;
-        document.getElementById('PHT_' + id).innerHTML = String(pHT.toFixed(2)).replace('.', ',') + "€";
-        document.getElementById('PTTC_' + id).innerHTML = String(pTTC.toFixed(2)).replace('.', ',') + "€";
-
+        if (document.getElementById('PQTY_' + id)) {
+            document.getElementById('PQTY_' + id).value = obj.quantity; //qty;
+            document.getElementById('PHT_' + id).innerHTML = String(pHT.toFixed(2)).replace('.', ',') + "€";
+            document.getElementById('PTTC_' + id).innerHTML = String(pTTC.toFixed(2)).replace('.', ',') + "€";
+        }
         // totaux panier
         totaux('P');
         totaux();
@@ -186,7 +188,12 @@ function totaux(prefix = "") {
     }
 
     if (prefix !== "") {
-        document.getElementById('panier').innerHTML = "Panier(" + Number(total) + ")";
+        if (total > 0) {
+            document.getElementById('panier').innerHTML = "Panier(" + Number(total) + ")";
+        } else {
+            document.getElementById('panier').innerHTML = "";
+
+        }
 
     }
 
@@ -198,15 +205,17 @@ function totaux(prefix = "") {
     }
 
     // les totaux du panier
-    document.getElementById(prefix + 'FRAIS').innerHTML = String(frais.toFixed(2)).replace('.', ',') + "€";
-    if (total > 0) {
-        document.getElementById(prefix + 'HT').innerHTML = String(totalHT.toFixed(2)).replace('.', ',') + "€";
-        document.getElementById(prefix + 'TTC').innerHTML = String(totalTTC.toFixed(2)).replace('.', ',') + "€";
-        document.getElementById(prefix + 'QTY').innerHTML = Number(total);
-    } else {
-        document.getElementById(prefix + 'HT').innerHTML = "";
-        document.getElementById(prefix + 'TTC').innerHTML = "";
-        document.getElementById(prefix + 'QTY').innerHTML = "";
+    if (document.getElementById(prefix + 'FRAIS')) {
+        document.getElementById(prefix + 'FRAIS').innerHTML = String(frais.toFixed(2)).replace('.', ',') + "€";
+        if (total > 0) {
+            document.getElementById(prefix + 'HT').innerHTML = String(totalHT.toFixed(2)).replace('.', ',') + "€";
+            document.getElementById(prefix + 'TTC').innerHTML = String(totalTTC.toFixed(2)).replace('.', ',') + "€";
+            document.getElementById(prefix + 'QTY').innerHTML = Number(total);
+        } else {
+            document.getElementById(prefix + 'HT').innerHTML = "";
+            document.getElementById(prefix + 'TTC').innerHTML = "";
+            document.getElementById(prefix + 'QTY').innerHTML = "";
+        }
     }
 
 }
@@ -219,14 +228,19 @@ function getProductsModal(title, img, content, price, id) {
     $('#modal-body-img').attr('src', img).attr('alt', title);
     $('#modal-body').text(content);
     $('#modal-body-price').text(price + '€');
-    $('#product_id').attr('onclick', 'addCart(' + id + ')');
+    $('#QTY_id').val(1);
+    $('#product_id').attr('onclick', 'addCart(' + id + ', "QTY_id")');
 
 }
 
 // ajouter une bière au panier
-function addCart(id) {
+function addCart(id, qtyId) {
+    var qty = document.getElementById(qtyId).value;
+    if (qty <= 0) {
+        return;
+    }
     // appel AJAX pour lancer un post d'insertion en base de la ligne de commande du panier
-    $.post("/addToCart", { idBeer: id, quantity: 1 },
+    $.post("/addToCart", { idBeer: id, quantity: qty },
         function(data) {
             document.getElementById('panier').innerHTML = "Panier(" + data + ")";
         });

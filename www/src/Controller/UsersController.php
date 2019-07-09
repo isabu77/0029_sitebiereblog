@@ -332,6 +332,9 @@ class UsersController extends Controller
      */
     public function profil($post = null, int $idClient = null)
     {
+        unset($_SESSION["success"]); //Supprime la SESSION['success']
+        unset($_SESSION["error"]); //Supprime la SESSION['error']
+        
         // le client connecté
         $userConnect = $this->userOnly(false);
 
