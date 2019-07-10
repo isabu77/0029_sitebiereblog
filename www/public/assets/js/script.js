@@ -192,7 +192,7 @@ function totaux(prefix = "", totalPanier = 0) {
     }
     if (prefix !== "") {
         if (total > 0) {
-            document.getElementById('panier').innerHTML = "Panier(" + Number(total) + ")";
+            document.getElementById('panier').innerHTML = Number(total);
         } else {
             document.getElementById('panier').innerHTML = "";
 
@@ -245,7 +245,7 @@ function addCart(id, qtyId) {
     // appel AJAX pour lancer un post d'insertion en base de la ligne de commande du panier
     $.post("/addToCart", { idBeer: id, quantity: qty },
         function(data) {
-            document.getElementById('panier').innerText = "Panier(" + data + ")";
+            document.getElementById('panier').innerHTML = data;
         });
 }
 
@@ -253,13 +253,33 @@ function selectClient() {
     var index = document.getElementById("clients").selectedIndex;
     var id = document.getElementById("clients").options[index].value;
     //console.log(id);
-    // appel AJAX pour lancer un post de suppression de la ligne de commande du panier
+    // appel AJAX pour lancer un post 
     $.post("/getClient", { idClient: id },
         function(data) {
             obj = JSON.parse(data);
             if (obj) {
                 for (var input in obj) {
                     //console.log(obj[input]);
+                    if (document.getElementById(input)) {
+                        document.getElementById(input).value = obj[input];
+                    }
+                }
+            }
+        });
+}
+
+function selectAdresse(id) {
+    // appel AJAX pour lancer un post 
+    $.post("/getClient", { idClient: id },
+        function(data) {
+            elts = document.getElementsByClassName("nav-link active");
+            for (var elt = 0; elt < elts.length; elt++) {
+                $('#' + elts[elt].id).removeClass("active");
+            }
+            $('#a_' + id).addClass("active");
+            obj = JSON.parse(data);
+            if (obj) {
+                for (var input in obj) {
                     if (document.getElementById(input)) {
                         document.getElementById(input).value = obj[input];
                     }

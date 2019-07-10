@@ -317,17 +317,20 @@ class UsersController extends Controller
 
         // traitement de la modification du profil
         if (!empty($post)) {
-/*             if (
-                isset($post["delete"]) && !empty($post["delete"])
+            if (
+                isset($post["delete"]) 
                 && isset($post["id"]) && !empty($post["id"])
             ) {
-                // suppression de la commande id
-                $order = $this->orders->find($post["id"]);
-                if ($order) {
-                    $this->orders->delete($post["id"]);
+                // suppression du client id s'il n'a pas de commandes
+                $orders = $this->orders->allInId($post["id"]);
+                if (!count($orders)) {
+                    $this->client->delete($post["id"]);
+                    $_SESSION['success'] = "L'adresse a bien été supprimée.";
+                    $idClient = null;
+                }else{
+                    $_SESSION['error'] = "Impossible de supprimer cette adresse car des commandes lui sont attachées.";
                 }
-            } else */
-            if (
+            } elseif (
                 isset($post["passwordOld"]) && !empty($post["passwordOld"]) &&
                 isset($post["password"]) && !empty($post["password"]) &&
                 isset($post["passwordVerify"]) && !empty($post["passwordVerify"])

@@ -474,7 +474,7 @@ class BeerController extends Controller
     /**
      * commande des produits bière
      */
-    public function purchase($post = null)
+    public function purchase($post = null, int $idClient = null)
     {
         // le client connecté
         $user = $this->connectedSession();
@@ -612,9 +612,16 @@ class BeerController extends Controller
                 setcookie(QTYPANIER, $total, time() + 3600*48);
             }
         }
+        if ($idClient){
+            $client = $this->client->find($idClient);
+        }else{
+            $client = $this->client->find($clients[0]->getId());
+        }
+
         return $this->render('beer/purchase', [
             'user' => $user,
             'orderlines' => $orderlines,
+            'client' => $client,
             'clients' => $clients,
             'bieres' => $bieres,
             'paginate' => $paginatedQuery->getNavHTML(),

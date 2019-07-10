@@ -10,7 +10,8 @@
         rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-	<link rel="stylesheet" type="text/css" href="/assets/css/styles.css"">
+	<link rel="stylesheet" type="text/css" href="/assets/css/styles.css">
+  <script src="https://kit.fontawesome.com/c597f3655b.js"></script>
 </head>
 
 <body>
@@ -19,23 +20,24 @@
     <input type="checkbox" class= "burger">
     <nav>
       <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/boutique">Boutique</a></li>
+        <li><a class="text-light mt-1" href="/">Home</a></li>
+        <li><a class="text-light mt-1" href="/boutique">Boutique</a></li>
         {% if session.auth %}
-        <li><a href="/purchase">Bon de commande</a></li>
-        {% if cookie.qtypanier > 0 %}
-        <li><a id="panier" href="/cart">Panier({{cookie.qtypanier}})</a></li>
+        <li><a class="text-light mt-1" href="/purchase">Bon de commande</a></li>
+        <li><a class="text-light mt-1" href="/profil">Profil</a></li>
+        <li><a class="text-light mt-1" href="/deconnexion">Déconnexion</a></li>
         {% else %}
-        <li><a id="panier" href="/cart"></a></li>
-        {% endif%}
-        <li><a href="/profil">Profil</a></li>
-        <li><a href="/deconnexion">Déconnexion</a></li>
-        {% else %}
-        <li><a href="/connexion">Connexion</a></li>
-        <li><a href="/inscription">Inscription</a></li>
+        <li><a class="text-light mt-1" href="/connexion">Connexion</a></li>
+        <li><a class="text-light mt-1" href="/inscription">Inscription</a></li>
         {% endif %}
-    	<li><a href="/contact">Contact</a></li>
-    	<li><a href="/blog">Blog</a></li>
+    	<li><a class="text-light mt-1" href="/contact">Contact</a></li>
+    	<li><a class="text-light mt-1" href="/blog">Blog</a></li>
+      <li>
+				<a class="text-light mt-1" href="/cart">
+        <i class="fas fa-shopping-cart"></i>
+          <span id="panier" class="badge badge-success">{{ cookie.qtypanier }}</span>
+        </a>
+        </li>
       </ul>
     </nav>
 </header >
