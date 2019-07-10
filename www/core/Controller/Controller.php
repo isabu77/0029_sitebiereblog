@@ -7,22 +7,20 @@ class Controller
     private $twig;
 
     /**
-     * getenv : retourne une variable d'environnement de l'application
-     * définie dans config.php
-     */
-    public function getenv(string $name)
-    {
-        require 'config.php';
-        return $env[$name]; 
-    }
-
-    /**
      * Rendu d'une page en .twig
      */
     protected function render(string $view, array $variable = [])
     {
         $variable['debugTime'] = $this->getApp()->getDebugTime();
+        $variable['cookie'] = $_COOKIE;
+        $variable['session'] =  $_SESSION;
+        $variable['constant'] =  get_defined_constants();
+
         echo $this->getTwig()->render($view . '.twig', $variable);
+        
+        unset($_SESSION["success"]); //Supprime la SESSION['success']
+        unset($_SESSION["error"]); //Supprime la SESSION['error']
+
     }
 
     /**
@@ -35,8 +33,9 @@ class Controller
             $loader = new \Twig\Loader\FilesystemLoader(dirname(dirname(__dir__)) . '/views/');
             $this->twig = new \Twig\Environment($loader);
             // passage des variables globales de session et de constantes
-            $this->twig->addGlobal('session', $_SESSION);
-            $this->twig->addGlobal('constant', get_defined_constants());
+            //$this->twig->addGlobal('cookie', $_COOKIE);
+            //$this->twig->addGlobal('session', $_SESSION);
+            //$this->twig->addGlobal('constant', get_defined_constants());
             }
 
         return $this->twig;

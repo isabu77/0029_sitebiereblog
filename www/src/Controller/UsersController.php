@@ -6,8 +6,6 @@ use \Core\Controller\Helpers\MailController;
 use \Core\Controller\Helpers\TextController;
 use App\Model\Entity\UsersEntity;
 use App\Model\Entity\ClientEntity;
-use App\Model\Entity\OrdersEntity;
-use phpDocumentor\Reflection\Types\Boolean;
 
 class UsersController extends Controller
 {
@@ -51,14 +49,10 @@ class UsersController extends Controller
                         // Page de connexion
                         $title = 'Connexion';
 
-                        $this->render('users/connexion', [
+                        return $this->render('users/connexion', [
                             'user' => $post,
                             'title' => $title
                         ]);
-
-                        unset($_SESSION["success"]); //Supprime la SESSION['success']
-                        unset($_SESSION["error"]); //Supprime la SESSION['error']
-                        return;
                     } else {
                         $_SESSION['error'] = "Erreur d'envoi du mail, recommencez.";
                     }
@@ -71,13 +65,11 @@ class UsersController extends Controller
         }
         $title = 'Réinitialisation du mot de passe';
 
-        $this->render('users/resetpwd', [
+        return $this->render('users/resetpwd', [
             'user' => $post,
             'title' => $title
         ]);
 
-        unset($_SESSION["success"]); //Supprime la SESSION['success']
-        unset($_SESSION["error"]); //Supprime la SESSION['error']
     }
 
     /**
@@ -208,13 +200,9 @@ class UsersController extends Controller
                             // Page de connexion
                             $title = 'Connexion';
 
-                            $this->render('users/connexion', [
+                            return $this->render('users/connexion', [
                                 'title' => $title
                             ]);
-
-                            unset($_SESSION["success"]); //Supprime la SESSION['success']
-                            unset($_SESSION["error"]); //Supprime la SESSION['error']
-                            exit();
                         } else {
                             $_SESSION['error'] = "Votre inscription n'est pas validée, veuillez recommencer.";
                         }
@@ -227,13 +215,10 @@ class UsersController extends Controller
 
         $title = 'Inscription';
 
-        $this->render('users/inscription', [
+        return $this->render('users/inscription', [
             'user' => $post,
             'title' => $title
         ]);
-
-        unset($_SESSION["success"]); //Supprime la SESSION['success']
-        unset($_SESSION["error"]); //Supprime la SESSION['error']
     }
 
     /**
@@ -272,12 +257,9 @@ class UsersController extends Controller
         // Page de connexion
         $title = 'Connexion';
 
-        $this->render('users/connexion', [
+        return $this->render('users/connexion', [
             'title' => $title
         ]);
-
-        unset($_SESSION["success"]); //Supprime la SESSION['success']
-        unset($_SESSION["error"]); //Supprime la SESSION['error']
     }
 
     /**
@@ -308,7 +290,6 @@ class UsersController extends Controller
         return $user;
     }
 
-       
     /**
      * lecture d'un client par son id (appelée par javascript en ajax)
      *
@@ -320,10 +301,8 @@ class UsersController extends Controller
                 // lecture en base des clients du user
                 $client = $this->client->find($_POST["idClient"]); 
                 echo json_encode($client->get_properties()); 
-
             }
         }
-
     }
 
     /**
@@ -332,8 +311,6 @@ class UsersController extends Controller
      */
     public function profil($post = null, int $idClient = null)
     {
-        unset($_SESSION["success"]); //Supprime la SESSION['success']
-        unset($_SESSION["error"]); //Supprime la SESSION['error']
         
         // le client connecté
         $userConnect = $this->userOnly(false);
@@ -425,15 +402,13 @@ class UsersController extends Controller
 
         $title = 'Profil';
 
-        $this->render('users/profil', [
+        return $this->render('users/profil', [
             'user'  => $client,
             'clients' => $clients,
             'orders' => $orders,
             'title' => $title
         ]);
 
-        unset($_SESSION["success"]); //Supprime la SESSION['success']
-        unset($_SESSION["error"]); //Supprime la SESSION['error']
     }
 
     /**
@@ -447,7 +422,7 @@ class UsersController extends Controller
                 isset($post["object"]) &&
                 isset($post["message"])
             ) {
-                define('MAIL_TO', parent::getenv('GMAIL_USER'));
+                define('MAIL_TO', $this->getApp()->getEnv('GMAIL_USER'));
                 define('MAIL_FROM', ''); // valeur par défaut
                 define('MAIL_OBJECT', 'objet du message'); // valeur par défaut
                 define('MAIL_MESSAGE', 'votre message'); // valeur par défaut
@@ -508,7 +483,7 @@ class UsersController extends Controller
 
         $title = 'Contact';
 
-        $this->render('users/contact', [
+        return $this->render('users/contact', [
             'title' => $title
         ]);
     }

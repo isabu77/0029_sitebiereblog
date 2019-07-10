@@ -1,6 +1,11 @@
 <?php
-require_once '/var/www/vendor/autoload.php';
+// Fichier principal qui initialise l'application et définit les routes
+$basepath = dirname(__dir__) . DIRECTORY_SEPARATOR; // contient /var/www/
+
+require_once $basepath . 'vendor/autoload.php';
+
 $pdo = new PDO('mysql:host=blog.mysql;dbname=blog', 'userblog', 'blogpwd');
+
 //creation tables
 echo "[";
 $etape = $pdo->exec("DROP TABLE post");

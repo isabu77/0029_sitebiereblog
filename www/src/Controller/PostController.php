@@ -34,7 +34,7 @@ class PostController extends Controller
 
         $title = 'Posts';
 
-        $this->render('post/all', [
+        return $this->render('post/all', [
             'posts' => $postById,
             'paginate' => $paginatedQuery->getNavHTML(),
             'title' => $title
@@ -67,7 +67,7 @@ class PostController extends Controller
         $title = $post->getName();
 
         // affichage HTML avec post/show.twig
-        $this->render('post/show', [
+        return $this->render('post/show', [
             'post' => $post,
             'title' => $title
         ]);

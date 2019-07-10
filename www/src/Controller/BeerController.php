@@ -30,7 +30,7 @@ class BeerController extends Controller
     {
         $title = 'Welcome !';
 
-        $this->render('beer/index', [
+        return $this->render('beer/index', [
             'title' => $title
         ]);
     }
@@ -43,7 +43,7 @@ class BeerController extends Controller
     {
         $title = 'Mentions légales';
 
-        $this->render('beer/mentions', [
+        return $this->render('beer/mentions', [
             'title' => $title
         ]);
     }
@@ -55,7 +55,7 @@ class BeerController extends Controller
     {
         $title = 'Condions générales de vente';
 
-        $this->render('beer/cgv', [
+        return $this->render('beer/cgv', [
             'title' => $title
         ]);
     }
@@ -76,16 +76,16 @@ class BeerController extends Controller
         $title = 'Nos produits';
 
         // vérifier si une commande existe en session panier
+        $orderlines = [];
         if (isset($_COOKIE[PANIER])) {
             $token = $_COOKIE[PANIER];
-            $orderlines = [];
             if (!empty($token)) {
                 // lecture en base des lignes de commande du token
                 $orderlines = $this->orderline->allInToken($token);
             }
         }
 
-        $this->render('beer/all', [
+        return $this->render('beer/all', [
             'bieres' => $bieres,
             'orderlines' => $orderlines,
             'paginate' => $paginatedQuery->getNavHTML(),
@@ -129,7 +129,7 @@ class BeerController extends Controller
                                 $priceHT = $_POST["price"];
                             }
 
-                            $priceTTC = $priceHT * parent::getenv('ENV_TVA');
+                            $priceTTC = $priceHT * $this->getApp()->getEnv('ENV_TVA');
                             //$priceHT = $_POST["price"];
                             $attributes = [
                                 "quantity"        => $qty,
@@ -162,7 +162,7 @@ class BeerController extends Controller
                     $priceHT = $_POST["price"];
                 }
                 // insertion en base de la ligne panier
-                $priceTTC = $priceHT * parent::getenv('ENV_TVA');
+                $priceTTC = $priceHT * $this->getApp()->getEnv('ENV_TVA');
                 //$priceHT = $_POST["price"];
                 if (empty($token)) {
                     $token = substr(md5(uniqid()), 0, 24);
@@ -223,7 +223,9 @@ class BeerController extends Controller
                             $result = $this->orderline->delete($line->getId());
                             if ($result) {
                                 // succès
-                                echo "ok";
+                                $total = $_COOKIE[QTYPANIER] - $line->getQuantity();
+                                setcookie(QTYPANIER, $total, time() + 3600*48);
+                                echo $total;
                                 return;
                             }
                         }
@@ -253,10 +255,8 @@ class BeerController extends Controller
                     $orderlines = $this->orderline->allInToken($token);
                     foreach ($orderlines as $line) {
                         if ($line->getIdProduct() == $_POST["idBeer"]) {
-                            $qty = $_POST["quantity"];
 
-                            // demande d'ajout ou de modification de la quantité ?
-                            $qty += $line->getQuantity();
+                            $qty = $_POST["quantity"] + $line->getQuantity();
 
                             // le prix HT de la bière en base
                             $biere = $this->beer->find($line->getIdProduct());
@@ -266,7 +266,7 @@ class BeerController extends Controller
                                 $priceHT = $_POST["price"];
                             }
 
-                            $priceTTC = $priceHT * parent::getenv('ENV_TVA');
+                            $priceTTC = $priceHT * $this->getApp()->getEnv('ENV_TVA');
                             //$priceHT = $_POST["price"];
                             $attributes = [
                                 "quantity"        => $qty,
@@ -276,8 +276,9 @@ class BeerController extends Controller
                             $result = $this->orderline->update($line->getId(), $attributes);
                             if ($result) {
                                 // succès
-                                setcookie(QTYPANIER, $_COOKIE[QTYPANIER] + $_POST["quantity"], time() + 3600*48);
-                                echo $_COOKIE[QTYPANIER];
+                                $total = $_COOKIE[QTYPANIER] + $_POST["quantity"];
+                                setcookie(QTYPANIER, $total, time() + 3600*48);
+                                echo $total;
                                 return;
                             }
                         }
@@ -289,7 +290,7 @@ class BeerController extends Controller
                     $priceHT = $biere->getPrice();
 
                     // insertion en base de la ligne panier
-                    $priceTTC = $priceHT * parent::getenv('ENV_TVA');
+                    $priceTTC = $priceHT * $this->getApp()->getEnv('ENV_TVA');
                     //$priceHT = $_POST["price"];
                     if (empty($token)) {
                         $token = substr(md5(uniqid()), 0, 24);
@@ -310,9 +311,9 @@ class BeerController extends Controller
                     if ($result) {
                         setcookie(PANIER, $token, time() + 3600*48);
                         // succès
-                        setcookie(QTYPANIER, $_COOKIE[QTYPANIER] + $_POST["quantity"], time() + 3600*48);
-
-                        echo $_COOKIE[QTYPANIER];
+                        $total = $_COOKIE[QTYPANIER] + $_POST["quantity"];
+                        setcookie(QTYPANIER, $total, time() + 3600*48);
+                        echo $total;
                         return;
                     }
                 }
@@ -446,9 +447,9 @@ class BeerController extends Controller
         }
 
         // vérifier si une commande existe en session panier
+        $orderlines = [];
         if (isset($_COOKIE[PANIER])) {
             $token = $_COOKIE[PANIER];
-            $orderlines = [];
             if (!empty($token)) {
                 // lecture en base des lignes de commande du token
                 $orderlines = $this->orderline->allInToken($token);
@@ -460,7 +461,7 @@ class BeerController extends Controller
                 setcookie(QTYPANIER, $total, time() + 3600*48);
             }
         }
-        $this->render('beer/cart', [
+        return $this->render('beer/cart', [
             'user' => $user,
             'orderlines' => $orderlines,
             'clients' => $clients,
@@ -468,9 +469,6 @@ class BeerController extends Controller
             'paginate' => $paginatedQuery->getNavHTML(),
             'title' => $title
         ]);
-
-        unset($_SESSION["success"]); //Supprime la SESSION['success']
-        unset($_SESSION["error"]); //Supprime la SESSION['error']
     }
 
     /**
@@ -600,9 +598,9 @@ class BeerController extends Controller
         }
 
         // vérifier si une commande existe en session panier
+        $orderlines = [];
         if (isset($_COOKIE[PANIER])) {
             $token = $_COOKIE[PANIER];
-            $orderlines = [];
             if (!empty($token)) {
                 // lecture en base des lignes de commande du token
                 $orderlines = $this->orderline->allInToken($token);
@@ -614,7 +612,7 @@ class BeerController extends Controller
                 setcookie(QTYPANIER, $total, time() + 3600*48);
             }
         }
-        $this->render('beer/purchase', [
+        return $this->render('beer/purchase', [
             'user' => $user,
             'orderlines' => $orderlines,
             'clients' => $clients,
@@ -622,9 +620,6 @@ class BeerController extends Controller
             'paginate' => $paginatedQuery->getNavHTML(),
             'title' => $title
         ]);
-
-        unset($_SESSION["success"]); //Supprime la SESSION['success']
-        unset($_SESSION["error"]); //Supprime la SESSION['error']
     }
 
     /**
@@ -668,8 +663,8 @@ class BeerController extends Controller
         }
 
         foreach ($lines as $line) {
-            //$priceTTC  += (float) (($line["price"] * $line["qty"]) * parent::getenv('ENV_TVA'));
-            $priceTTC  += (float) (($line->getPriceHT() * $line->getQuantity()) * parent::getenv('ENV_TVA'));
+            //$priceTTC  += (float) (($line["price"] * $line["qty"]) * $this->getApp()->getEnv('ENV_TVA'));
+            $priceTTC  += (float) (($line->getPriceHT() * $line->getQuantity()) * $this->getApp()->getEnv('ENV_TVA'));
         }
 
         $FraisPort = PORT;
@@ -690,8 +685,8 @@ class BeerController extends Controller
  */
         $title = 'Confirmation de commande';
 
-        $this->render('beer/purchaseconfirm', [
-            'tva' => parent::getenv('ENV_TVA'),
+        return $this->render('beer/purchaseconfirm', [
+            'tva' => $this->getApp()->getEnv('ENV_TVA'),
             'user' => $client,
             'order' => $order,
             'fraisport' => $FraisPort,

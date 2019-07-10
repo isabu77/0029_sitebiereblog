@@ -36,7 +36,7 @@ class CategoryController extends Controller
         $title = "Catégories";
 
         // affichage HTML avec category/all.twig
-        $this->render('category/all', [
+        return $this->render('category/all', [
             'categories' => $categories,
             'paginate' => $paginatedQuery->getNavHTML(),
             'title' => $title
@@ -72,7 +72,7 @@ class CategoryController extends Controller
         );
         $postById = $paginatedQuery->getItemsInId($id);
 
-        $this->render(
+        return $this->render(
             "category/show",
             [
                 "title" => $title,

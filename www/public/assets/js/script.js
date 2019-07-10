@@ -154,21 +154,22 @@ function deleteOfCart(id, originalPrice) {
     // appel AJAX pour lancer un post de suppression de la ligne de commande du panier
     $.post("/deletecart", { idBeer: id },
         function(data) {
-            if (data == "ok") {
-                // on vide la partie panier
-                document.getElementById('PHT_' + id).innerHTML = "";
-                document.getElementById('PTTC_' + id).innerHTML = "";
-                document.getElementById('PQTY_' + id).value = "";
-
-                // totaux panier et commande
-                totaux('P');
-                totaux();
+            // on vide la partie panier
+            document.getElementById('PHT_' + id).innerHTML = "";
+            document.getElementById('PTTC_' + id).innerHTML = "";
+            document.getElementById('PQTY_' + id).value = "";
+            if (document.getElementById('trcart_' + id)) {
+                document.getElementById('trcart_' + id).hidden = true;
             }
+
+            // totaux panier et commande
+            totaux('P', data);
+            totaux();
         });
 }
 
 // totaux calcule le total du panier (si $prefix = 'P') ou du coté commande
-function totaux(prefix = "") {
+function totaux(prefix = "", totalPanier = 0) {
     var totalHT = 0.0;
     var totalTTC = 0.0;
     var total = 0;
@@ -186,7 +187,9 @@ function totaux(prefix = "") {
             totalTTC += ttc * pqty;
         }
     }
-
+    if (total === 0) {
+        total = totalPanier;
+    }
     if (prefix !== "") {
         if (total > 0) {
             document.getElementById('panier').innerHTML = "Panier(" + Number(total) + ")";
@@ -233,7 +236,7 @@ function getProductsModal(title, img, content, price, id) {
 
 }
 
-// ajouter une bière au panier
+// ajouter une bière au panier par la modale
 function addCart(id, qtyId) {
     var qty = document.getElementById(qtyId).value;
     if (qty <= 0) {
@@ -242,7 +245,7 @@ function addCart(id, qtyId) {
     // appel AJAX pour lancer un post d'insertion en base de la ligne de commande du panier
     $.post("/addToCart", { idBeer: id, quantity: qty },
         function(data) {
-            document.getElementById('panier').innerHTML = "Panier(" + data + ")";
+            document.getElementById('panier').innerText = "Panier(" + data + ")";
         });
 }
 

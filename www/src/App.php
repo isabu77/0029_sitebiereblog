@@ -22,6 +22,7 @@ class App
     private $router;
     private $startTime;
     private $db_instance;
+    private $config_instance;
     private $configTable;
 
     /**
@@ -41,12 +42,10 @@ class App
     public static function load()
     {
         // lecture dans le fichier config.php contenant des variables d'environnement
-        // situé dans core\controller
-        // chaque controller hérite de la classe Controller avec la méthode getenv()
-        // qui lit le fichier config.php situé au me endroit
-        $config_instance = new Controller();
+        // situé dans /src
+        // qui lit le fichier config.php situé au meme endroit
 
-        if ($config_instance->getenv("ENV_DEV")) {
+        if (self::getInstance()->getEnv("ENV_DEV")) {
             $whoops = new \Whoops\Run;
             $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
             $whoops->register();
@@ -95,7 +94,18 @@ class App
     }
 
     /**
-     * crée l'instance de la config 
+     * getenv : retourne une variable d'environnement de l'application
+     * définie dans config.php
+     */
+    public function getEnv(string $name)
+    {
+        require 'config.php';
+        return $env[$name]; 
+    }
+
+
+    /**
+     * crée l'instance de la config stockée en base
      * et la retourne
      */
     public function getConfigTable()
@@ -154,10 +164,10 @@ class App
     {
         if (is_null($this->db_instance)) {
             $this->db_instance = new DatabaseMysqlController(
-                $this->getConfig()->getenv('MYSQL_DATABASE'),
-                $this->getConfig()->getenv('MYSQL_USER'),
-                $this->getConfig()->getenv('MYSQL_PASSWORD'),
-                $this->getConfig()->getenv('MYSQL_HOSTNAME')
+                $this->getEnv('MYSQL_DATABASE'),
+                $this->getEnv('MYSQL_USER'),
+                $this->getEnv('MYSQL_PASSWORD'),
+                $this->getEnv('MYSQL_HOSTNAME')
             );
         }
         return $this->db_instance;

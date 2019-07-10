@@ -23,8 +23,8 @@
         <li><a href="/boutique">Boutique</a></li>
         {% if session.auth %}
         <li><a href="/purchase">Bon de commande</a></li>
-        {% if session.qtypanier > 0 %}
-        <li><a id="panier" href="/cart">Panier({{session.qtypanier}})</a></li>
+        {% if cookie.qtypanier > 0 %}
+        <li><a id="panier" href="/cart">Panier({{cookie.qtypanier}})</a></li>
         {% else %}
         <li><a id="panier" href="/cart"></a></li>
         {% endif%}

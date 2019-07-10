@@ -46,6 +46,12 @@ class PaginatedQueryController
     private $items;
 
     /**
+     * @var array
+     * @access private
+     */
+    private $count;
+
+    /**
      * constructeur
      * @param Table $classTable : classe de la Table
      * @param string $url : url de la page à afficher quand on change de page

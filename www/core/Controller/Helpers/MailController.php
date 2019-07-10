@@ -21,19 +21,19 @@ class MailController extends Controller
             $mailTo = [$emailTo];
         }
         // Crée le Transport
-        if (parent::getenv('ENV_DEV')){
+        if (\App\App::getInstance()->getEnv('ENV_DEV')){
             $transport = new \Swift_SmtpTransport('mailCatcher', 25);
         }else{
             $transport = new \Swift_SmtpTransport('smtp.gmail.com', 587, 'tls');
-            $transport->setUsername(parent::getenv('GMAIL_USER'));
-            $transport->setPassword(parent::getenv('GMAIL_PWD'));
+            $transport->setUsername(\App\App::getInstance()->getEnv('GMAIL_USER'));
+            $transport->setPassword(\App\App::getInstance()->getEnv('GMAIL_PWD'));
 
         }
         // Crée le Mailer utilisant le Transport
         $mailer = new \Swift_Mailer($transport);
         // Crée le message en HTML et texte
         $message = new \Swift_Message($sujet);
-        $message->setFrom([parent::getenv('GMAIL_USER') => parent::getenv('GMAIL_PSEUDO')]);
+        $message->setFrom([\App\App::getInstance()->getEnv('GMAIL_USER') => \App\App::getInstance()->getEnv('GMAIL_PSEUDO')]);
         if ($cci) {
             $message->setBcc($mailTo);
         } else {
