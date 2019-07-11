@@ -311,8 +311,12 @@ class BeerController extends Controller
                     if ($result) {
                         setcookie(PANIER, $token, time() + 3600*48);
                         // succès
-                        $total = $_COOKIE[QTYPANIER] + $_POST["quantity"];
+                        $total = $_POST["quantity"];
+                        if (isset($_COOKIE[QTYPANIER])) {
+                            $total += $_COOKIE[QTYPANIER];
+                        }
                         setcookie(QTYPANIER, $total, time() + 3600*48);
+                        
                         echo $total;
                         return;
                     }
@@ -514,7 +518,7 @@ class BeerController extends Controller
                 isset($post["country"]) && !empty($post["country"]) &&
                 isset($post["phone"]) && !empty($post["phone"])
             ) {
-                if ($post["new"] || $idClient == 0) {
+                if (isset($post["new"]) || $idClient == 0) {
                     // nouvelle adresse
                     unset($post["new"]);
                     $post["id_user"] = $user->getId();

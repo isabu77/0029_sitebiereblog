@@ -16,7 +16,7 @@ class UsersTable extends Table
      */
     public function getUserByMail($mail): ?object
     {
-        $user = $this->query(" SELECT * FROM users WHERE `mail`  = ?", [$mail], true);
+        $user = $this->query(" SELECT * FROM {$this->table} WHERE `mail`  = ?", [$mail], true);
 
         if ($user) {
             return $user;
@@ -24,4 +24,16 @@ class UsersTable extends Table
             return null;
         }
     }
+    public function deleteToken($id)
+    {
+        return $this->query("UPDATE {$this->table} SET token = '' WHERE id_user = ?", [$id]);
+    }
+
+    public function latestById()
+    {
+        $id = $this->query("SELECT id FROM {$this->table} ORDER BY id DESC LIMIT 1", null, true, null)->getId();
+
+        return $this->query("SELECT * FROM {$this->table} WHERE id = ?", [$id], true, null);
+    }
+
 }

@@ -1,0 +1,29 @@
+{% extends "/layout/admindefault.twig" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<section class="admin-edit">
+    <h2>Edition de categorie</h2>
+    <article class="onePost">
+    <h4>{{ category.name }}</h4>
+    <p>ID : {{ category.id }}</p>
+    <p>SLUG : {{ category.slug }}</p>
+    <div>
+    <form action="" method="post">
+        <input type="text" name="cat_name" value="{{ category.name }}">
+       <input type="text" name="cat_slug" value="{{ category.slug }}">
+        <input type="hidden" name="cat_id" value="{{ category.id }}">
+        <button type="submit">Modifier</button>
+    </form>
+    </div>
+    <h4>Articles</h4>
+    <p>
+{% for post in posts %}
+    <a href="{{ post.AdminUrl }}">{{ post.name }}</a>
+{% endfor %}
+    </p>
+    <p><a href="{{ category.deleteURL }}">SUPPRIMER</a></p>
+    </article>
+</section>
+{% endblock %}

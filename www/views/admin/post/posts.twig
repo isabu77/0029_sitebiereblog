@@ -1,0 +1,18 @@
+{% extends "/layout/admindefault.twig" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<section class="admin-posts">
+    <h2>Liste des articles</h2>
+    <p><a href="/admin/postInsert">Ajouter un nouvel article</a></p>
+{% for post in posts %}
+    <article class="onePost">
+    <h3>{{ post.name }}</h3>
+    <p>{{ post.getExcerpt(200) | raw}}</p>
+    <p><a href="{{ post.AdminUrl }}">Editer</a></p>
+    </article>
+{% endfor %}
+</section>
+{{ paginate | raw }}
+{% endblock %}

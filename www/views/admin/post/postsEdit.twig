@@ -1,0 +1,41 @@
+{% extends "/layout/admindefault.twig" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<section class="admin-edit">
+    <h2>Edition d'article</h2>
+    <article class="onePost">
+    <h4>{{ post.name }}</h4>
+    <p>ID : {{ post.id }}</p>
+    <p>SLUG : {{ post.slug }}</p>
+    <div>
+    <form action="" method="post">
+        <input type="text" name="post_name" value="{{ post.name }}">
+        <input type="hidden" name="post_id" value="{{ post.id }}">
+        <input type="text" name="post_slug" value="{{ post.slug }}">
+        <input type="hidden" name="post_id" value="{{ post.id }}">
+        <textarea name="post_content">{{ post.content }}</textarea>
+        <input type="hidden" name="post_id" value="{{ post.id }}">
+        <button type="submit">Enregistrer</button>
+    </form>
+    </div>
+    <h4>Categories</h4>
+    <p>
+{% for category in categories %}
+    <a href="{{ category.AdminUrl }}">{{ category.name }}</a>
+{% endfor %}
+    </p>
+    <h4>Ajouter une catégorie / TODO</h4>
+    <form action="" method="post">
+        <select class="select-form" name="select">
+            <option value="">--Choisissez une catégorie--</option>
+            {% for one in allCategories %}
+                <option value="{{ one.name }}">{{ one.name }}</option>
+            {% endfor %}
+        </select>
+    </form>
+    <p><a href="{{ post.deleteURL }}">SUPPRIMER</a></p>
+    </article>
+</section>
+{% endblock %}

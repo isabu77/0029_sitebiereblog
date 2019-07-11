@@ -1,0 +1,43 @@
+{% extends "/layout/admindefault.twig" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<section class="admin-index">
+    
+    <article class="onePost">
+    <h2>Dernier article</h2>
+    <h3>{{ post.name }}</h3>
+    <p>{{ post.getExcerpt(200)  | raw}}</p>
+    <p><a href="{{ post.AdminUrl }}">edit</a></p>
+    </article>
+
+    <article class="onePost">
+    <h2>Dernier produit Bière</h2>
+    <h3>{{ beer.name }}</h3>
+    <p>{{ beer.content | slice(0, 100) }}</p>
+    <p><a href="{{ beer.AdminUrl }}">edit</a></p>
+    </article>
+
+    <article class="onePost">
+    <h2>Dernière category</h2>
+    <h3>{{ category.name }}</h3>
+    <p><a href="{{ category.AdminUrl }}">edit</a></p>
+    </article>
+
+    <article class="onePost">
+    <h2>Dernier utilisateur</h2>
+    <h3>{{ user.mail }}</h3>
+    <p>{{ user.firstname }} {{ user.lastname }}</p>
+    <p><a href="{{ user.AdminUrl }}">edit</a></p>
+    </article>
+
+    <article class="onePost">
+    <h2>Dernière commande</h2>
+    <h3>Commande n°{{ order.id }}</h3>
+    <p>Client n°{{ order.idClient }} - {{ order.priceTTC | number_format(2, ',', '.')}}€</p>
+    <p><a href="{{ order.AdminUrl }}">show</a></p>
+    </article>
+    
+</section>
+{% endblock %}

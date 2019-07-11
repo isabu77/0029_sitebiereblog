@@ -9,6 +9,7 @@ use App\Model\Entity\PostEntity;
  **/
 class PostTable extends Table
 {
+    
     /**
      * lecture de tous les articles d'une page avec leurs catégories
      */
@@ -49,6 +50,7 @@ class PostTable extends Table
                     WHERE pc.category_id = {$id}", null, true);
         }
     }
+
     /**
      * lecture de tous les articles d'une catégorie d'une page
      */
@@ -78,4 +80,25 @@ class PostTable extends Table
         }
         return $postById;
     }
+
+    public function allInIdByThird(int $id)
+    {
+        $posts = $this->query("SELECT * FROM {$this->table} as p
+            JOIN post_category as pc ON pc.post_id = p.id
+            WHERE pc.category_id = {$id}
+            LIMIT 3");
+        $ids = array_map(function (PostEntity $post) {
+            return $post->getId();
+        }, $posts);
+        $categories = (new CategoryTable($this->db))->allInId(implode(', ', $ids));
+        $postById = [];
+        foreach ($posts as $post) {
+            $postById[$post->getId()] = $post;
+        }
+        foreach ($categories as $category) {
+            $postById[$category->post_id]->setCategories($category);
+        }
+        return $postById;
+    }
+
 }

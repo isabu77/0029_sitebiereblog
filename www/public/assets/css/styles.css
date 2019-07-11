@@ -175,7 +175,6 @@ form input[type="password"],
 form input[type="text"],
 form input[type="email"],
 form input[type="tel"],
-form button[type="submit"],
 form textarea {
     width: 100%;
     margin: 10px 10px;
@@ -184,6 +183,26 @@ form textarea {
     border: 1px solid #ccc;
     border-radius: 5px;
     outline: 0;
+}
+
+form button[type="submit"],
+form button[type="reset"] {
+    font-weight: bold;
+    color: #eee;
+    text-transform: uppercase;
+    background-color: #3a9232a9;
+    margin: auto;
+    border: 10px!important;
+    padding: 16px!important;
+    width: 100%;
+    border-radius: 10px;
+}
+
+form button[type="submit"]:focus,
+form button[type="submit"]:hover,
+form button[type="reset"]:focus,
+form button[type="reset"]:hover {
+    background-color: #2db121a9;
 }
 
 form input[type="password"]:focus,
@@ -249,26 +268,6 @@ form textarea:hover {
     justify-content: space-around!important;
     margin: auto;
     padding: 10px;
-}
-
-form button[type="submit"],
-form button[type="reset"] {
-    font-weight: bold;
-    color: #eee;
-    text-transform: uppercase;
-    background-color: #3a9232a9;
-    margin: auto;
-    border: 10px!important;
-    padding: 16px!important;
-    width: 100%;
-    border-radius: 10px;
-}
-
-form button[type="submit"]:focus,
-form button[type="submit"]:hover,
-form button[type="reset"]:focus,
-form button[type="reset"]:hover {
-    background-color: #2db121a9;
 }
 
 @media (min-width: 768px) {

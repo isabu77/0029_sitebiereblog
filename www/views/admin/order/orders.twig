@@ -1,0 +1,18 @@
+{% extends "/layout/admindefault.twig" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<section class="admin-posts">
+    <h2>Liste des commandes</h2>
+{% for order in orders %}
+    <article class="onePost">
+    <h3>Commande n°{{ order.id }} - {{ order.priceTTC | number_format(2, ',', '.') }}€</h3>
+    <p>Client n°{{ order.idClient }}</p>
+    <p>Status : {{ order.idStatus }}</p>
+    <p><a href="{{ order.AdminUrl }}">Editer</a></p>
+    </article>
+{% endfor %}
+</section>
+{{ paginate | raw }}
+{% endblock %}

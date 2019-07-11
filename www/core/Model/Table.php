@@ -94,6 +94,27 @@ class Table
         return $this->query("SELECT * FROM {$this->table} WHERE id=?", [$id], true);
     }
 
+    public function findBy(string $what, string $attributes, bool $one = false)
+    {
+        return $this->query("SELECT * FROM {$this->table} WHERE $what = ?", [$attributes], $one);
+    }
+
+    public function lastThird()
+    {
+        return $this->query("SELECT * FROM {$this->table} ORDER BY id DESC LIMIT 3", null, false, null);
+    }
+
+    public function latestById()
+    {
+        $id = $this->query("SELECT id FROM {$this->table} ORDER BY id DESC LIMIT 1", null, true, null)->getId();
+        return $this->query("SELECT * FROM {$this->table} WHERE id = ?", [$id], true, null);
+    }
+
+    public function allWithoutLimit()
+    {
+        return $this->query("SELECT * FROM {$this->table} ORDER BY id");
+    }
+
     /**
      * lecture d'un enregistrement par son id
      * valable pour n'importe quelle table
@@ -136,4 +157,14 @@ class Table
         $sql_part = implode(', ', $sql_parts);
         return $this->query("UPDATE {$this->table} SET $sql_part WHERE id = ?", $attributes, true);
     }
+
+    /**
+     * update d'une colonne d'un enregistrement par son id
+     * valable pour n'importe quelle table
+     */
+    public function updateColumn(string $column, string $news, int $id)
+    {
+        return $this->db->query("UPDATE {$this->table} SET $column = '$news'  WHERE id = $id");
+    }
+
 }

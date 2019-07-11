@@ -93,7 +93,7 @@ class UsersController extends Controller
                 isset($post["passwordVerify"]) && !empty($post["passwordVerify"])
             ) {
                 if ((filter_var($post["mail"], FILTER_VALIDATE_EMAIL) &&
-                        $_POST["mail"] == $post["mailVerify"]) && ($_POST["password"] == $post["passwordVerify"])
+                        $post["mail"] == $post["mailVerify"]) && ($post["password"] == $post["passwordVerify"])
                 ) {
                     // créer l'objet users
                     $userEntity = new UsersEntity($post);
@@ -132,7 +132,7 @@ class UsersController extends Controller
                                 "zipCode"      => htmlspecialchars($clientEntity->getZipCode()),
                                 "city"         => htmlspecialchars($clientEntity->getCity()),
                                 "country"      => htmlspecialchars($clientEntity->getCountry()),
-                                "phone"        => htmlspecialchars($clientEntity->getPhone()),
+                                "phone"        => htmlspecialchars($clientEntity->getPhone())
                             ];
                             $clientId = $this->client->insert($attributes);
 
@@ -149,7 +149,7 @@ class UsersController extends Controller
                                 . ' Merci de ne pas y répondre.</p>'];
 
                             $res = MailController::sendMail(
-                                $_POST["mail"],
+                                $post["mail"],
                                 "Confirmation Inscription Beer Shop",
                                 $texte
                             );
@@ -175,10 +175,10 @@ class UsersController extends Controller
                     if (!filter_var($post["mail"], FILTER_VALIDATE_EMAIL)) {
                         $_SESSION['error'] = "L'adresse mail est invalide.";
                     }
-                    if ($_POST["mail"] !== $post["mailVerify"]) {
+                    if ($post["mail"] !== $post["mailVerify"]) {
                         $_SESSION['error'] = "Les deux mails ne correspondent pas.";
                     }
-                    if ($_POST["password"] !== $post["passwordVerify"]) {
+                    if ($post["password"] !== $post["passwordVerify"]) {
                         $_SESSION['error'] = "Les deux mots de passe ne correspondent pas.";
                     }
                 }
@@ -241,7 +241,11 @@ class UsersController extends Controller
                 // connecter l'utilisateur
                 $user->setPassword("");
                 parent::connectSession($user);
-                header('Location: /profil');
+                if ($user->getToken() === "ADMIN"){
+                    header('Location: /admin');
+                }else{
+                    header('Location: /profil');
+                }
                 exit();
             } else {
                 $_SESSION['auth'] = false;
@@ -296,10 +300,11 @@ class UsersController extends Controller
      */
     public function getClient()
     {
-        if (!empty($_POST)) {
-            if (isset($_POST["idClient"])) {
+        $post = $_POST;
+        if (!empty($post)) {
+            if (isset($post["idClient"])) {
                 // lecture en base des clients du user
-                $client = $this->client->find($_POST["idClient"]); 
+                $client = $this->client->find($post["idClient"]); 
                 echo json_encode($client->get_properties()); 
             }
         }

@@ -1,0 +1,20 @@
+{% extends "/layout/admindefault.twig" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+
+<section class="admin-posts">
+	<h2>Ajouter une catégorie</h2>
+	<form class="onePost" method="POST" action="" id="formPurchase">
+		<div class="form_row">
+			<input type="text" name="name" placeholder="Nom de la catégorie"/>
+		</div>
+		<div class="form_row">
+			<input type="text" name="slug" placeholder="Slug"/>
+		</div>
+		<button type="submit">Ajouter</button>
+	</form>
+</section>
+
+{% endblock %}

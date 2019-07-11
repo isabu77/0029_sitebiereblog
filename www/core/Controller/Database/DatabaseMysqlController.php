@@ -102,4 +102,12 @@ class DatabaseMysqlController extends DatabaseController
         }
         return $datas;
     }
+    /**
+     * retourne l'id du dernier enregistrement inséré
+     */
+    public function lastInsertId()
+    {
+        return $this->getPDO()->lastInsertId();
+    }
+
 }

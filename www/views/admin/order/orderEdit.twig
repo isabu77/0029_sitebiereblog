@@ -1,0 +1,21 @@
+{% extends "/layout/admindefault.twig" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<section class="admin-edit">
+    <h2>Edition de commande</h2>
+    <article class="onePost">
+    <h4>Commande n°{{ order.id }}</h4>
+    <p>Client n°{{ order.idClient }}</p>
+    <p>Status: {{ order.idStatus}}</p>
+    <ul>
+    {% for product in lines %}
+        <li>{{ product.id_product }} - {{ product.quantity }} x {{ product.priceHT | number_format(2, ',', '.') }}€ HT</li>
+    {% endfor %}
+    </ul>
+    <h4>Total de {{ order.priceTTC | number_format(2, ',', '.')}}€</h4>
+    <p><a href="{{ order.deleteURL }}">SUPPRIMER</a></p>
+    </article>
+</section>
+{% endblock %}

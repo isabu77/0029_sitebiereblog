@@ -1,0 +1,21 @@
+{% extends "/layout/admindefault.twig" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<section class="admin-edit">
+    <h2>Modifier un utilisateur</h2>
+    <article class="onePost">
+    <p>Inscrit le : {{ user.createdAt | date("d/m/Y")}}</p>
+    <form action="" method="post">
+        <h4>MAIL</h4>
+        <input type="text" name="user_mail" value="{{ user.mail }}">
+        <input type="hidden" name="user_id" value="{{ user.id }}">
+        <h4>TOKEN</h4>
+        <input type="text" name="user_token" value="{{ user.token }}">
+        <button type="submit">Modifier</button>
+    </form>
+    <p><a href="{{ user.deleteURL }}">SUPPRIMER</a></p>
+    </article>
+</section>
+{% endblock %}

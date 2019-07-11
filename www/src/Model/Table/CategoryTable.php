@@ -18,4 +18,27 @@ class CategoryTable extends Table
         LEFT JOIN category c on pc.category_id = c.id
         WHERE post_id IN (" . $ids . ")");
     }
+
+    public function lastThirdItems($ids)
+    {
+        return $this->query("SELECT *
+                            FROM post_category 
+                            LEFT JOIN post on post_category.post_id = post.id
+                            WHERE category_id IN (" . $ids . ") ORDER BY id DESC LIMIT 3");
+    }
+
+    public function insertCategory($name, $slug)
+    {
+        $sql = "INSERT INTO `category` 
+        (`name`, `slug`) 
+        VALUES ( :name, :slug)";
+        $attributes = [
+            ":name"         => $name,
+            ":slug"         => $slug
+        ];
+        return $this->query($sql, $attributes);
+    }
+
+
+    
 }

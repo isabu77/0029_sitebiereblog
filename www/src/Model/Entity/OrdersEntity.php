@@ -108,6 +108,22 @@ class OrdersEntity extends Entity
             ]);
     }
 
+    public function getAdminUrl():string
+    {
+        return \App\App::getInstance()->getRouter()->url("admin_order_edit", [
+            "id" => $this->getId(),
+            "id_user" => $this->getIdClient()
+        ]);
+    }
+    public function deleteUrl():string
+    {
+        return \App\App::getInstance()->getRouter()->url("admin_order_delete", [
+            "id" => $this->getId(),
+            "id_user" => $this->getIdClient()
+        ]);
+    }
+
+
     /**
      *  contenu
      *  @return 

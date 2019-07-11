@@ -1,0 +1,26 @@
+{% extends "/layout/admindefault.twig" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+
+<section class="admin-posts">
+	<h2>Ajouter une bière</h2>
+	<form class="onePost" method="POST" action="" id="formPurchase">
+		<div class="form_row">
+			<input type="text" name="name" placeholder="Nom de la bière"/>
+		</div>
+		<div class="form_row">
+			<input type="text" name="img" placeholder="URL de l'image"/>
+		</div>
+		<div class="form_row">
+			<textarea name="content" id="" cols="30" rows="10" placeholder="Description"></textarea>
+		</div>
+		<div class="form_row">
+			<input type="text" name="price" placeholder="Prix HT"/>
+		</div>
+		<button type="submit">Ajouter</button>
+	</form>
+</section>
+
+{% endblock %}

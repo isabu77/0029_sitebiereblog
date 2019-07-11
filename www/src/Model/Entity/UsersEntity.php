@@ -81,6 +81,20 @@ class UsersEntity extends Entity
             'id' => $this->getId()
             ]);
     }
+    public function getAdminUrl():string
+    {
+        return \App\App::getInstance()->getRouter()->url("admin_user_edit", [
+            "lastname" => $this->getToken(),
+            "id" => $this->getId()
+        ]);
+    }
+    public function deleteUrl():string
+    {
+        return \App\App::getInstance()->getRouter()->url("admin_user_delete", [
+            "lastname" => $this->getToken(),
+            "id" => $this->getId()
+        ]);
+    }
             
     /**
      *  contenu
