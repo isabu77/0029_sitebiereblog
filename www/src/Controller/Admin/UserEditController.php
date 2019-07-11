@@ -44,7 +44,7 @@ class UserEditController extends Controller
                 } else {
                     $_SESSION['error'] = "L'utilisateur n'a pas été modifié";
                 }
-                    header('location: '.$url);
+                header('location: '.$url);
             }
         }
     }

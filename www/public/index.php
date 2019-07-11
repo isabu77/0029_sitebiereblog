@@ -50,30 +50,40 @@ $app->getRouter($basepath)
     ->get('/deletecart', 'Beer#deletecart', 'purchase_deletecart')
     ->post('/deletecart', 'Beer#deletecart', 'purchase_deletecart_post')
     ->post('/getClient', 'Users#getClient', 'getClient')
+    
     ->get('/admin', 'admin\Admin#index', 'admin')
     ->get('/admin/posts', 'admin\Admin#posts', 'admin_posts')
     ->get('/admin/beers', 'admin\Admin#beers', 'admin_beers')
     ->get('/admin/orders', 'admin\Admin#orders', 'admin_orders')
     ->get('/admin/categories', 'admin\Admin#categories', 'admin_categories')
     ->get('/admin/users', 'admin\Admin#users', 'admin_users')
+
+    ->get('/admin/orders/[i:id]', 'admin\Admin#orders', 'admin_orders_get')
+    ->post('/admin/orders/[i:id]', 'admin\Admin#orders', 'admin_orders_post')
+
     ->get('/admin/posts/[*:slug]-[i:id]', 'admin\PostEdit#PostEdit', 'admin_posts_edit')
     ->post('/admin/posts/[*:slug]-[i:id]', 'admin\PostEdit#postUpdate', 'admin_post_update')
     ->get('/admin/post-delete/[*:slug]-[i:id]', 'admin\PostEdit#postDelete', 'admin_post_delete')
     ->get('/admin/postInsert', 'admin\PostEdit#postInsert', 'admin_post_insert')
     ->post('/admin/postInsert', 'admin\PostEdit#postInsert', 'admin_post_insert2')
+    
     ->get('/admin/category/[*:slug]-[i:id]', 'admin\CategoryEdit#categoryEdit', 'admin_category_edit')
     ->get('/admin/category-delete/[*:slug]-[i:id]', 'admin\CategoryEdit#categoryDelete', 'admin_category_delete')
     ->post('/admin/category/[*:slug]-[i:id]', 'admin\CategoryEdit#categoryUpdate', 'admin_category_update')
     ->get('/admin/categoryInsert', 'admin\CategoryEdit#categoryInsert', 'admin_category_insert')
     ->post('/admin/categoryInsert', 'admin\CategoryEdit#categoryInsert', 'admin_category_insert2')
+    
     ->get('/admin/user/[*:token]-[i:id]', 'admin\UserEdit#userEdit', 'admin_user_edit')
     ->get('/admin/user-delete/[*:token]-[i:id]', 'admin\UserEdit#userDelete', 'admin_user_delete')
-    ->post('/admin/user/[*:lastname]-[i:id]', 'admin\UserEdit#userUpdate', 'admin_user_update')
+    ->post('/admin/user/[*:token]-[i:id]', 'admin\UserEdit#userUpdate', 'admin_user_update')
+    
     ->get('/admin/beer/[*:slug]-[i:id]', 'admin\BeerEdit#beerEdit', 'admin_beer_edit')
     ->get('/admin/beer-delete/[*:slug]-[i:id]', 'admin\BeerEdit#beerDelete', 'admin_beer_delete')
     ->post('/admin/beer/[*:slug]-[i:id]', 'admin\BeerEdit#beerUpdate', 'admin_beer_update')
     ->get('/admin/beerInsert', 'admin\BeerEdit#beerInsert', 'admin_beer_insert')
     ->post('/admin/beerInsert', 'admin\BeerEdit#beerInsert', 'admin_beer_insert2')
+    
     ->get('/admin/orders/[i:id]-[i:id_user]', 'admin\OrderEdit#orderEdit', 'admin_order_edit')
+    ->post('/admin/orders/[i:id]-[i:id_user]', 'admin\OrderEdit#orderUpdate', 'admin_order_update')
     ->get('/admin/order-delete/[i:id]-[i:id_user]', 'admin\OrderEdit#orderDelete', 'admin_order_delete')
     ->run();

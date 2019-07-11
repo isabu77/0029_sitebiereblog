@@ -10,6 +10,7 @@ class OrderEditController extends Controller
     {
         $this->loadModel('orders');
         $this->loadModel('orderline');
+        $this->loadModel('status');
     }
 
     public function orderEdit($post=null, $id, $id_user)
@@ -25,23 +26,37 @@ class OrderEditController extends Controller
             exit();
         }
 
+        $statusList = $this->status->all();
+
         $lines = $this->orderline->allInToken($order->getToken());
 
         $title = "Commande n°".$order->getId();
         
         return $this->render("admin/order/orderEdit", [
             "title" => $title,
+            "status" => $statusList,
             "order" => $order,
             "lines" => $lines
         ]);
     }
 
-    public function orderUpdate($post=null, $slug, $id)
+    public function orderUpdate($post=null, $id, $id_user)
     {
-        $order = $this->order->find($id);
-        $url = $this->generateUrl('admin_order_edit', ['slug' => $order->getSlug(), 'id' => $id]);
-        if (isset($post)) {
-            //TODO : changer le status
+         $order = $this->orders->find($id);
+        if (!$order) {
+            throw new \Exception('Aucune commande ne correspond à cet ID');
+        }
+ 
+        $url = $this->generateUrl('admin_order_edit', ['id' => $id, 'id_user' => $order->getIdClient()]);
+
+        if (isset($post["select"])) {
+            //changer le status
+            if ( $this->orders->update($id, ['id_status'  => $post["select"] ])){
+                $_SESSION['success'] = "La commande a bien été modifiée";
+            } else {
+                $_SESSION['error'] = "La commande n'a pas été modifiée";
+            }
+            header('location: '.$url);
         }
     }
 

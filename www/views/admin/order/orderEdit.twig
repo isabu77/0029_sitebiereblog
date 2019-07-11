@@ -8,7 +8,24 @@
     <article class="onePost">
     <h4>Commande n°{{ order.id }}</h4>
     <p>Client n°{{ order.idClient }}</p>
-    <p>Status: {{ order.idStatus}}</p>
+    <div>
+    <form action="" method="post">
+        <p>Etat de la commande</p>
+        </br>
+        <select name="select">
+            {% for one in status %}
+            {% if order.status == one.id %}
+                <option value="{{ one.id }}" selected>{{ one.libelle }}</option>
+                {% else %}
+                <option value="{{ one.id }}">{{ one.libelle }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+        </br>
+        <input type="hidden" name="order_id" value="{{ order.id }}">
+        <button type="submit">Modifier</button>
+    </form>
+    </div>
     <ul>
     {% for product in lines %}
         <li>{{ product.id_product }} - {{ product.quantity }} x {{ product.priceHT | number_format(2, ',', '.') }}€ HT</li>

@@ -8,14 +8,19 @@ use \Core\Model\Table;
  **/
 class OrdersTable extends Table
 {
-    public static $STATUS_ATTENTE = 1;
-    public static $STATUS_ENCOURS = 1;
-    public static $STATUS_LIVREE = 1;
     /**
      * lecture de toutes les commandes d'un client
      */
     public function allInId(int $idClient)
     {
         return $this->query("SELECT * FROM {$this->table} WHERE id_client = {$idClient}");
+    }
+    
+    /**
+     * lecture de toutes les commandes d'un status
+     */
+    public function allInIdStatus(int $idStatus)
+    {
+        return $this->query("SELECT * FROM {$this->table} WHERE id_status = {$idStatus}");
     }
 }

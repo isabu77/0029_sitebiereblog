@@ -41,6 +41,17 @@ class StatusEntity extends Entity
             'id' => $this->getId()
             ]);
     }
+         /**
+     * getUrlOrders()
+     */
+    public function getAdminUrlOrders():string
+    {
+        return \App\App::getInstance()
+            ->getRouter()
+            ->url('admin_orders_post', [
+            'id' => $this->getId()
+            ]);
+    }
             
     /**
      *  contenu

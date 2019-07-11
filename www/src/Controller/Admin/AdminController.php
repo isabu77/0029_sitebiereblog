@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller\Admin;
 
 use \Core\Controller\Controller;
@@ -14,6 +15,7 @@ class AdminController extends Controller
         $this->loadModel('users');
         $this->loadModel('beer');
         $this->loadModel('orders');
+        $this->loadModel('status');
     }
     public function index()
     {
@@ -29,8 +31,8 @@ class AdminController extends Controller
             "category" => $latestCategory,
             "beer" => $latestBeer,
             "user" => $latestUser,
-            "order" =>$latestOrder
-            ]);
+            "order" => $latestOrder
+        ]);
     }
     public function posts()
     {
@@ -39,12 +41,12 @@ class AdminController extends Controller
             $this->generateUrl('admin_posts')
         );
         $postById = $paginatedQuery->getItems();
-        $title = "Posts";
+        $title = "Les articles du blog";
         return $this->render("admin/post/posts", [
             "title" => $title,
             "posts" => $postById,
             "paginate" => $paginatedQuery->getNavHtml()
-            ]);
+        ]);
     }
     public function categories()
     {
@@ -53,21 +55,21 @@ class AdminController extends Controller
             $this->generateUrl('admin_categories')
         );
         $categories = $paginatedQuery->getItems();
-        $title = "Categories";
+        $title = "Les categories du blog";
         return $this->render("admin/category/categories", [
             "title" => $title,
             "categories" => $categories,
             "paginate" => $paginatedQuery->getNavHtml()
-            ]);
+        ]);
     }
     public function users()
     {
         $users = $this->users->allWithoutLimit();
-        $title = "Users";
+        $title = "Les utilisateurs";
         return $this->render("admin/user/users", [
             "title" => $title,
             "users" => $users
-            ]);
+        ]);
     }
     public function beers()
     {
@@ -76,20 +78,29 @@ class AdminController extends Controller
             $this->generateUrl('admin_beers')
         );
         $beers = $paginatedQuery->getItems();
-        $title = "Beers";
+        $title = "Les bières";
         return $this->render("admin/beer/beers", [
             "title" => $title,
             "beers" => $beers,
             "paginate" => $paginatedQuery->getNavHtml()
-            ]);
+        ]);
     }
-    public function orders()
+    public function orders($post = null, $idStatus = 0)
     {
-        $orders = $this->orders->allWithoutLimit();
-        $title = "Orders";
+        if ($idStatus) {
+            $orders = $this->orders->allInIdStatus($idStatus);
+        } else {
+            $orders = $this->orders->allWithoutLimit();
+        }
+
+        $title = "Les commandes";
+
+        $statusList = $this->status->all();
+
         return $this->render("admin/order/orders", [
             "title" => $title,
+            "status" => $statusList,
             "orders" => $orders
-            ]);
+        ]);
     }
 }
