@@ -14,7 +14,7 @@
         </br>
         <select name="select">
             {% for one in status %}
-            {% if order.status == one.id %}
+            {% if order.idStatus == one.id %}
                 <option value="{{ one.id }}" selected>{{ one.libelle }}</option>
                 {% else %}
                 <option value="{{ one.id }}">{{ one.libelle }}</option>

@@ -288,3 +288,12 @@ function selectAdresse(id) {
 
         });
 }
+
+function selectStatus(id) {
+    // var index = document.getElementById("status").selectedIndex;
+    //var id = document.getElementById("status").options[index].value;
+    console.log(id);
+    // appel AJAX pour lancer un post 
+    $.post("/admin/orders/", { idStatus: id },
+        function(data) {});
+}

@@ -6,9 +6,9 @@
 <section class="admin-posts">
     <h2>Liste des commandes</h2>
     <p>Sélectionnez un état</p>
-    <ul>
+    <ul id="status">
         {% for one in status %}
-            <li><a href="{{ one.AdminUrlOrders }}">{{ one.libelle }}</a></li>
+            <li class="lien"><a href="{{ one.AdminUrlOrders }}">{{ one.libelle }}</a></li>
         {% endfor %}
     </ul>
 {% for order in orders %}

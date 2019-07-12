@@ -42,11 +42,11 @@ class OrderEditController extends Controller
 
     public function orderUpdate($post=null, $id, $id_user)
     {
-         $order = $this->orders->find($id);
+        $order = $this->orders->find($id);
         if (!$order) {
             throw new \Exception('Aucune commande ne correspond à cet ID');
         }
- 
+
         $url = $this->generateUrl('admin_order_edit', ['id' => $id, 'id_user' => $order->getIdClient()]);
 
         if (isset($post["select"])) {
