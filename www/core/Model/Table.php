@@ -4,9 +4,9 @@ namespace Core\Model;
 use \Core\Controller\Database\DatabaseController;
 
 /**
- *  Classe Table : accès aux tables
+ *  Classe Table : accès aux tables (classe abstraite ne pouvant pas être instanciée seule)
  **/
-class Table
+abstract class Table
 {
     /**
      * @var db : DatabaseController
@@ -30,12 +30,36 @@ class Table
     {
         $this->db = $db;
         if (is_null($this->table)) {
-            $parts = explode('\\', get_class($this));
-            // nom de la classe dont on crée une instance
-            $class_name = end($parts);
-            // nom de la table en base
-            $this->table = strtolower(str_replace('Table', '', $class_name));
+            $this->table = $this->extractTableName();
         }
+    }
+
+    /**
+     * extractTableName : 
+     */
+    public function extractTableName(): string
+    {
+            // App\Model\Table\ClassMachinTable
+            $parts = explode('\\', get_class($this));
+            // [ "App", "Model", "Table", "ClassMachinTable"]
+
+            // nom de la classe dont on crée une instance : ClassMachinTable
+            $class_name = end($parts);
+
+            // retirer "Table" pour obtenir le nom de la table en base : ClassMachin 
+            $class_name = str_replace('Table', '', $class_name);
+
+            // insérer l'underscore dans le nom de table s'il y a une majuscule :
+            $new_name = $class_name[0];
+            for ($i = 1 ; $i < strlen($class_name) ; $i++){
+                if (ctype_upper($class_name[$i])){
+                    $new_name .= '_';
+                }
+                $new_name .= $class_name[$i];
+            }
+            // mettre en minuscules : class_machin
+            return strtolower($new_name);
+
     }
     /**
      * exécution de la requête à la base
@@ -106,8 +130,13 @@ class Table
 
     public function latestById()
     {
-        $id = $this->query("SELECT id FROM {$this->table} ORDER BY id DESC LIMIT 1", null, true, null)->getId();
-        return $this->query("SELECT * FROM {$this->table} WHERE id = ?", [$id], true, null);
+        $id = $this->query("SELECT id FROM {$this->table} ORDER BY id DESC LIMIT 1", null, true, null);
+        if ($id){
+            $id = $id->getId();
+            return $this->query("SELECT * FROM {$this->table} WHERE id = ?", [$id], true, null);
+        }else {
+            return null;
+        }
     }
 
     public function allWithoutLimit()
