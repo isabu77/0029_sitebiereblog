@@ -46,7 +46,7 @@ class PostTable extends Table
             return parent::count();
         } else {
             return $this->query("SELECT COUNT(id) as nbrow FROM {$this->table} as p 
-                    JOIN post_category as pc ON pc.post_id = p.id 
+                    JOIN {$this->prefix}post_category as pc ON pc.post_id = p.id 
                     WHERE pc.category_id = {$id}", null, true);
         }
     }
@@ -59,7 +59,7 @@ class PostTable extends Table
 
         $posts = $this->query("
         SELECT * FROM {$this->table} as p 
-                JOIN post_category as pc ON pc.post_id = p.id 
+                JOIN  {$this->prefix}post_category  as pc ON pc.post_id = p.id 
                 WHERE pc.category_id = {$idCategory}
                 LIMIT {$limit} OFFSET {$offset} ", null);
 
@@ -84,7 +84,7 @@ class PostTable extends Table
     public function allInIdByThird(int $id)
     {
         $posts = $this->query("SELECT * FROM {$this->table} as p
-            JOIN post_category as pc ON pc.post_id = p.id
+            JOIN {$this->prefix}post_category as pc ON pc.post_id = p.id
             WHERE pc.category_id = {$id}
             LIMIT 3");
         $ids = array_map(function (PostEntity $post) {

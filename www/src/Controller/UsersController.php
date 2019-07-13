@@ -4,8 +4,8 @@ namespace App\Controller;
 use \Core\Controller\Controller;
 use \Core\Controller\Helpers\MailController;
 use \Core\Controller\Helpers\TextController;
-use App\Model\Entity\UsersEntity;
-use App\Model\Entity\ClientEntity;
+use App\Model\Entity\UserEntity;
+use App\Model\Entity\UserInfosEntity;
 
 class UsersController extends Controller
 {
@@ -14,11 +14,11 @@ class UsersController extends Controller
      */
     public function __construct()
     {
-        // crée une instance de la classe UsersTable dans la propriété
+        // crée une instance de la classe UserTable dans la propriété
         // $this->users qui est créée dynamiquement
-        $this->loadModel('users');
-        $this->loadModel('client');
-        $this->loadModel('orders');
+        $this->loadModel('user');
+        $this->loadModel('userInfos');
+        $this->loadModel('order');
     }
 
     public function subscribe($post)
@@ -44,14 +44,14 @@ class UsersController extends Controller
     {
         if (isset($post["mail"]) && !empty($post["mail"])) {
             // vérifier l'existence du user en base
-            $user = $this->users->getUserByMail($post["mail"]);
+            $user = $this->user->getUserByMail($post["mail"]);
             if ($user) {
                 // générer un nouveau mot de passe à sauvegarder dans la table users
                 $passwordrdn = rand();
                 $password = password_hash($passwordrdn, PASSWORD_BCRYPT);
 
                 // modification des infos du user dans la base
-                $res = $this->users->update($user->getId(), ["password" => $password]);
+                $res = $this->user->update($user->getId(), ["password" => $password]);
                 if ($res) {
                     // envoyer nouveau mot de passe
                     $res = MailController::sendMail(
@@ -109,10 +109,10 @@ class UsersController extends Controller
                         $post["mail"] == $post["mailVerify"]) && ($post["password"] == $post["passwordVerify"])
                 ) {
                     // créer l'objet users
-                    $userEntity = new UsersEntity($post);
+                    $userEntity = new UserEntity($post);
 
                     // vérifier l'existence du user en base
-                    $user = $this->users->getUserByMail($userEntity->getMail());
+                    $user = $this->user->getUserByMail($userEntity->getMail());
 
                     if (!$user) {
                         // il n'existe pas : insertion en base
@@ -128,13 +128,13 @@ class UsersController extends Controller
                                 "verify"       => 0
                             ];
 
-                        $userId = $this->users->insert($attributes);
+                        $userId = $this->user->insert($attributes);
 
                         if ($userId) {
                             // insérer l'objet en base dans la table clients
 
                             // créer l'objet client
-                            $clientEntity = new ClientEntity($post);
+                            $clientEntity = new UserInfosEntity($post);
 
                             $attributes =
                             [
@@ -147,9 +147,9 @@ class UsersController extends Controller
                                 "country"      => htmlspecialchars($clientEntity->getCountry()),
                                 "phone"        => htmlspecialchars($clientEntity->getPhone())
                             ];
-                            $clientId = $this->client->insert($attributes);
+                            $clientId = $this->userInfos->insert($attributes);
 
-                            $user = $this->users->find($userId);
+                            $user = $this->user->find($userId);
 
                             // envoyer le mail de confirmation
                             $texte = ["html" => '<h1>Bienvenue sur notre site Beer Shop'
@@ -201,12 +201,12 @@ class UsersController extends Controller
             if (isset($idUser) && !empty($idUser) &&
                 isset($token) && !empty($token)
             ) {
-                $user = $this->users->find($idUser);
+                $user = $this->user->find($idUser);
 
                 if ($user) {
                     if ($user->getToken() == $token) {
                         // validation en base
-                        $res = $this->users->update($user->getId(), ["verify" => 1]);
+                        $res = $this->user->update($user->getId(), ["verify" => 1]);
                         if ($res) {
                             $_SESSION['success'] = 'Votre inscription est validée, vous pouvez vous connecter.';
                             // Page de connexion
@@ -240,10 +240,10 @@ class UsersController extends Controller
     {
         if (!empty($post)) {
             // créer l'objet users
-            $userEntity = new UsersEntity($post);
+            $userEntity = new UserEntity($post);
 
             // vérifier l'existence du user en base
-            $user = $this->users->getUserByMail($userEntity->getMail());
+            $user = $this->user->getUserByMail($userEntity->getMail());
             // vérifier le mot de passe de l'objet en base
             if ($user  && !empty($userEntity->getPassword())
                 && password_verify(htmlspecialchars($userEntity->getPassword()), $user->getPassword())
@@ -315,7 +315,7 @@ class UsersController extends Controller
         if (!empty($post)) {
             if (isset($post["idClient"])) {
                 // lecture en base des clients du user
-                $client = $this->client->find($post["idClient"]);
+                $client = $this->userInfos->find($post["idClient"]);
                 echo json_encode($client->getProperties());
             }
         }
@@ -337,9 +337,9 @@ class UsersController extends Controller
                 && isset($post["id"]) && !empty($post["id"])
             ) {
                 // suppression du client id s'il n'a pas de commandes
-                $orders = $this->orders->allInId($post["id"]);
+                $orders = $this->order->allInId($post["id"]);
                 if (!count($orders)) {
-                    $this->client->delete($post["id"]);
+                    $this->userInfos->delete($post["id"]);
                     $_SESSION['success'] = "L'adresse a bien été supprimée.";
                     $idClient = null;
                 } else {
@@ -350,7 +350,7 @@ class UsersController extends Controller
                 isset($post["passwordVerify"]) && !empty($post["passwordVerify"])
             ) {
                 // vérifier l'existence du user en base
-                $user = $this->users->getUserByMail($userConnect->getMail());
+                $user = $this->user->getUserByMail($userConnect->getMail());
                 // vérifier le mot de passe de l'objet en base
                 if ($user  && !empty($post["passwordOld"])
                     && password_verify(htmlspecialchars($post["passwordOld"]), $user->getPassword())
@@ -360,7 +360,7 @@ class UsersController extends Controller
                         // modification du mot de passe en base
                         $password = password_hash(htmlspecialchars($post["password"]), PASSWORD_BCRYPT);
 
-                        $res = $this->users->update($userConnect->getId(), ["password" => $password]);
+                        $res = $this->user->update($userConnect->getId(), ["password" => $password]);
 
                         if ($res) {
                             //message modif ok
@@ -386,10 +386,10 @@ class UsersController extends Controller
             ) {
                 if ($userConnect) {
                     // update des coordonnées dans la table client
-                    //$clients = $this->client->getClientsByUserId($userConnect->getId());
-                    $client = $this->client->find($post["id"]);
+                    //$clients = $this->userInfos->getClientsByUserId($userConnect->getId());
+                    $client = $this->userInfos->find($post["id"]);
                     $post['id_user'] = $userConnect->getId();
-                    $res = $this->client->update($client->getId(), $post);
+                    $res = $this->userInfos->update($client->getId(), $post);
                     if ($res) {
                         //message modif ok
                         $_SESSION['success'] = 'Votre profil a bien été modifié';
@@ -402,19 +402,19 @@ class UsersController extends Controller
 
  
         // lire les clients associés à l'utilisateur (plusieurs adresses)
-        $clients = $this->client->getClientsByUserId($userConnect->getId());
+        $clients = $this->userInfos->getClientsByUserId($userConnect->getId());
         
         // les commandes du client affiché
         $orders = [];
         if ($idClient) {
-            $client = $this->client->find($idClient);
+            $client = $this->userInfos->find($idClient);
         } else {
             if ($clients[0]) {
-                $client = $this->client->find($clients[0]->getId());
+                $client = $this->userInfos->find($clients[0]->getId());
             }
         }
         if ($client) {
-            $orders = $this->orders->allinId($client->getId());
+            $orders = $this->order->allinId($client->getId());
         }
 
         $title = 'Profil';

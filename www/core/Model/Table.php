@@ -8,6 +8,8 @@ use \Core\Controller\Database\DatabaseController;
  **/
 abstract class Table
 {
+    protected $prefix;
+
     /**
      * @var db : DatabaseController
      * @access protected
@@ -29,6 +31,8 @@ abstract class Table
     public function __construct(DatabaseController $db = null)
     {
         $this->db = $db;
+        $this->prefix = (string)\App\App::getInstance()->getEnv('TABLE_PREFIX');
+
         if (is_null($this->table)) {
             $this->table = $this->extractTableName();
         }
@@ -52,7 +56,7 @@ abstract class Table
             $class_name = str_replace('Table', '', $class_name);
 
             // insérer l'underscore dans le nom de table s'il y a une majuscule :
-            $new_name = $class_name[0];
+            $new_name = $this->prefix.$class_name[0];
         for ($i = 1; $i < strlen($class_name); $i++) {
             if (ctype_upper($class_name[$i])) {
                 $new_name .= '_';

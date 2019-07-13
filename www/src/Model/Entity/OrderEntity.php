@@ -7,7 +7,7 @@ use \Core\Model\Entity;
 /**
  *  Classe Orders : une commande de bières
  **/
-class OrdersEntity extends Entity
+class OrderEntity extends Entity
 {
     private $id;
     private $id_client;

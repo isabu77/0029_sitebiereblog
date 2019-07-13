@@ -173,17 +173,17 @@ docker exec blog php commande/createsql.php
     Table/StatusTable.php : requêtes à la table des états des commandes de bières
     Entity/StatusEntity.php : Description d'un enregistrement de la table desétats des commandes de bières
 
-    Table/OrdersTable.php : requêtes à la table des commandes de bières
-    Entity/OrdersEntity.php : Description d'un enregistrement de la table des commandes de bières
+    Table/OrderTable.php : requêtes à la table des commandes de bières
+    Entity/OrderEntity.php : Description d'un enregistrement de la table des commandes de bières
 
-    Table/OrderlineTable.php : requêtes à la table des lignes de commandes de bières
-    Entity/OrderlineEntity.php : Description d'un enregistrement de la table des lignes de commandes de bières
+    Table/OrderLineTable.php : requêtes à la table des lignes de commandes de bières
+    Entity/OrderLineEntity.php : Description d'un enregistrement de la table des lignes de commandes de bières
     
-    Table/UsersTable.php : requêtes à la table des utilisateurs de la boutique de bières
-    Entity/UsersEntity.php : Description d'un enregistrement de la table des utilisateurs de la boutique de bières
+    Table/UserTable.php : requêtes à la table des utilisateurs de la boutique de bières
+    Entity/UserEntity.php : Description d'un enregistrement de la table des utilisateurs de la boutique de bières
     
-    Table/ClientTable.php : requêtes à la table des clients de la boutique de bières
-    Entity/ClientEntity.php : Description d'un enregistrement de la table des clients de la boutique de bières
+    Table/UserInfosTable.php : requêtes à la table des clients de la boutique de bières
+    Entity/UserInfosEntity.php : Description d'un enregistrement de la table des clients de la boutique de bières
 
 
 ##### www/views : les vues HTML des pages de l'application 
@@ -193,7 +193,7 @@ docker exec blog php commande/createsql.php
 
 - www/views/category : templates .twig des pages pour les catégories (all.twig et show.twig)
 - www/views/post : templates .twig des pages pour les articles (card.twig, all.twig et show.twig)
-- www/views/beer : templates .twig des pages pour les bières (index.twig, cgv.twig, all.twig , mentions.twig, puchase.twig, purchaseconfirm.twig, cart.twig)
+- www/views/beer : templates .twig des pages pour les bières (index.twig, cgv.twig, all.twig , mentions.twig, puchase.twig, orderconfirm.twig, cart.twig)
 - www/views/users : templates .twig des pages pour les clients du site bières (connexion.twig, inscription.twig, contact.twig, profil.twig, resetpwd.twig)
 
 

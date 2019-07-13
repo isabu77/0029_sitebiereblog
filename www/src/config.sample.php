@@ -1,6 +1,7 @@
 <?php
 $env = [
     'ENV_DEV' => true,
+    'TABLE_PREFIX' => 'blog_',
     'MYSQL_HOSTNAME' => 'blog.mysql',
     'MYSQL_ROOT_PASSWORD' => 'blog',
     'MYSQL_DATABASE' => 'blog',

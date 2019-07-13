@@ -92,7 +92,7 @@
 		<tbody>
     {% for cmd in orders %}
 			<tr>
-                <td><a href='/purchaseconfirm/{{ cmd.id }}'>Commande n°{{ cmd.id }}</a></td>
+                <td><a href='/orderconfirm/{{ cmd.id }}'>Commande n°{{ cmd.id }}</a></td>
                 <td>{{ cmd.priceTTC|number_format(2, ',' ,'.') }} €</td>
                 <td>{{ cmd.getIdStatus() }}</td>
 {#                <form action="/profil" method="POST">

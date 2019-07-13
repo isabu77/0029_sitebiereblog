@@ -117,26 +117,26 @@ body #boutiques .bieres .price {
     text-align: right;
 }
 
-body #formPurchase .form label {
+body #formOrder .form label {
     display: block;
 }
 
-body #formPurchase .form input {
+body #formOrder .form input {
     width: 100%;
     border: 1px solid black;
 }
 
-body #formPurchase table {
+body #formOrder table {
     width: 100%;
     margin: auto;
 }
 
-body #formPurchase table tr th {
+body #formOrder table tr th {
     font-family: initial;
     text-align: center;
 }
 
-body #formPurchase table tr td {
+body #formOrder table tr td {
     font-family: initial;
     text-align: center;
 }
@@ -333,11 +333,11 @@ form textarea:hover {
         width: 80% !important;
     }
     /* PURCHASE_ORDER */
-    #formPurchase .form_row {
+    #formOrder .form_row {
         display: flex;
         justify-content: space-between;
     }
-    #formPurchase table {
+    #formOrder table {
         width: 100%;
     }
     /* FIN PURCHASE_ORDER

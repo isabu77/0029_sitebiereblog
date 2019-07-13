@@ -3,12 +3,12 @@ namespace App\Model\Table;
 
 use \Core\Model\Table;
 use \Core\Controller\Helpers\TextController;
-use App\Model\Entity\ClientEntity;
+use App\Model\Entity\UserInfosEntity;
 
 /**
- *  Classe ClientTable : accès à la table client
+ *  Classe UserInfosTable : accès à la table client
  **/
-class ClientTable extends Table
+class UserInfosTable extends Table
 {
         /**
      * cherche les clients associés à un id user
@@ -16,6 +16,6 @@ class ClientTable extends Table
      */
     public function getClientsByUserId($id)
     {
-        return $this->query(" SELECT * FROM client WHERE `id_user`  = ?", [$id], false);
+        return $this->query(" SELECT * FROM {$this->table} WHERE `id_user`  = ?", [$id], false);
     }
 }

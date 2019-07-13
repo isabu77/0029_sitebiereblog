@@ -12,7 +12,7 @@ class CommentTable extends Table
 
     public function post($post_id, $user_id, $name, $content)
     {
-        $sql = "INSERT INTO `comment` 
+        $sql = "INSERT INTO {$this->table} 
         (`post_id`, `user_id`, `name`, `content`) 
         VALUES ( :post_id, :user_id, :name, :content)";
         $attributes = [

@@ -11,7 +11,7 @@ class BeerTable extends Table
 {
     public function insertBeer($name, $slug, $img, $content, $price)
     {
-        $sql = "INSERT INTO `beer` 
+        $sql = "INSERT INTO {$this->table} 
         (`name`, `slug`, `img`, `content`, `price`) 
         VALUES ( :name, :slug, :img, :content, :price)";
         $attributes = [

@@ -2,20 +2,20 @@
 namespace App\Controller\Admin;
 
 use \Core\Controller\Controller;
-use \src\Model\Table\OrderlineTable;
+use \src\Model\Table\OrderLineTable;
 
 class OrderEditController extends Controller
 {
     public function __construct()
     {
-        $this->loadModel('orders');
-        $this->loadModel('orderline');
+        $this->loadModel('order');
+        $this->loadModel('orderLine');
         $this->loadModel('status');
     }
 
     public function orderEdit($post, $id, $id_user)
     {
-        $order = $this->orders->find($id);
+        $order = $this->order->find($id);
         if (!$order) {
             throw new \Exception('Aucune commande ne correspond à cet ID');
         }
@@ -28,7 +28,7 @@ class OrderEditController extends Controller
 
         $statusList = $this->status->all();
 
-        $lines = $this->orderline->allInToken($order->getToken());
+        $lines = $this->orderLine->allInToken($order->getToken());
 
         $title = "Commande n°".$order->getId();
         
@@ -42,7 +42,7 @@ class OrderEditController extends Controller
 
     public function orderUpdate($post, $id, $id_user)
     {
-        $order = $this->orders->find($id);
+        $order = $this->order->find($id);
         if (!$order) {
             throw new \Exception('Aucune commande ne correspond à cet ID');
         }
@@ -51,7 +51,7 @@ class OrderEditController extends Controller
 
         if (isset($post["select"])) {
             //changer le status
-            if ($this->orders->update($id, ['id_status'  => $post["select"] ])) {
+            if ($this->order->update($id, ['id_status'  => $post["select"] ])) {
                 $_SESSION['success'] = "La commande a bien été modifiée";
             } else {
                 $_SESSION['error'] = "La commande n'a pas été modifiée";
@@ -63,16 +63,16 @@ class OrderEditController extends Controller
     public function orderDelete($post, $id, $id_user)
     {
 
-        $order = $this->orders->find($id);
+        $order = $this->order->find($id);
         if (!$order) {
             throw new \Exception('Aucune commande ne correspond à cet ID');
         }
-        $lines = $this->orderline->allInToken($order->getToken());
+        $lines = $this->orderLine->allInToken($order->getToken());
         foreach ($lines as $line) {
-            $this->orderline->delete($line->getId());
+            $this->orderLine->delete($line->getId());
         }
 
-        $this->orders->delete($id);
+        $this->order->delete($id);
 
         header('location: /admin/orders');
     }

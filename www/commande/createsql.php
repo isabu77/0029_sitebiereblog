@@ -4,7 +4,11 @@ $basepath = dirname(__dir__) . DIRECTORY_SEPARATOR; // contient /var/www/
 
 require_once $basepath . 'vendor/autoload.php';
 
-$pdo = new PDO('mysql:host=blog.mysql;dbname=blog', 'userblog', 'blogpwd');
+require '.'. DIRECTORY_SEPARATOR. 'src'. DIRECTORY_SEPARATOR . 'config.php';
+
+$sql = "mysql:host=" . $env['MYSQL_HOSTNAME'] . ";dbname=" . $env['MYSQL_DATABASE'];
+$pdo = new PDO($sql, $env['MYSQL_USER'], $env['MYSQL_PASSWORD'] );
+$prefix = $env['TABLE_PREFIX'];
 
 /**
  * suppression des tables
@@ -12,24 +16,42 @@ $pdo = new PDO('mysql:host=blog.mysql;dbname=blog', 'userblog', 'blogpwd');
  */
 $pdo->exec('SET FOREIGN_KEY_CHECKS = 0');
 //blog
+$etape = $pdo->exec("DROP TABLE {$prefix}post_category");
+$etape = $pdo->exec("DROP TABLE {$prefix}post");
+$etape = $pdo->exec("DROP TABLE {$prefix}category");
+$etape = $pdo->exec("DROP TABLE {$prefix}comment");
+
+//utilisateurs
+$etape = $pdo->exec("DROP TABLE {$prefix}user");
+$etape = $pdo->exec("DROP TABLE {$prefix}user_infos");
+
+//shop
+$etape = $pdo->exec("DROP TABLE {$prefix}config");
+$etape = $pdo->exec("DROP TABLE {$prefix}beer");
+
+//order
+$etape = $pdo->exec("DROP TABLE {$prefix}status");
+$etape = $pdo->exec("DROP TABLE {$prefix}order");
+$etape = $pdo->exec("DROP TABLE {$prefix}order_line");
+
+// anciennes tables obsolètes
 $etape = $pdo->exec("DROP TABLE post_category");
 $etape = $pdo->exec("DROP TABLE post");
 $etape = $pdo->exec("DROP TABLE category");
-$etape = $pdo->exec('DROP TABLE comments');
-
-//utilisateurs
+$etape = $pdo->exec('DROP TABLE comment');
+$etape = $pdo->exec("DROP TABLE user");
+$etape = $pdo->exec("DROP TABLE user_infos");
+$etape = $pdo->exec("DROP TABLE config");
+$etape = $pdo->exec("DROP TABLE beer");
+$etape = $pdo->exec("DROP TABLE status");
+$etape = $pdo->exec("DROP TABLE order");
+$etape = $pdo->exec("DROP TABLE order_line");
+$etape = $pdo->exec("DROP TABLE orderline");
+$etape = $pdo->exec("DROP TABLE order_line");
+$etape = $pdo->exec("DROP TABLE orders");
 $etape = $pdo->exec("DROP TABLE userblog");
 $etape = $pdo->exec("DROP TABLE users");
 $etape = $pdo->exec("DROP TABLE client");
-
-//shop
-$etape = $pdo->exec("DROP TABLE config");
-$etape = $pdo->exec("DROP TABLE beer");
-
-//order
-$etape = $pdo->exec("DROP TABLE status");
-$etape = $pdo->exec("DROP TABLE orders");
-$etape = $pdo->exec("DROP TABLE orderline");
 
 $pdo->exec('SET FOREIGN_KEY_CHECKS = 1'); 
 
@@ -39,7 +61,7 @@ $pdo->exec('SET FOREIGN_KEY_CHECKS = 1');
  */
 echo "[";
 
-$etape = $pdo->exec("CREATE TABLE post(
+$etape = $pdo->exec("CREATE TABLE {$prefix}post(
             id INT UNSIGNED NOT NULL AUTO_INCREMENT,
             name VARCHAR(255) NOT NULL,
             slug VARCHAR(255) NOT NULL,
@@ -48,7 +70,7 @@ $etape = $pdo->exec("CREATE TABLE post(
             PRIMARY KEY(id)
         )");
 echo "-||-" . $etape;
-$etape = $pdo->exec("CREATE TABLE category(
+$etape = $pdo->exec("CREATE TABLE {$prefix}category(
             id INT UNSIGNED NOT NULL AUTO_INCREMENT,
             name VARCHAR(255) NOT NULL,
             slug VARCHAR(255) NOT NULL,
@@ -56,24 +78,24 @@ $etape = $pdo->exec("CREATE TABLE category(
         )");
 echo "-||-" . $etape;
 
-$pdo->exec("CREATE TABLE post_category(
+$pdo->exec("CREATE TABLE {$prefix}post_category(
             post_id INT UNSIGNED NOT NULL,
             category_id INT UNSIGNED NOT NULL,
             PRIMARY KEY(post_id, category_id),
             CONSTRAINT fk_post
                 FOREIGN KEY(post_id)
-                REFERENCES post(id)
+                REFERENCES {$prefix}post(id)
                 ON DELETE CASCADE
                 ON UPDATE RESTRICT,
             CONSTRAINT fk_category
                 FOREIGN KEY(category_id)
-                REFERENCES category(id)
+                REFERENCES {$prefix}category(id)
                 ON DELETE CASCADE
                 ON UPDATE RESTRICT
         )");
 echo "-||-" . $etape;
 
-$pdo->exec("CREATE TABLE comment (
+$pdo->exec("CREATE TABLE {$prefix}comment (
     `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `post_id` INT not null,
     `user_id` INT not null,
@@ -81,21 +103,15 @@ $pdo->exec("CREATE TABLE comment (
     `content` TEXT(65000) NOT null,
     `postedAt` datetime default CURRENT_TIMESTAMP
     )");
-echo "||";
-
-$etape = $pdo->exec("CREATE TABLE userblog(
-    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    username VARCHAR(255) NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    PRIMARY KEY(id)
-)");
 echo "-||-" . $etape;
+
+
 
 //=================== le site bière
 
 // la table de configuration
 
-$etape = $pdo->exec("CREATE TABLE `config` (
+$etape = $pdo->exec("CREATE TABLE {$prefix}config (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `date` timestamp NULL DEFAULT current_timestamp(),
     `tva` float NOT NULL,
@@ -107,7 +123,7 @@ echo "-||-" . $etape;
 
 // la table des bières
 
-$etape = $pdo->exec("CREATE TABLE `beer` (
+$etape = $pdo->exec("CREATE TABLE {$prefix}beer (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `title` varchar(255) NOT NULL,
     `img` text NOT NULL,
@@ -120,7 +136,7 @@ echo "-||-" . $etape;
 
 // la table des status de commandes
 
-$etape = $pdo->exec("CREATE TABLE `status` (
+$etape = $pdo->exec("CREATE TABLE {$prefix}status (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `libelle` varchar(24) NOT NULL,
             PRIMARY KEY(id)
@@ -129,7 +145,7 @@ echo "-||-" . $etape;
 
 // la table des commandes
 
-$etape = $pdo->exec("CREATE TABLE `orders` (
+$etape = $pdo->exec("CREATE TABLE {$prefix}order (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `id_client` int(11) NOT NULL,
     `token` varchar(24) NOT NULL,
@@ -144,7 +160,7 @@ echo "-||-" . $etape;
 
 // la table des lignes de commande
 
-$etape = $pdo->exec("CREATE TABLE `orderline` (
+$etape = $pdo->exec("CREATE TABLE {$prefix}order_line (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `id_user` int(11) NOT NULL,
     `id_product` int(11) NOT NULL,
@@ -156,8 +172,8 @@ $etape = $pdo->exec("CREATE TABLE `orderline` (
   ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 echo "-||-" . $etape;
 
-// les adresses de clients
-$etape = $pdo->exec("CREATE TABLE `client` (
+// les adresses user_infos
+$etape = $pdo->exec("CREATE TABLE {$prefix}user_infos (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `id_user` int(11),
     `lastname` varchar(255) NOT NULL,
@@ -172,7 +188,7 @@ $etape = $pdo->exec("CREATE TABLE `client` (
 echo "-||-" . $etape;
 
 // les utilisateurs connectés
-$etape = $pdo->exec("CREATE TABLE `users` (
+$etape = $pdo->exec("CREATE TABLE {$prefix}user (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `mail` varchar(255) NOT NULL,
     `password` varchar(255) NOT NULL,
@@ -191,29 +207,27 @@ echo "-||-" . $etape;
 /* $pdo->exec('SET FOREIGN_KEY_CHECKS = 0');
 $pdo->exec('TRUNCATE TABLE post_category');
 $pdo->exec('TRUNCATE TABLE post');
-$pdo->exec('TRUNCATE TABLE userblog');
 $pdo->exec('TRUNCATE TABLE category');
 $pdo->exec('TRUNCATE TABLE config');
 $pdo->exec('TRUNCATE TABLE beer');
 $pdo->exec('TRUNCATE TABLE status');
-$pdo->exec('TRUNCATE TABLE orders');
-$pdo->exec('TRUNCATE TABLE orderline');
-$pdo->exec('TRUNCATE TABLE users');
-$pdo->exec('TRUNCATE TABLE clients');
+$pdo->exec('TRUNCATE TABLE order');
+$pdo->exec('TRUNCATE TABLE order_line');
+$pdo->exec('TRUNCATE TABLE user');
+$pdo->exec('TRUNCATE TABLE client');
 $pdo->exec('SET FOREIGN_KEY_CHECKS = 1'); 
 */
 
 echo "||||||||||||";
 $faker = Faker\Factory::create('fr_FR');
-echo "-||-" . $etape;
+echo "-- INSERT --";
 
 $posts = [];
 $categories = [];
-echo "====";
 
 // post
 for ($i = 0; $i < 50; $i++) {
-    $pdo->exec("INSERT INTO post SET
+    $pdo->exec("INSERT INTO {$prefix}post SET
         name='{$faker->sentence()}',
         slug='{$faker->slug}',
         created_at ='{$faker->date} {$faker->time}',
@@ -224,7 +238,7 @@ for ($i = 0; $i < 50; $i++) {
 
 // category
 for ($i = 0; $i < 20; $i++) {
-    $pdo->exec("INSERT INTO category SET
+    $pdo->exec("INSERT INTO {$prefix}category SET
         name='{$faker->sentence(3, false)}',
         slug='{$faker->slug}'");
     $categories[] = $pdo->lastInsertId();
@@ -235,7 +249,7 @@ for ($i = 0; $i < 20; $i++) {
 foreach ($posts as $post) {
     $randomCategories = $faker->randomElements($categories, 2);
     foreach ($randomCategories as $category) {
-        $pdo->exec("INSERT INTO post_category SET
+        $pdo->exec("INSERT INTO {$prefix}post_category SET
                             post_id={$post},
                             category_id={$category}");
         echo "|";
@@ -244,22 +258,16 @@ foreach ($posts as $post) {
 
 // userblog
 $password = password_hash('admin', PASSWORD_BCRYPT);
-echo "||";
-$pdo->exec("INSERT INTO userblog SET
-        username='admin',
-        password='{$password}'");
-echo "-||-";
-
 $token = substr(md5(uniqid()), 0, 24);
-echo "||";
-$pdo->exec("INSERT INTO users SET
+echo "-||-";
+$pdo->exec("INSERT INTO {$prefix}user SET
         mail='admin@admin.fr',
         password ='{$password}',
         token = 'ADMIN',
         verify = 1
         ");
 
-$pdo->exec("INSERT INTO `beer` (`id`, `title`, `img`, `content`, `price`, `stock`) VALUES
+$pdo->exec("INSERT INTO {$prefix}beer (`id`, `title`, `img`, `content`, `price`, `stock`) VALUES
 (1, 'La Chouffe', 'https://www.beerwulf.com/globalassets/catalog/beerwulf/beers/la-chouffe-blonde-d-ardenne_opt.png?h=500&rev=899257661', 'Bière dorée légèrement trouble à mousse dense, avec un parfum épicé aux notes d’agrumes et de coriandre qui ressortent également au goût.', 1.91, 10),
 (2, 'Duvel', 'https://www.beerwulf.com/globalassets/catalog/beerwulf/beers/duvel_opt.png?h=500&rev=899257661', 'Robe jaune pâle, légèrement trouble, avec une mousse blanche incroyablement riche. L’arôme associe le citron jaune, le citron vert et les épices. La saveur incorpore des agrumes frais, le sucre de l’alcool et une note épicée due au houblon qui tire sur le poivre. En dépit de son taux d’alcool, c’est une bière fraîche qui se déguste facilement. ', 1.66, 10),
 (3, 'Duvel Tripel Hop', 'https://www.beerwulf.com/globalassets/catalog/beerwulf/beers/duvel-tripel-hop-citra.png?h=500&rev=39990364', 'Une variété supplémentaire de houblon est ajoutée à cette Duvel traditionnelle. Le HBC 291 lui procure un caractère légèrement plus épicé et poivré. Cette bière présente un fort taux d’alcool mais reste très facile à déguster grâce à ses arômes d’agrumes frais et acides, entre autres.', 2.24, 10),
@@ -272,18 +280,16 @@ $pdo->exec("INSERT INTO `beer` (`id`, `title`, `img`, `content`, `price`, `stock
 
 echo "-||-";
 
-$pdo->exec("INSERT INTO `config` (`tva` , `port`, `ship_limit`) VALUES
+$pdo->exec("INSERT INTO {$prefix}config (`tva` , `port`, `ship_limit`) VALUES
 (1.2, 5.4, 30)
 ");
 echo "-||-";
 
-$pdo->exec("INSERT INTO `status` (`libelle`) VALUES
+$pdo->exec("INSERT INTO {$prefix}status (`libelle`) VALUES
 ('En attente de paiement'),
 ('En cours de préparation'),
 ('Expédiée'),
 ('Terminée')
 ");
 
-echo "-||-";
-
-echo "||]";
+echo "-||]";

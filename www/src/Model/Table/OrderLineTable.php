@@ -4,9 +4,9 @@ namespace App\Model\Table;
 use \Core\Model\Table;
 
 /**
- *  Classe OrdersTable : accès à la table Orders
+ *  Classe OrderTable : accès à la table Orders
  **/
-class OrderlineTable extends Table
+class OrderLineTable extends Table
 {
     /**
      * lecture de toutes les lignes d'une commande

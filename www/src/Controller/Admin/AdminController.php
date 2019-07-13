@@ -12,18 +12,18 @@ class AdminController extends Controller
     {
         $this->loadModel('post');
         $this->loadModel('category');
-        $this->loadModel('users');
+        $this->loadModel('user');
         $this->loadModel('beer');
-        $this->loadModel('orders');
+        $this->loadModel('order');
         $this->loadModel('status');
     }
     public function index()
     {
         $latestPost = $this->post->latestById();
         $latestCategory = $this->category->latestById();
-        $latestUser = $this->users->latestById();
+        $latestUser = $this->user->latestById();
         $latestBeer = $this->beer->latestById();
-        $latestOrder = $this->orders->latestById();
+        $latestOrder = $this->order->latestById();
         $title = "Administration";
         return $this->render("admin/index", [
             "title" => $title,
@@ -64,7 +64,7 @@ class AdminController extends Controller
     }
     public function users()
     {
-        $users = $this->users->allWithoutLimit();
+        $users = $this->user->allWithoutLimit();
         $title = "Les utilisateurs";
         return $this->render("admin/user/users", [
             "title" => $title,
@@ -88,9 +88,9 @@ class AdminController extends Controller
     public function orders($post, $idStatus = 0)
     {
         if ($idStatus) {
-            $orders = $this->orders->allInIdStatus($idStatus);
+            $orders = $this->order->allInIdStatus($idStatus);
         } else {
-            $orders = $this->orders->allWithoutLimit();
+            $orders = $this->order->allWithoutLimit();
         }
 
         $title = "Les commandes";

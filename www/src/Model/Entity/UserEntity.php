@@ -7,7 +7,7 @@ use \Core\Model\Entity;
 /**
  *  Classe Users : un user du site bière
  **/
-class UsersEntity extends Entity
+class UserEntity extends Entity
 {
     private $id;
     private $mail;

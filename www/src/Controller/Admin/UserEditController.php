@@ -7,13 +7,13 @@ class UserEditController extends Controller
 {
     public function __construct()
     {
-        $this->loadModel('users');
-        $this->loadModel('client');
+        $this->loadModel('user');
+        $this->loadModel('userInfos');
     }
 
     public function userEdit($post, $token, $id)
     {
-        $user = $this->users->find($id);
+        $user = $this->user->find($id);
         if (!$user) {
             throw new \Exception('Aucun utilisateur ne correspond à cet ID');
         }
@@ -38,7 +38,7 @@ class UserEditController extends Controller
         if (isset($post)) {
             if (!empty($post['user_mail'])) {
                 $mail = $post['user_mail'];
-                $res = $this->users->update($id, ['mail' => $mail, 'token ' => $token]);
+                $res = $this->user->update($id, ['mail' => $mail, 'token ' => $token]);
                 if ($res) {
                     $_SESSION['success'] = "L'utilisateur a bien été modifié";
                 } else {

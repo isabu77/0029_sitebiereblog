@@ -3,12 +3,12 @@ namespace App\Model\Table;
 
 use \Core\Model\Table;
 use \Core\Controller\Helpers\TextController;
-use App\Model\Entity\UsersEntity;
+use App\Model\Entity\UserEntity;
 
 /**
- *  Classe UsersTable : accès à la table Users
+ *  Classe UserTable : accès à la table Users
  **/
-class UsersTable extends Table
+class UserTable extends Table
 {
     /**
      * cherche le user par son mail

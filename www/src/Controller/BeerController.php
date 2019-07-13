@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use \Core\Controller\Controller;
 use App\Controller\PaginatedQueryAppController;
-use App\Model\Entity\OrdersEntity;
+use App\Model\Entity\OrderEntity;
 
 class BeerController extends Controller
 {
@@ -16,10 +16,11 @@ class BeerController extends Controller
         // crée une instance de la classe BeerTable dans la propriété
         // $this->beer est créée dynamiquement
         $this->loadModel('beer');
-        $this->loadModel('orders');
-        $this->loadModel('orderline');
-        $this->loadModel('users');
-        $this->loadModel('client');
+        $this->loadModel('order');
+        $this->loadModel('orderLine');
+        $this->loadModel('user');
+        $this->loadModel('userInfos');
+        //dd($this);
     }
 
     /**
@@ -81,7 +82,7 @@ class BeerController extends Controller
             $token = $_COOKIE[PANIER];
             if (!empty($token)) {
                 // lecture en base des lignes de commande du token
-                $orderlines = $this->orderline->allInToken($token);
+                $orderlines = $this->orderLine->allInToken($token);
             }
         }
 
@@ -111,7 +112,7 @@ class BeerController extends Controller
                 $orderlines = [];
                 if (!empty($token)) {
                     // lecture en base des lignes de commande du token
-                    $orderlines = $this->orderline->allInToken($token);
+                    $orderlines = $this->orderLine->allInToken($token);
                     foreach ($orderlines as $line) {
                         if ($line->getIdProduct() == $_POST["idBeer"]) {
                             $qty = $_POST["quantity"];
@@ -136,10 +137,10 @@ class BeerController extends Controller
                                 "priceHT"         => $priceHT,
                                 "priceTTC"         => $priceTTC
                             ];
-                            $result = $this->orderline->update($line->getId(), $attributes);
+                            $result = $this->orderLine->update($line->getId(), $attributes);
                             if ($result) {
                                 // lecture en base des lignes de commande du token
-                                $orderlines = $this->orderline->allInToken($token);
+                                $orderlines = $this->orderLine->allInToken($token);
                                 $total = 0;
                                 foreach ($orderlines as $line) {
                                     // le prix HT de la bière en base
@@ -179,12 +180,12 @@ class BeerController extends Controller
                     "priceTTC"         => $priceTTC
                 ];
 
-                $result = $this->orderline->insert($attributes);
+                $result = $this->orderLine->insert($attributes);
                 if ($result) {
                     setcookie(PANIER, $token, time() + 3600*48);
 
                     // lecture en base des lignes de commande du token
-                    $orderlines = $this->orderline->allInToken($token);
+                    $orderlines = $this->orderLine->allInToken($token);
                     $total = 0;
                     foreach ($orderlines as $line) {
                         // le prix HT de la bière en base
@@ -217,10 +218,10 @@ class BeerController extends Controller
                 $orderlines = [];
                 if (!empty($token)) {
                     // lecture en base des lignes de commande du token
-                    $orderlines = $this->orderline->allInToken($token);
+                    $orderlines = $this->orderLine->allInToken($token);
                     foreach ($orderlines as $line) {
                         if ($line->getIdProduct() == $_POST["idBeer"]) {
-                            $result = $this->orderline->delete($line->getId());
+                            $result = $this->orderLine->delete($line->getId());
                             if ($result) {
                                 // succès
                                 $total = $_COOKIE[QTYPANIER] - $line->getQuantity();
@@ -252,7 +253,7 @@ class BeerController extends Controller
                 $orderlines = [];
                 if (!empty($token)) {
                     // lecture en base des lignes de commande du token
-                    $orderlines = $this->orderline->allInToken($token);
+                    $orderlines = $this->orderLine->allInToken($token);
                     foreach ($orderlines as $line) {
                         if ($line->getIdProduct() == $_POST["idBeer"]) {
                             $qty = $_POST["quantity"] + $line->getQuantity();
@@ -272,7 +273,7 @@ class BeerController extends Controller
                                 "priceHT"         => $priceHT,
                                 "priceTTC"         => $priceTTC
                             ];
-                            $result = $this->orderline->update($line->getId(), $attributes);
+                            $result = $this->orderLine->update($line->getId(), $attributes);
                             if ($result) {
                                 // succès
                                 $total = $_COOKIE[QTYPANIER] + $_POST["quantity"];
@@ -306,7 +307,7 @@ class BeerController extends Controller
                         "priceTTC"         => $priceTTC
                     ];
 
-                    $result = $this->orderline->insert($attributes);
+                    $result = $this->orderLine->insert($attributes);
                     if ($result) {
                         setcookie(PANIER, $token, time() + 3600*48);
                         // succès
@@ -334,9 +335,9 @@ class BeerController extends Controller
 
         // prévoir plusieurs clients par user : afficher un select des clients associés
         // et prévoir un système pour ajouter un nouveau client (nouvelle adresse)
-        //$client = $this->client->find($user->getId());
+        //$client = $this->userInfos->find($user->getId());
         // lire les clients associés à l'utilisateur (plusieurs adresses)
-        $clients = $this->client->getClientsByUserId($user->getId());
+        $clients = $this->userInfos->getClientsByUserId($user->getId());
 
 
         // $this->beer contient une instance de la classe PostTable
@@ -370,17 +371,17 @@ class BeerController extends Controller
                     // nouvelle adresse
                     unset($post["new"]);
                     $post["id_user"] = $user->getId();
-                    $res = $this->client->insert($post);
+                    $res = $this->userInfos->insert($post);
                     if ($res) {
                         //message modif ok
                         $_SESSION['success'] = "l'adresse a bien été ajoutée";
                     } else {
                         $_SESSION['error'] = "l'adresse n'a pas été ajoutée";
                     }
-                    $idClient = $this->client->last();
+                    $idClient = $this->userInfos->last();
                 } else {
                     // update du client dans la table client
-                    $res = $this->client->update($idClient, $post);
+                    $res = $this->userInfos->update($idClient, $post);
                     if ($res) {
                         //message modif ok
                         $_SESSION['success'] = "l'adresse a bien été modifiée";
@@ -391,7 +392,7 @@ class BeerController extends Controller
             }
 
             // relire le client dans la base
-            $client = $this->client->find($idClient);
+            $client = $this->userInfos->find($idClient);
 
             // valider le panier enregistré dans la session et dans la table orderline
             if (isset($_COOKIE[PANIER])) {
@@ -399,7 +400,7 @@ class BeerController extends Controller
 
                 if (!empty($token)) {
                     // lecture en base des lignes de commande du token
-                    $orderlines = $this->orderline->allInToken($token);
+                    $orderlines = $this->orderLine->allInToken($token);
                     if (count($orderlines)) {
                         $priceHT = 0;
                         $priceTTC = 0;
@@ -429,18 +430,18 @@ class BeerController extends Controller
                                 "priceTTC"     => $priceTTC
                             ];
 
-                            $result = $this->orders->insert($attributes);
+                            $result = $this->order->insert($attributes);
                             if ($result) {
                                 // vider le panier
                                 setcookie(PANIER, "", time() - 3600*24);
                                 setcookie(QTYPANIER, 0, time() - 3600*24);
-                                return $this->purchaseconfirm(null, $this->orders->last());
-                                //header('Location: /purchaseconfirm/' . $result);
+                                return $this->orderconfirm(null, $this->order->last());
+                                //header('Location: /orderconfirm/' . $result);
                                 exit();
                             } else {
                                 //TODO : signaler erreur
                                 $_SESSION['error'] = "Erreur d'enregistrement de la commande dans la base";
-                                //header('Location: /purchase');
+                                //header('Location: /order');
                             }
                         }
                     }
@@ -454,7 +455,7 @@ class BeerController extends Controller
             $token = $_COOKIE[PANIER];
             if (!empty($token)) {
                 // lecture en base des lignes de commande du token
-                $orderlines = $this->orderline->allInToken($token);
+                $orderlines = $this->orderLine->allInToken($token);
                 $total = 0;
                 foreach ($orderlines as $line) {
                     // le prix HT de la bière en base
@@ -464,10 +465,10 @@ class BeerController extends Controller
             }
         }
         if ($idClient) {
-            $client = $this->client->find($idClient);
+            $client = $this->userInfos->find($idClient);
         } else {
             if ($clients[0]) {
-                $client = $this->client->find($clients[0]->getId());
+                $client = $this->userInfos->find($clients[0]->getId());
             }
         }
 
@@ -485,22 +486,22 @@ class BeerController extends Controller
     /**
      * commande des produits bière
      */
-    public function purchase($post, int $idClient = null)
+    public function order($post, int $idClient = null)
     {
         // le client connecté
         $user = $this->connectedSession();
 
         // prévoir plusieurs clients par user : afficher un select des clients associés
         // et prévoir un système pour ajouter un nouveau client (nouvelle adresse)
-        //$client = $this->client->find($user->getId());
+        //$client = $this->userInfos->find($user->getId());
         // lire les clients associés à l'utilisateur (plusieurs adresses)
-        $clients = $this->client->getClientsByUserId($user->getId());
+        $clients = $this->userInfos->getClientsByUserId($user->getId());
 
 
         // $this->beer contient une instance de la classe PostTable
         $paginatedQuery = new PaginatedQueryAppController(
             $this->beer,
-            $this->generateUrl('purchase')
+            $this->generateUrl('order')
         );
         $bieres = $paginatedQuery->getItems();
         $title = 'Bon de commande';
@@ -528,17 +529,17 @@ class BeerController extends Controller
                     // nouvelle adresse
                     unset($post["new"]);
                     $post["id_user"] = $user->getId();
-                    $res = $this->client->insert($post);
+                    $res = $this->userInfos->insert($post);
                     if ($res) {
                         //message modif ok
                         $_SESSION['success'] = "l'adresse a bien été ajoutée";
                     } else {
                         $_SESSION['error'] = "l'adresse n'a pas été ajoutée";
                     }
-                    $idClient = $this->client->last();
+                    $idClient = $this->userInfos->last();
                 } else {
                     // update du client dans la table client
-                    $res = $this->client->update($idClient, $post);
+                    $res = $this->userInfos->update($idClient, $post);
                     if ($res) {
                         //message modif ok
                         $_SESSION['success'] = "l'adresse a bien été modifiée";
@@ -549,7 +550,7 @@ class BeerController extends Controller
             }
 
             // relire le client dans la base
-            $client = $this->client->find($idClient);
+            $client = $this->userInfos->find($idClient);
 
             // valider le panier enregistré dans la session et dans la table orderline
             if (isset($_COOKIE[PANIER])) {
@@ -557,7 +558,7 @@ class BeerController extends Controller
 
                 if (!empty($token)) {
                     // lecture en base des lignes de commande du token
-                    $orderlines = $this->orderline->allInToken($token);
+                    $orderlines = $this->orderLine->allInToken($token);
                     if (count($orderlines)) {
                         $priceHT = 0;
                         $priceTTC = 0;
@@ -587,19 +588,19 @@ class BeerController extends Controller
                                 "priceTTC"     => $priceTTC
                             ];
 
-                            $result = $this->orders->insert($attributes);
+                            $result = $this->order->insert($attributes);
                             if ($result) {
                                 // vider le panier
                                 setcookie(PANIER, "", time() - 3600*24);
                                 setcookie(QTYPANIER, 0, time() - 3600*24);
 
-                                return $this->purchaseconfirm(null, $this->orders->last());
-                                //header('Location: /purchaseconfirm/' . $result);
+                                return $this->orderconfirm(null, $this->order->last());
+                                //header('Location: /orderconfirm/' . $result);
                                 exit();
                             } else {
                                 //TODO : signaler erreur
                                 $_SESSION['error'] = "Erreur d'enregistrement de la commande dans la base";
-                                //header('Location: /purchase');
+                                //header('Location: /order');
                             }
                         }
                     }
@@ -613,7 +614,7 @@ class BeerController extends Controller
             $token = $_COOKIE[PANIER];
             if (!empty($token)) {
                 // lecture en base des lignes de commande du token
-                $orderlines = $this->orderline->allInToken($token);
+                $orderlines = $this->orderLine->allInToken($token);
                 $total = 0;
                 foreach ($orderlines as $line) {
                     // le prix HT de la bière en base
@@ -623,14 +624,14 @@ class BeerController extends Controller
             }
         }
         if ($idClient) {
-            $client = $this->client->find($idClient);
+            $client = $this->userInfos->find($idClient);
         } else {
             if ($clients[0]) {
-                $client = $this->client->find($clients[0]->getId());
+                $client = $this->userInfos->find($clients[0]->getId());
             }
         }
 
-        return $this->render('beer/purchase', [
+        return $this->render('beer/order', [
             'user' => $user,
             'orderlines' => $orderlines,
             'client' => $client,
@@ -644,16 +645,16 @@ class BeerController extends Controller
     /**
      * confirmation de commande des produits bière
      */
-    public function purchaseconfirm($post, int $idOrder)
+    public function orderconfirm($post, int $idOrder)
     {
         // la commande
-        $order = $this->orders->find($idOrder);
+        $order = $this->order->find($idOrder);
 
         // le user connecté
         $user = $this->connectedSession();
 
         // le client associé à la commande
-        $client = $this->client->find($order->getIdClient());
+        $client = $this->userInfos->find($order->getIdClient());
 
         //On vérifie l'id de l'utilisateur
         //Et l'existence de la commande
@@ -670,14 +671,14 @@ class BeerController extends Controller
         }
 
         // lecture en base des lignes de commande du token
-        $lines = $this->orderline->allInToken($order->getToken());
+        $lines = $this->orderLine->allInToken($order->getToken());
 
         // Rétablit le tableau à sa forme originale
         //$lines = unserialize($order->getIdsProduct());
         $priceTTC = 0;
         if (count($lines) == 0) {
             $_SESSION['error'] = "la commande est vide";
-            header('location: /purchase');
+            header('location: /order');
             exit();
         }
 
@@ -697,14 +698,14 @@ class BeerController extends Controller
 
         /*         if (number_format($priceTTC, 2, ',', '.') != number_format($order->getPriceTTC(), 2, ',', '.')) {
             $_SESSION['error'] = "prix différents";
-            header('location: /purchase');
+            header('location: /order');
             exit();
         }
 
  */
         $title = 'Confirmation de commande';
 
-        return $this->render('beer/purchaseconfirm', [
+        return $this->render('beer/orderconfirm', [
             'tva' => $this->getApp()->getEnv('ENV_TVA'),
             'user' => $client,
             'order' => $order,
