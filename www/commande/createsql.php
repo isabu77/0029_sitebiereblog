@@ -6,9 +6,38 @@ require_once $basepath . 'vendor/autoload.php';
 
 $pdo = new PDO('mysql:host=blog.mysql;dbname=blog', 'userblog', 'blogpwd');
 
-//creation tables
-echo "[";
+/**
+ * suppression des tables
+ *  
+ */
+$pdo->exec('SET FOREIGN_KEY_CHECKS = 0');
+//blog
+$etape = $pdo->exec("DROP TABLE post_category");
 $etape = $pdo->exec("DROP TABLE post");
+$etape = $pdo->exec("DROP TABLE category");
+$etape = $pdo->exec('DROP TABLE comments');
+
+//utilisateurs
+$etape = $pdo->exec("DROP TABLE userblog");
+$etape = $pdo->exec("DROP TABLE users");
+$etape = $pdo->exec("DROP TABLE client");
+
+//shop
+$etape = $pdo->exec("DROP TABLE config");
+$etape = $pdo->exec("DROP TABLE beer");
+
+//order
+$etape = $pdo->exec("DROP TABLE status");
+$etape = $pdo->exec("DROP TABLE orders");
+$etape = $pdo->exec("DROP TABLE orderline");
+
+$pdo->exec('SET FOREIGN_KEY_CHECKS = 1'); 
+
+/**
+ * creation des tables
+ *  
+ */
+echo "[";
 
 $etape = $pdo->exec("CREATE TABLE post(
             id INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -19,7 +48,6 @@ $etape = $pdo->exec("CREATE TABLE post(
             PRIMARY KEY(id)
         )");
 echo "-||-" . $etape;
-$etape = $pdo->exec("DROP TABLE category");
 $etape = $pdo->exec("CREATE TABLE category(
             id INT UNSIGNED NOT NULL AUTO_INCREMENT,
             name VARCHAR(255) NOT NULL,
@@ -27,15 +55,7 @@ $etape = $pdo->exec("CREATE TABLE category(
             PRIMARY KEY(id)
         )");
 echo "-||-" . $etape;
-$etape = $pdo->exec("DROP TABLE userblog");
-$etape = $pdo->exec("CREATE TABLE userblog(
-            id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-            username VARCHAR(255) NOT NULL,
-            password VARCHAR(255) NOT NULL,
-            PRIMARY KEY(id)
-        )");
-echo "-||-" . $etape;
-$etape = $pdo->exec("DROP TABLE post_category");
+
 $pdo->exec("CREATE TABLE post_category(
             post_id INT UNSIGNED NOT NULL,
             category_id INT UNSIGNED NOT NULL,
@@ -53,10 +73,28 @@ $pdo->exec("CREATE TABLE post_category(
         )");
 echo "-||-" . $etape;
 
+$pdo->exec("CREATE TABLE comment (
+    `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `post_id` INT not null,
+    `user_id` INT not null,
+    `name` VARCHAR(255) not null,
+    `content` TEXT(65000) NOT null,
+    `postedAt` datetime default CURRENT_TIMESTAMP
+    )");
+echo "||";
+
+$etape = $pdo->exec("CREATE TABLE userblog(
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    username VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    PRIMARY KEY(id)
+)");
+echo "-||-" . $etape;
+
 //=================== le site bière
 
 // la table de configuration
-$etape = $pdo->exec("DROP TABLE config");
+
 $etape = $pdo->exec("CREATE TABLE `config` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `date` timestamp NULL DEFAULT current_timestamp(),
@@ -68,7 +106,7 @@ $etape = $pdo->exec("CREATE TABLE `config` (
 echo "-||-" . $etape;
 
 // la table des bières
-$etape = $pdo->exec("DROP TABLE beer");
+
 $etape = $pdo->exec("CREATE TABLE `beer` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `title` varchar(255) NOT NULL,
@@ -81,7 +119,7 @@ $etape = $pdo->exec("CREATE TABLE `beer` (
 echo "-||-" . $etape;
 
 // la table des status de commandes
-$etape = $pdo->exec("DROP TABLE status");
+
 $etape = $pdo->exec("CREATE TABLE `status` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `libelle` varchar(24) NOT NULL,
@@ -90,7 +128,7 @@ $etape = $pdo->exec("CREATE TABLE `status` (
 echo "-||-" . $etape;
 
 // la table des commandes
-$etape = $pdo->exec("DROP TABLE orders");
+
 $etape = $pdo->exec("CREATE TABLE `orders` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `id_client` int(11) NOT NULL,
@@ -105,7 +143,7 @@ $etape = $pdo->exec("CREATE TABLE `orders` (
 echo "-||-" . $etape;
 
 // la table des lignes de commande
-$etape = $pdo->exec("DROP TABLE orderline");
+
 $etape = $pdo->exec("CREATE TABLE `orderline` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `id_user` int(11) NOT NULL,
@@ -118,8 +156,7 @@ $etape = $pdo->exec("CREATE TABLE `orderline` (
   ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 echo "-||-" . $etape;
 
-
-$etape = $pdo->exec("DROP TABLE client");
+// les adresses de clients
 $etape = $pdo->exec("CREATE TABLE `client` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `id_user` int(11),
@@ -134,7 +171,7 @@ $etape = $pdo->exec("CREATE TABLE `client` (
   ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 echo "-||-" . $etape;
 
-$etape = $pdo->exec("DROP TABLE users");
+// les utilisateurs connectés
 $etape = $pdo->exec("CREATE TABLE `users` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `mail` varchar(255) NOT NULL,
@@ -147,8 +184,11 @@ $etape = $pdo->exec("CREATE TABLE `users` (
 echo "-||-" . $etape;
 
 
-//vidage table
-$pdo->exec('SET FOREIGN_KEY_CHECKS = 0');
+/**
+ * vidage des tables inutile car on les a supprimées
+ */
+
+/* $pdo->exec('SET FOREIGN_KEY_CHECKS = 0');
 $pdo->exec('TRUNCATE TABLE post_category');
 $pdo->exec('TRUNCATE TABLE post');
 $pdo->exec('TRUNCATE TABLE userblog');
@@ -160,7 +200,9 @@ $pdo->exec('TRUNCATE TABLE orders');
 $pdo->exec('TRUNCATE TABLE orderline');
 $pdo->exec('TRUNCATE TABLE users');
 $pdo->exec('TRUNCATE TABLE clients');
-$pdo->exec('SET FOREIGN_KEY_CHECKS = 1');
+$pdo->exec('SET FOREIGN_KEY_CHECKS = 1'); 
+*/
+
 echo "||||||||||||";
 $faker = Faker\Factory::create('fr_FR');
 echo "-||-" . $etape;
@@ -168,6 +210,8 @@ echo "-||-" . $etape;
 $posts = [];
 $categories = [];
 echo "====";
+
+// post
 for ($i = 0; $i < 50; $i++) {
     $pdo->exec("INSERT INTO post SET
         name='{$faker->sentence()}',
@@ -177,6 +221,8 @@ for ($i = 0; $i < 50; $i++) {
     $posts[] = $pdo->lastInsertId();
     echo "|";
 }
+
+// category
 for ($i = 0; $i < 20; $i++) {
     $pdo->exec("INSERT INTO category SET
         name='{$faker->sentence(3, false)}',
@@ -184,6 +230,8 @@ for ($i = 0; $i < 20; $i++) {
     $categories[] = $pdo->lastInsertId();
     echo "|";
 }
+
+// post_category
 foreach ($posts as $post) {
     $randomCategories = $faker->randomElements($categories, 2);
     foreach ($randomCategories as $category) {
@@ -193,12 +241,23 @@ foreach ($posts as $post) {
         echo "|";
     }
 }
+
+// userblog
 $password = password_hash('admin', PASSWORD_BCRYPT);
 echo "||";
 $pdo->exec("INSERT INTO userblog SET
         username='admin',
         password='{$password}'");
 echo "-||-";
+
+$token = substr(md5(uniqid()), 0, 24);
+echo "||";
+$pdo->exec("INSERT INTO users SET
+        mail='admin@admin.fr',
+        password ='{$password}',
+        token = 'ADMIN',
+        verify = 1
+        ");
 
 $pdo->exec("INSERT INTO `beer` (`id`, `title`, `img`, `content`, `price`, `stock`) VALUES
 (1, 'La Chouffe', 'https://www.beerwulf.com/globalassets/catalog/beerwulf/beers/la-chouffe-blonde-d-ardenne_opt.png?h=500&rev=899257661', 'Bière dorée légèrement trouble à mousse dense, avec un parfum épicé aux notes d’agrumes et de coriandre qui ressortent également au goût.', 1.91, 10),
@@ -219,10 +278,12 @@ $pdo->exec("INSERT INTO `config` (`tva` , `port`, `ship_limit`) VALUES
 echo "-||-";
 
 $pdo->exec("INSERT INTO `status` (`libelle`) VALUES
-('En cours de préparation'),
 ('En attente de paiement'),
+('En cours de préparation'),
 ('Expédiée'),
 ('Terminée')
-");echo "-||-";
+");
+
+echo "-||-";
 
 echo "||]";

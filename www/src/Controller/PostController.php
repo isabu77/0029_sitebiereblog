@@ -72,4 +72,33 @@ class PostController extends Controller
             'title' => $title
         ]);
     }
+
+    public function comment(string $slug, int $id)
+    {
+        if (empty($_POST)) {
+            header('location: /posts');
+        }
+        
+        if (isset($_POST['mail']) && !empty($_POST['mail']) &&
+            isset($_POST['login']) && !empty($_POST['login']) &&
+            isset($_POST['content']) && !empty($_POST['content']) &&
+            isset($_POST['id']) && !empty($_POST['id'])) {
+            $name = htmlspecialchars($_POST['login']);
+            $content = htmlspecialchars($_POST['content']);
+            $id_user = $_POST['id'];
+            $verif = $this->user->exist($_POST["mail"]);
+            if ($verif) {
+                $this->comment->post($id, $id_user, $name, $content);
+                $url = $this->generateUrl('post', ['id' => $id, 'slug' => $slug]);
+                header('location: '.$url);
+            } else {
+                $_SESSION['error'] = 'Veuillez vous enregistrer';
+                unset($_SESSION['error']);
+            }
+        } else {
+            $_SESSION['error'] = 'Erreur';
+            unset($_SESSION['error']);
+        }
+    }
+
 }

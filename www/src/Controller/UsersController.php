@@ -21,6 +21,23 @@ class UsersController extends Controller
         $this->loadModel('orders');
     }
 
+    public function subscribe($post = null)
+    {
+        $form = new \Core\Controller\FormController();
+        
+        $errors = $form->hasErrors();
+        if ($errors["post"] != "no-data"){
+
+            $form->field('mail', ["require", "verify"]);
+            $form->field('password', ["require", "verify", "length" => 8]);
+
+            $datas = $form->getDatas();
+
+            // vérifier que le mail n'existe pas en base
+            // 
+        }
+
+    }
     /**
      * reset du password par mail
      *
@@ -402,7 +419,9 @@ class UsersController extends Controller
         if ($idClient){
             $client = $this->client->find($idClient);
         }else{
-            $client = $this->client->find($clients[0]->getId());
+            if ($clients[0]){
+                $client = $this->client->find($clients[0]->getId());
+            }
         }
         if ($client){
             $orders = $this->orders->allinId($client->getId());

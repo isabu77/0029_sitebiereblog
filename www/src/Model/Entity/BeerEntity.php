@@ -29,7 +29,7 @@ class BeerEntity extends Entity
      *  title
      *  @return string
      **/
-    public function getTitle()
+    public function getTitle(): string
     {
         return ((string)$this->title);
     }
@@ -39,7 +39,7 @@ class BeerEntity extends Entity
      *  @return string
      **/
 
-    public function getImg()
+    public function getImg(): string
     {
         return ((string)$this->img);
     }
@@ -56,7 +56,7 @@ class BeerEntity extends Entity
      *  contenu
      *  @return string
      **/
-    public function getContent()
+    public function getContent(): string
     {
         return ((string)$this->content);
     }
@@ -64,7 +64,7 @@ class BeerEntity extends Entity
      *  contenu
      *  @return string
      **/
-    public function getExcerpt(int $lg = 100):string
+    public function getExcerpt(int $lg = 100): string
     {
         return TextController::excerpt($this->content, $lg);
     }
@@ -73,7 +73,7 @@ class BeerEntity extends Entity
      *  prix
      *  @return float
      **/
-    public function getPrice()
+    public function getPrice(): float
     {
         return ((float)$this->price);
     }
@@ -81,7 +81,7 @@ class BeerEntity extends Entity
      *  prix ht
      *  @return string
      **/
-    public function getPrixHt()
+    public function getPrixHt(): string
     {
         return (String)number_format($this->price, 2, ',', ' ').'€';
     }
@@ -90,7 +90,7 @@ class BeerEntity extends Entity
      *  prix
      *  @return string
      **/
-    public function getPrixTTC()
+    public function getPrixTTC(): string
     {
         return (String)number_format($this->price * \App\App::getInstance()->getEnv('ENV_TVA'), 2, ',', ' ').'€';
     }

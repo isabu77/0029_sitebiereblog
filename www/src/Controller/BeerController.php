@@ -619,7 +619,9 @@ class BeerController extends Controller
         if ($idClient){
             $client = $this->client->find($idClient);
         }else{
-            $client = $this->client->find($clients[0]->getId());
+            if ($clients[0]){
+                $client = $this->client->find($clients[0]->getId());
+            }
         }
 
         return $this->render('beer/purchase', [

@@ -29,11 +29,4 @@ class UsersTable extends Table
         return $this->query("UPDATE {$this->table} SET token = '' WHERE id_user = ?", [$id]);
     }
 
-    public function latestById()
-    {
-        $id = $this->query("SELECT id FROM {$this->table} ORDER BY id DESC LIMIT 1", null, true, null)->getId();
-
-        return $this->query("SELECT * FROM {$this->table} WHERE id = ?", [$id], true, null);
-    }
-
 }

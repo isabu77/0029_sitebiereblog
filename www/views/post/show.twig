@@ -1,14 +1,50 @@
 {% extends "layout/default.twig" %}
 
 {% block content %}
-<div class="text-muted text-center pb-5 mb-5">
-    <p><big>{{post.CreatedAt | date('d/m/Y h:i') }}</big></p>
-    {% for key, category in post.categories %}
-        <li class="list-group-item bg-light"><a class="card-link" href="{{category.url}}">{{ category.name }}</a></li>
-    {% endfor %}
-</div>
-<p class="mx-4 text-justify">nl2br(htmlspecialchars({{post.content | raw}}))</p>
+<section class="post seeking">
+    <article class="card">
+        <h2>{{ post.name }}</h2>
+        <div class="post-content">
+            <div class="post-cat">
+            {% for key, category in post.categories %}
+                <li class="list-group-item bg-light"><a class="card-link" href="{{category.url}}">{{ category.name }}</a></li>
+            {% endfor %}
+            </div>
+            <p class="mx-4 text-justify">nl2br(htmlspecialchars({{post.content | raw}}))</p>
+            <p class="time">{{ post.CreatedAt | date('d/m/Y h:i')}}</p>
+        </div>
+    </article>
 
+    <article class="commentary">
+        <h2>Commentaires</h2>
+        <div class="inside">
+        {% if comments is empty %}
+        <div class="one-comment">
+                <p>Pas encore de commentaires sur cet article</p>
+            </div>
+        {% else %}
+            {% for comment in comments %}
+            <div class="one-comment">
+                <p class="bold">{{ comment.name }} <span class="small">{{ comment.postedAt | date('d/m/Y H:i') }}</span> :</p>
+                <p>{{ comment.content }}</p>
+            </div>
+        {% endfor %}
+        {% endif %}
+        </div>
+        <form class="posting" method="post">
+            <input readonly type="email" name="mail" value="{{ user.mail }}" />
+            <input type="text" name="login" placeholder="Pseudo" value="{{ user.firstname }}" />
+            <input type="hidden" name="id" value="{{ user.id }}" />
+            <textarea name="content" placeholder="Votre commentaire"></textarea>
+            {% if user %}
+                <button type="submit">Poster</button>
+            {% else %}
+                <p>Pour poster un commentaire veuillez <a href="/connect">vous connecter</a> !</p>
+                <button type="submit" disabled>Poster</button>
+            {% endif %}
+        </form>
+    </article>
+</section>
 {% endblock content %}
 
 

@@ -21,7 +21,7 @@ class RouterController
     public function get(string $uri, string $file, string $name): self
     {
         $this->router->map('GET', $uri, $file, $name);
-        return $this; // pour enchainer les get à l'appel
+        return $this; // pour enchainer à l'appel
     }
     /**
      * post
@@ -29,7 +29,16 @@ class RouterController
     public function post(string $uri, string $file, string $name): self
     {
         $this->router->map('POST', $uri, $file, $name);
-        return $this; // pour enchainer les get à l'appel
+        return $this; // pour enchainer à l'appel
+    }
+
+    /**
+     * match : GET et POST sur le même nom de route
+     */
+    public function match(string $uri, string $file, string $name): self
+    {
+        $this->router->map('GET|POST', $uri, $file, $name);
+        return $this; // pour enchainer à l'appel
     }
 
     /**
