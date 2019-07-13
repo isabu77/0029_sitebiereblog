@@ -10,11 +10,11 @@ class PostEditController extends Controller
     {
         $this->loadModel('post');
         $this->loadModel('category');
-        $this->loadModel('post_category');
+        $this->loadModel('postCategory');
     }
 
 
-    public function postEdit($post = null, $slug, $id)
+    public function postEdit($post, $slug, $id)
     {
         $article = $this->post->find($id);
         if (!$article) {
@@ -39,7 +39,7 @@ class PostEditController extends Controller
         ]);
     }
 
-    public function postUpdate($post = null, $slug, $id)
+    public function postUpdate($post, $slug, $id)
     {
         $article = $this->post->find($id);
         $url = $this->generateUrl('admin_posts_edit', ['id' => $id, 'slug' => $article->getSlug()]);
@@ -62,7 +62,7 @@ class PostEditController extends Controller
         }
     }
 
-    public function postInsert($post = null)
+    public function postInsert($post)
     {
         
         if (isset($post['name']) && !empty($post['name']) &&
@@ -97,7 +97,7 @@ class PostEditController extends Controller
             for ($i=1; $i <= count($categ); $i++) {
                 if ($post[$i]) {
                     $post_id = $this->post->latestById()->getId();
-                    $this->post_category->insertPC($post_id, $i);
+                    $this->postCategory->insertPC($post_id, $i);
                 }
             }
         }
@@ -110,7 +110,7 @@ class PostEditController extends Controller
         ]);
     }
 
-    public function postDelete($post = null, $slug, $id)
+    public function postDelete($post, $slug, $id)
     {
         $this->post->delete($id);
         header('location: /admin/posts');

@@ -35,7 +35,9 @@ abstract class Table
     }
 
     /**
-     * extractTableName :
+     * extractTableName : construit le nom de la table à partir du nom de la classe
+     * en otant "Table" à la fin du nom
+     * en ajoutant un '_' devant chaque majuscule (sauf si c'est la première lettre)
      */
     public function extractTableName(): string
     {

@@ -11,7 +11,7 @@ class UserEditController extends Controller
         $this->loadModel('client');
     }
 
-    public function userEdit($post = null, $token, $id)
+    public function userEdit($post, $token, $id)
     {
         $user = $this->users->find($id);
         if (!$user) {
@@ -32,7 +32,7 @@ class UserEditController extends Controller
         ]);
     }
 
-    public function userUpdate($post = null, $token, $id)
+    public function userUpdate($post, $token, $id)
     {
         $url = $this->generateUrl('admin_user_edit', ['token' => $token, 'id' => $id]);
         if (isset($post)) {
@@ -49,7 +49,7 @@ class UserEditController extends Controller
         }
     }
 
-    public function userDelete($post = null, $token, $id)
+    public function userDelete($post, $token, $id)
     {
         $this->user->delete($id);
         header('location: /admin/users');

@@ -33,7 +33,8 @@ class MailController extends Controller
         $mailer = new \Swift_Mailer($transport);
         // Crée le message en HTML et texte
         $message = new \Swift_Message($sujet);
-        $message->setFrom([\App\App::getInstance()->getEnv('GMAIL_USER') => \App\App::getInstance()->getEnv('GMAIL_PSEUDO')]);
+        $message->setFrom([\App\App::getInstance()->getEnv('GMAIL_USER')
+                        => \App\App::getInstance()->getEnv('GMAIL_PSEUDO')]);
         if ($cci) {
             $message->setBcc($mailTo);
         } else {

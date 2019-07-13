@@ -13,7 +13,7 @@ class OrderEditController extends Controller
         $this->loadModel('status');
     }
 
-    public function orderEdit($post = null, $id, $id_user)
+    public function orderEdit($post, $id, $id_user)
     {
         $order = $this->orders->find($id);
         if (!$order) {
@@ -40,7 +40,7 @@ class OrderEditController extends Controller
         ]);
     }
 
-    public function orderUpdate($post = null, $id, $id_user)
+    public function orderUpdate($post, $id, $id_user)
     {
         $order = $this->orders->find($id);
         if (!$order) {
@@ -60,7 +60,7 @@ class OrderEditController extends Controller
         }
     }
 
-    public function orderDelete($post = null, $id, $id_user)
+    public function orderDelete($post, $id, $id_user)
     {
 
         $order = $this->orders->find($id);

@@ -327,7 +327,7 @@ class BeerController extends Controller
     /**
      * panier des produits bière
      */
-    public function cart($post = null)
+    public function cart($post)
     {
         // le client connecté
         $user = $this->connectedSession();
@@ -463,10 +463,19 @@ class BeerController extends Controller
                 setcookie(QTYPANIER, $total, time() + 3600*48);
             }
         }
+        if ($idClient) {
+            $client = $this->client->find($idClient);
+        } else {
+            if ($clients[0]) {
+                $client = $this->client->find($clients[0]->getId());
+            }
+        }
+
         return $this->render('beer/cart', [
             'user' => $user,
             'orderlines' => $orderlines,
             'clients' => $clients,
+            'client' => $client,
             'bieres' => $bieres,
             'paginate' => $paginatedQuery->getNavHTML(),
             'title' => $title
@@ -476,7 +485,7 @@ class BeerController extends Controller
     /**
      * commande des produits bière
      */
-    public function purchase($post = null, int $idClient = null)
+    public function purchase($post, int $idClient = null)
     {
         // le client connecté
         $user = $this->connectedSession();

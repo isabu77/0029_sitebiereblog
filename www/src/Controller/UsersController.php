@@ -21,7 +21,7 @@ class UsersController extends Controller
         $this->loadModel('orders');
     }
 
-    public function subscribe($post = null)
+    public function subscribe($post)
     {
         $form = new \Core\Controller\FormController();
         
@@ -40,7 +40,7 @@ class UsersController extends Controller
      * reset du password par mail
      *
      */
-    public function resetpwd($post = null)
+    public function resetpwd($post)
     {
         if (isset($post["mail"]) && !empty($post["mail"])) {
             // vérifier l'existence du user en base
@@ -90,7 +90,7 @@ class UsersController extends Controller
      * la page d'accueil du site bière
      *
      */
-    public function inscription($post = null, $idUser = 0, $token = "", $createdAt = "")
+    public function inscription($post, $idUser = 0, $token = "", $createdAt = "")
     {
         if (!empty($post)) {
             if (isset($post["lastname"]) && !empty($post["lastname"]) &&
@@ -236,7 +236,7 @@ class UsersController extends Controller
     /**
      * Connexion du site bière
      */
-    public function connexion($post = null)
+    public function connexion($post)
     {
         if (!empty($post)) {
             // créer l'objet users
@@ -316,7 +316,7 @@ class UsersController extends Controller
             if (isset($post["idClient"])) {
                 // lecture en base des clients du user
                 $client = $this->client->find($post["idClient"]);
-                echo json_encode($client->get_properties());
+                echo json_encode($client->getProperties());
             }
         }
     }
@@ -325,7 +325,7 @@ class UsersController extends Controller
      * la page profil du site bière
      *
      */
-    public function profil($post = null, int $idClient = null)
+    public function profil($post, int $idClient = null)
     {
         
         // le client connecté
@@ -430,7 +430,7 @@ class UsersController extends Controller
     /**
      * Contact
      */
-    public function contact($post = null)
+    public function contact($post)
     {
         if (!empty($post)) {
             if (isset($post["from"]) &&

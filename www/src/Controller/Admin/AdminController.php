@@ -85,7 +85,7 @@ class AdminController extends Controller
             "paginate" => $paginatedQuery->getNavHtml()
         ]);
     }
-    public function orders($post = null, $idStatus = 0)
+    public function orders($post, $idStatus = 0)
     {
         if ($idStatus) {
             $orders = $this->orders->allInIdStatus($idStatus);

@@ -10,7 +10,7 @@ class BeerEditController extends Controller
         $this->loadModel('beer');
     }
 
-    public function beerEdit($post = null, $slug, $id)
+    public function beerEdit($post, $slug, $id)
     {
         $beer = $this->beer->find($id);
         if (!$beer) {
@@ -31,7 +31,7 @@ class BeerEditController extends Controller
         ]);
     }
 
-    public function beerUpdate($post = null, $slug, $id)
+    public function beerUpdate($post, $slug, $id)
     {
         $beer = $this->beer->find($id);
         $url = $this->generateUrl('admin_beer_edit', ['slug' => $beer->getSlug(), 'id' => $id]);
@@ -53,7 +53,7 @@ class BeerEditController extends Controller
         }
     }
 
-    public function beerInsert($post = null)
+    public function beerInsert($post)
     {
         if (isset($post['name']) && !empty($post['name']) &&
             //isset($post['img']) && !empty($post['img']) &&
@@ -82,7 +82,7 @@ class BeerEditController extends Controller
         ]);
     }
 
-    public function beerDelete($post = null, $slug, $id)
+    public function beerDelete($post, $slug, $id)
     {
         $this->beer->delete($id);
         header('location: /admin/beers');
