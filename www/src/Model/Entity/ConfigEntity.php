@@ -72,7 +72,7 @@ class ConfigEntity extends Entity
             
     /**
      *  contenu
-     *  @return 
+     *  @return
      **/
     public function setTva(float $tva)
     {
@@ -80,7 +80,7 @@ class ConfigEntity extends Entity
     }
     /**
      *  contenu
-     *  @return 
+     *  @return
      **/
     public function setPort(float $port)
     {
@@ -88,7 +88,7 @@ class ConfigEntity extends Entity
     }
     /**
      *  contenu
-     *  @return 
+     *  @return
      **/
     public function setShipLimit(float $ship_limit)
     {

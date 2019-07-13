@@ -55,7 +55,7 @@ class StatusEntity extends Entity
             
     /**
      *  contenu
-     *  @return 
+     *  @return
      **/
     public function setLibelle(string $libelle)
     {

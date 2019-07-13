@@ -20,6 +20,6 @@ class OrderlineTable extends Table
      */
     public function allInToken(String $token)
     {
-        return $this->query("SELECT * FROM {$this->table} WHERE token = ?",[$token]);
+        return $this->query("SELECT * FROM {$this->table} WHERE token = ?", [$token]);
     }
 }

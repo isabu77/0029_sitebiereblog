@@ -13,6 +13,5 @@ class ConfigController extends Controller
         // crée une instance de la classe ConfigTable dans la propriété $this->config
         // $this->config est créée dynamiquement
         $this->loadModel('config');
-
     }
 }

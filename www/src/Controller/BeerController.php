@@ -255,7 +255,6 @@ class BeerController extends Controller
                     $orderlines = $this->orderline->allInToken($token);
                     foreach ($orderlines as $line) {
                         if ($line->getIdProduct() == $_POST["idBeer"]) {
-
                             $qty = $_POST["quantity"] + $line->getQuantity();
 
                             // le prix HT de la bière en base
@@ -359,8 +358,7 @@ class BeerController extends Controller
             unset($post["price"]);
             unset($post["id"]);
              // enregistrement de l'adresse du client
-            if (
-                isset($post["lastname"]) && !empty($post["lastname"]) &&
+            if (isset($post["lastname"]) && !empty($post["lastname"]) &&
                 isset($post["firstname"]) && !empty($post["firstname"]) &&
                 isset($post["address"]) && !empty($post["address"]) &&
                 isset($post["zipCode"]) && !empty($post["zipCode"]) &&
@@ -509,8 +507,7 @@ class BeerController extends Controller
             unset($post["price"]);
             unset($post["id"]);
              // enregistrement de l'adresse du client
-            if (
-                isset($post["lastname"]) && !empty($post["lastname"]) &&
+            if (isset($post["lastname"]) && !empty($post["lastname"]) &&
                 isset($post["firstname"]) && !empty($post["firstname"]) &&
                 isset($post["address"]) && !empty($post["address"]) &&
                 isset($post["zipCode"]) && !empty($post["zipCode"]) &&
@@ -616,10 +613,10 @@ class BeerController extends Controller
                 setcookie(QTYPANIER, $total, time() + 3600*48);
             }
         }
-        if ($idClient){
+        if ($idClient) {
             $client = $this->client->find($idClient);
-        }else{
-            if ($clients[0]){
+        } else {
+            if ($clients[0]) {
                 $client = $this->client->find($clients[0]->getId());
             }
         }

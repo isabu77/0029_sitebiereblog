@@ -100,5 +100,4 @@ class PostTable extends Table
         }
         return $postById;
     }
-
 }

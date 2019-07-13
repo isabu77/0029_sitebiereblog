@@ -23,5 +23,4 @@ class BeerTable extends Table
         ];
         return $this->query($sql, $attributes);
     }
-
 }

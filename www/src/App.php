@@ -55,15 +55,14 @@ class App
         // dans Twig : constant.TVA
         $config = new ConfigController();
         $configObj = $config->config->lastConfig();
-        if ($configObj){
+        if ($configObj) {
             define('TVA', $configObj->getTva());
             define('PORT', $configObj->getPort());
             define('SHIPLIMIT', $configObj->getShipLimit());
-        }
-        else{
+        } else {
             define('TVA', 1.2);
             define('PORT', 3.5);
-            define('SHIPLIMIT',30);
+            define('SHIPLIMIT', 30);
         }
 
         // constantes de cookies pur le panier
@@ -100,7 +99,7 @@ class App
     public function getEnv(string $name)
     {
         require 'config.php';
-        return $env[$name]; 
+        return $env[$name];
     }
 
 

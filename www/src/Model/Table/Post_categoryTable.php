@@ -1,6 +1,8 @@
 <?php
 namespace App\Model\Table;
+
 use Core\Model\Table;
+
 class Post_categoryTable extends Table
 {
     public function insertPC($post_id, $category_id)

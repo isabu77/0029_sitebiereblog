@@ -94,7 +94,7 @@ class OrderlineEntity extends Entity
 
     /**
      *  contenu
-     *  @return 
+     *  @return
      **/
     public function setIdUser(int $id_user)
     {
@@ -103,7 +103,7 @@ class OrderlineEntity extends Entity
   
     /**
      *  contenu
-     *  @return 
+     *  @return
      **/
     public function setToken(string $token)
     {
@@ -111,7 +111,7 @@ class OrderlineEntity extends Entity
     }
     /**
      *  contenu
-     *  @return 
+     *  @return
      **/
     public function setIdProduct(int $id_product)
     {
@@ -119,7 +119,7 @@ class OrderlineEntity extends Entity
     }
     /**
      *  contenu
-     *  @return 
+     *  @return
      **/
     public function setQuantity(int $quantity)
     {
@@ -127,7 +127,7 @@ class OrderlineEntity extends Entity
     }
     /**
      *  contenu
-     *  @return 
+     *  @return
      **/
     public function setPriceHT(float $priceHT)
     {
@@ -136,11 +136,10 @@ class OrderlineEntity extends Entity
   
     /**
      *  contenu
-     *  @return 
+     *  @return
      **/
     public function setPriceTTC(float $priceTTC)
     {
         $this->priceTTC =$priceTTC;
     }
-  
 }

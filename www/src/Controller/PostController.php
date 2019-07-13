@@ -100,5 +100,4 @@ class PostController extends Controller
             unset($_SESSION['error']);
         }
     }
-
 }

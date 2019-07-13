@@ -126,7 +126,7 @@ class OrdersEntity extends Entity
 
     /**
      *  contenu
-     *  @return 
+     *  @return
      **/
     public function setIdClient(int $id_client)
     {
@@ -135,7 +135,7 @@ class OrdersEntity extends Entity
   
     /**
      *  contenu
-     *  @return 
+     *  @return
      **/
     public function setPriceHT(float $priceHT)
     {
@@ -144,7 +144,7 @@ class OrdersEntity extends Entity
   
     /**
      *  contenu
-     *  @return 
+     *  @return
      **/
     public function setPriceTTC(float $priceTTC)
     {
@@ -153,7 +153,7 @@ class OrdersEntity extends Entity
   
     /**
      *  contenu
-     *  @return 
+     *  @return
      **/
     public function setNumber(string $number)
     {
@@ -161,7 +161,7 @@ class OrdersEntity extends Entity
     }
     /**
      *  contenu
-     *  @return 
+     *  @return
      **/
     public function setToken(string $token)
     {
@@ -169,15 +169,15 @@ class OrdersEntity extends Entity
     }
    /**
      *  contenu
-     *  @return 
+     *  @return
      **/
-     public function setIdStatus(string $id_status)
+    public function setIdStatus(string $id_status)
     {
         $this->id_status =$id_status;
     }
     /**
      *  contenu
-     *  @return 
+     *  @return
      **/
     public function setCreatedAt(string $createdAt)
     {

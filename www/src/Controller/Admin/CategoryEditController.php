@@ -11,7 +11,7 @@ class CategoryEditController extends Controller
         $this->loadModel('post');
         $this->loadModel('category');
     }
-    public function categoryEdit($post=null, $slug, $id)
+    public function categoryEdit($post = null, $slug, $id)
     {
         $category = $this->category->find($id);
         if (!$category) {
@@ -38,7 +38,7 @@ class CategoryEditController extends Controller
             "posts" => $postById
         ]);
     }
-    public function categoryUpdate($post=null, $slug, $id)
+    public function categoryUpdate($post = null, $slug, $id)
     {
         $category = $this->category->find($id);
         $url = $this->generateUrl("admin_category_edit", ["id" => $category->getId(), "slug" => $category->getSlug()]);
@@ -47,7 +47,7 @@ class CategoryEditController extends Controller
 
             if (!empty($post['cat_name'])) {
                 $attributes["name"] =  htmlspecialchars($post['cat_name']);
-            } 
+            }
             if (!empty($post['cat_slug'])) {
                 if (preg_match("#^[a-zA-Z0-9_-]*$#", $post['cat_slug'])) {
                     $attributes["slug"] =  htmlspecialchars($post['cat_slug']);
@@ -59,11 +59,10 @@ class CategoryEditController extends Controller
             } else {
                 $_SESSION['error'] = "La catégorie n'a pas été modifiée";
             }
-
         }
     }
 
-    public function categoryInsert($post=null)
+    public function categoryInsert($post = null)
     {
         if (isset($post['name']) && !empty($post['name']) &&
             isset($post['slug']) && !empty($post['slug'])) {
@@ -93,7 +92,7 @@ class CategoryEditController extends Controller
         ]);
     }
 
-    public function categoryDelete($post=null, $slug, $id)
+    public function categoryDelete($post = null, $slug, $id)
     {
         $this->category->delete($id);
         header('location: /admin/categories');

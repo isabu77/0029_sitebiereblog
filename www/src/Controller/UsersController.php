@@ -26,17 +26,15 @@ class UsersController extends Controller
         $form = new \Core\Controller\FormController();
         
         $errors = $form->hasErrors();
-        if ($errors["post"] != "no-data"){
-
+        if ($errors["post"] != "no-data") {
             $form->field('mail', ["require", "verify"]);
             $form->field('password', ["require", "verify", "length" => 8]);
 
             $datas = $form->getDatas();
 
             // vérifier que le mail n'existe pas en base
-            // 
+            //
         }
-
     }
     /**
      * reset du password par mail
@@ -86,7 +84,6 @@ class UsersController extends Controller
             'user' => $post,
             'title' => $title
         ]);
-
     }
 
     /**
@@ -96,8 +93,7 @@ class UsersController extends Controller
     public function inscription($post = null, $idUser = 0, $token = "", $createdAt = "")
     {
         if (!empty($post)) {
-            if (
-                isset($post["lastname"]) && !empty($post["lastname"]) &&
+            if (isset($post["lastname"]) && !empty($post["lastname"]) &&
                 isset($post["firstname"]) && !empty($post["firstname"]) &&
                 isset($post["address"]) && !empty($post["address"]) &&
                 isset($post["zipCode"]) && !empty($post["zipCode"]) &&
@@ -202,8 +198,7 @@ class UsersController extends Controller
             }
         } else {
             // confirmation d'inscription
-            if (
-                isset($idUser) && !empty($idUser) &&
+            if (isset($idUser) && !empty($idUser) &&
                 isset($token) && !empty($token)
             ) {
                 $user = $this->users->find($idUser);
@@ -250,17 +245,16 @@ class UsersController extends Controller
             // vérifier l'existence du user en base
             $user = $this->users->getUserByMail($userEntity->getMail());
             // vérifier le mot de passe de l'objet en base
-            if (
-                $user  && !empty($userEntity->getPassword())
+            if ($user  && !empty($userEntity->getPassword())
                 && password_verify(htmlspecialchars($userEntity->getPassword()), $user->getPassword())
                 && $user->getVerify()
             ) {
                 // connecter l'utilisateur
                 $user->setPassword("");
                 parent::connectSession($user);
-                if ($user->getToken() === "ADMIN"){
+                if ($user->getToken() === "ADMIN") {
                     header('Location: /admin');
-                }else{
+                } else {
                     header('Location: /profil');
                 }
                 exit();
@@ -321,8 +315,8 @@ class UsersController extends Controller
         if (!empty($post)) {
             if (isset($post["idClient"])) {
                 // lecture en base des clients du user
-                $client = $this->client->find($post["idClient"]); 
-                echo json_encode($client->get_properties()); 
+                $client = $this->client->find($post["idClient"]);
+                echo json_encode($client->get_properties());
             }
         }
     }
@@ -339,8 +333,7 @@ class UsersController extends Controller
 
         // traitement de la modification du profil
         if (!empty($post)) {
-            if (
-                isset($post["delete"]) 
+            if (isset($post["delete"])
                 && isset($post["id"]) && !empty($post["id"])
             ) {
                 // suppression du client id s'il n'a pas de commandes
@@ -349,19 +342,17 @@ class UsersController extends Controller
                     $this->client->delete($post["id"]);
                     $_SESSION['success'] = "L'adresse a bien été supprimée.";
                     $idClient = null;
-                }else{
+                } else {
                     $_SESSION['error'] = "Impossible de supprimer cette adresse car des commandes lui sont attachées.";
                 }
-            } elseif (
-                isset($post["passwordOld"]) && !empty($post["passwordOld"]) &&
+            } elseif (isset($post["passwordOld"]) && !empty($post["passwordOld"]) &&
                 isset($post["password"]) && !empty($post["password"]) &&
                 isset($post["passwordVerify"]) && !empty($post["passwordVerify"])
             ) {
                 // vérifier l'existence du user en base
                 $user = $this->users->getUserByMail($userConnect->getMail());
                 // vérifier le mot de passe de l'objet en base
-                if (
-                    $user  && !empty($post["passwordOld"])
+                if ($user  && !empty($post["passwordOld"])
                     && password_verify(htmlspecialchars($post["passwordOld"]), $user->getPassword())
                     && $user->getVerify()
                 ) {
@@ -385,8 +376,7 @@ class UsersController extends Controller
                     //erreur
                     $_SESSION['error'] = 'Mot de passe incorrect';
                 }
-            } elseif (
-                isset($post["lastname"]) && !empty($post["lastname"]) &&
+            } elseif (isset($post["lastname"]) && !empty($post["lastname"]) &&
                 isset($post["firstname"]) && !empty($post["firstname"]) &&
                 isset($post["address"]) && !empty($post["address"]) &&
                 isset($post["zipCode"]) && !empty($post["zipCode"]) &&
@@ -416,16 +406,16 @@ class UsersController extends Controller
         
         // les commandes du client affiché
         $orders = [];
-        if ($idClient){
+        if ($idClient) {
             $client = $this->client->find($idClient);
-        }else{
-            if ($clients[0]){
+        } else {
+            if ($clients[0]) {
                 $client = $this->client->find($clients[0]->getId());
             }
         }
-        if ($client){
+        if ($client) {
             $orders = $this->orders->allinId($client->getId());
-        }    
+        }
 
         $title = 'Profil';
 
@@ -435,7 +425,6 @@ class UsersController extends Controller
             'orders' => $orders,
             'title' => $title
         ]);
-
     }
 
     /**
@@ -444,8 +433,7 @@ class UsersController extends Controller
     public function contact($post = null)
     {
         if (!empty($post)) {
-            if (
-                isset($post["from"]) &&
+            if (isset($post["from"]) &&
                 isset($post["object"]) &&
                 isset($post["message"])
             ) {

@@ -109,5 +109,4 @@ class DatabaseMysqlController extends DatabaseController
     {
         return $this->getPDO()->lastInsertId();
     }
-
 }

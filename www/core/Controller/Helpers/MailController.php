@@ -1,5 +1,6 @@
 <?php
 namespace Core\Controller\Helpers;
+
 use Core\Controller\Controller;
 
 /**
@@ -21,13 +22,12 @@ class MailController extends Controller
             $mailTo = [$emailTo];
         }
         // Crée le Transport
-        if (\App\App::getInstance()->getEnv('ENV_DEV')){
+        if (\App\App::getInstance()->getEnv('ENV_DEV')) {
             $transport = new \Swift_SmtpTransport('mailCatcher', 25);
-        }else{
+        } else {
             $transport = new \Swift_SmtpTransport('smtp.gmail.com', 587, 'tls');
             $transport->setUsername(\App\App::getInstance()->getEnv('GMAIL_USER'));
             $transport->setPassword(\App\App::getInstance()->getEnv('GMAIL_PWD'));
-
         }
         // Crée le Mailer utilisant le Transport
         $mailer = new \Swift_Mailer($transport);

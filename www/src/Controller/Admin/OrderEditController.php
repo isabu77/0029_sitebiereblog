@@ -13,7 +13,7 @@ class OrderEditController extends Controller
         $this->loadModel('status');
     }
 
-    public function orderEdit($post=null, $id, $id_user)
+    public function orderEdit($post = null, $id, $id_user)
     {
         $order = $this->orders->find($id);
         if (!$order) {
@@ -40,7 +40,7 @@ class OrderEditController extends Controller
         ]);
     }
 
-    public function orderUpdate($post=null, $id, $id_user)
+    public function orderUpdate($post = null, $id, $id_user)
     {
         $order = $this->orders->find($id);
         if (!$order) {
@@ -51,7 +51,7 @@ class OrderEditController extends Controller
 
         if (isset($post["select"])) {
             //changer le status
-            if ( $this->orders->update($id, ['id_status'  => $post["select"] ])){
+            if ($this->orders->update($id, ['id_status'  => $post["select"] ])) {
                 $_SESSION['success'] = "La commande a bien été modifiée";
             } else {
                 $_SESSION['error'] = "La commande n'a pas été modifiée";
@@ -60,7 +60,7 @@ class OrderEditController extends Controller
         }
     }
 
-    public function orderDelete($post=null, $id, $id_user)
+    public function orderDelete($post = null, $id, $id_user)
     {
 
         $order = $this->orders->find($id);
@@ -68,7 +68,7 @@ class OrderEditController extends Controller
             throw new \Exception('Aucune commande ne correspond à cet ID');
         }
         $lines = $this->orderline->allInToken($order->getToken());
-        foreach($lines as $line){
+        foreach ($lines as $line) {
             $this->orderline->delete($line->getId());
         }
 

@@ -35,7 +35,7 @@ abstract class Table
     }
 
     /**
-     * extractTableName : 
+     * extractTableName :
      */
     public function extractTableName(): string
     {
@@ -46,20 +46,19 @@ abstract class Table
             // nom de la classe dont on crée une instance : ClassMachinTable
             $class_name = end($parts);
 
-            // retirer "Table" pour obtenir le nom de la table en base : ClassMachin 
+            // retirer "Table" pour obtenir le nom de la table en base : ClassMachin
             $class_name = str_replace('Table', '', $class_name);
 
             // insérer l'underscore dans le nom de table s'il y a une majuscule :
             $new_name = $class_name[0];
-            for ($i = 1 ; $i < strlen($class_name) ; $i++){
-                if (ctype_upper($class_name[$i])){
-                    $new_name .= '_';
-                }
-                $new_name .= $class_name[$i];
+        for ($i = 1; $i < strlen($class_name); $i++) {
+            if (ctype_upper($class_name[$i])) {
+                $new_name .= '_';
             }
+            $new_name .= $class_name[$i];
+        }
             // mettre en minuscules : class_machin
             return strtolower($new_name);
-
     }
     /**
      * exécution de la requête à la base
@@ -131,10 +130,10 @@ abstract class Table
     public function latestById()
     {
         $id = $this->query("SELECT id FROM {$this->table} ORDER BY id DESC LIMIT 1", null, true, null);
-        if ($id){
+        if ($id) {
             $id = $id->getId();
             return $this->query("SELECT * FROM {$this->table} WHERE id = ?", [$id], true, null);
-        }else {
+        } else {
             return null;
         }
     }
@@ -195,5 +194,4 @@ abstract class Table
     {
         return $this->db->query("UPDATE {$this->table} SET $column = '$news'  WHERE id = $id");
     }
-
 }

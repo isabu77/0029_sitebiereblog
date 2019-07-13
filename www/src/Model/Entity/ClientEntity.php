@@ -111,13 +111,13 @@ class ClientEntity extends Entity
     {
         return \App\App::getInstance()
             ->getRouter()
-            ->url('client',[
+            ->url('client', [
             'id' => $this->getId()
             ]);
     }
     /**
      *  id
-     *  @return 
+     *  @return
      **/
     public function setId(string $id)
     {
@@ -126,7 +126,7 @@ class ClientEntity extends Entity
 
     /**
      *  id_user
-     *  @return 
+     *  @return
      **/
     public function setIdUser(string $id_user)
     {
@@ -135,7 +135,7 @@ class ClientEntity extends Entity
 
     /**
      *  title
-     *  @return 
+     *  @return
      **/
     public function setLastname(string $lastname)
     {
@@ -144,7 +144,7 @@ class ClientEntity extends Entity
 
     /**
      *  img
-     *  @return 
+     *  @return
      **/
 
     public function setFirstname(string $firstname)
@@ -154,7 +154,7 @@ class ClientEntity extends Entity
 
     /**
      *  contenu
-     *  @return 
+     *  @return
      **/
     public function setZipCode(string $zipCode)
     {
@@ -162,7 +162,7 @@ class ClientEntity extends Entity
     }
     /**
      *  contenu
-     *  @return 
+     *  @return
      **/
     public function setAddress(string $address)
     {
@@ -171,7 +171,7 @@ class ClientEntity extends Entity
         
     /**
      *  contenu
-     *  @return 
+     *  @return
      **/
     public function setCity(string $address)
     {
@@ -180,7 +180,7 @@ class ClientEntity extends Entity
         
     /**
      *  contenu
-     *  @return 
+     *  @return
      **/
     public function setCountry(string $country)
     {
@@ -189,13 +189,10 @@ class ClientEntity extends Entity
         
     /**
      *  contenu
-     *  @return 
+     *  @return
      **/
     public function setPhone(string $phone)
     {
         $this->phone = $phone;
     }
-        
-
-
 }

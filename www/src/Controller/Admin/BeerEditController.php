@@ -10,7 +10,7 @@ class BeerEditController extends Controller
         $this->loadModel('beer');
     }
 
-    public function beerEdit($post=null, $slug, $id)
+    public function beerEdit($post = null, $slug, $id)
     {
         $beer = $this->beer->find($id);
         if (!$beer) {
@@ -22,7 +22,7 @@ class BeerEditController extends Controller
             header('Location: ' . $url);
             exit();
         }
- */        
+ */
         $title = $beer->getTitle();
         
         return $this->render("admin/beer/beerEdit", [
@@ -31,7 +31,7 @@ class BeerEditController extends Controller
         ]);
     }
 
-    public function beerUpdate($post=null, $slug, $id)
+    public function beerUpdate($post = null, $slug, $id)
     {
         $beer = $this->beer->find($id);
         $url = $this->generateUrl('admin_beer_edit', ['slug' => $beer->getSlug(), 'id' => $id]);
@@ -53,7 +53,7 @@ class BeerEditController extends Controller
         }
     }
 
-    public function beerInsert($post=null)
+    public function beerInsert($post = null)
     {
         if (isset($post['name']) && !empty($post['name']) &&
             //isset($post['img']) && !empty($post['img']) &&
@@ -73,7 +73,7 @@ class BeerEditController extends Controller
             } else {
                 $_SESSION['error'] = "La bière n'a pas été ajoutée";
             }
-}
+        }
 
         $title = "Ajouter une bière";
         
@@ -82,7 +82,7 @@ class BeerEditController extends Controller
         ]);
     }
 
-    public function beerDelete($post=null, $slug, $id)
+    public function beerDelete($post = null, $slug, $id)
     {
         $this->beer->delete($id);
         header('location: /admin/beers');

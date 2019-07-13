@@ -17,5 +17,4 @@ class ConfigTable extends Table
         $lastId = $this->query("SELECT MAX(id) as lastId FROM {$this->table}", null, true)->lastId;
         return $this->find($lastId);
     }
-
 }

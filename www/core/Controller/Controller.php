@@ -20,7 +20,6 @@ class Controller
         
         unset($_SESSION["success"]); //Supprime la SESSION['success']
         unset($_SESSION["error"]); //Supprime la SESSION['error']
-
     }
 
     /**
@@ -36,7 +35,7 @@ class Controller
             //$this->twig->addGlobal('cookie', $_COOKIE);
             //$this->twig->addGlobal('session', $_SESSION);
             //$this->twig->addGlobal('constant', get_defined_constants());
-            }
+        }
 
         return $this->twig;
     }

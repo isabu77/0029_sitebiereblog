@@ -28,5 +28,4 @@ class UsersTable extends Table
     {
         return $this->query("UPDATE {$this->table} SET token = '' WHERE id_user = ?", [$id]);
     }
-
 }

@@ -128,5 +128,4 @@ class PostEntity extends Entity
             "id" => $this->getId()
         ]);
     }
-
 }

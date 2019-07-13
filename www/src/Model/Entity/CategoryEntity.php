@@ -65,5 +65,4 @@ class CategoryEntity extends Entity
             "id" => $this->getId()
         ]);
     }
-
 }

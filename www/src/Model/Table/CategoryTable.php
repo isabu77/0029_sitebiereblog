@@ -38,7 +38,4 @@ class CategoryTable extends Table
         ];
         return $this->query($sql, $attributes);
     }
-
-
-    
 }

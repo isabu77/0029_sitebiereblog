@@ -1,7 +1,7 @@
 <?php
 $env = [
     'ENV_DEV' => true,
-    'MYSQL_HOSTNAME' => 'blog.mysql',     
+    'MYSQL_HOSTNAME' => 'blog.mysql',
     'MYSQL_ROOT_PASSWORD' => 'blog',
     'MYSQL_DATABASE' => 'blog',
     'MYSQL_USER' => 'userblog',

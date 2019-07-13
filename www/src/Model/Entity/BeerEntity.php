@@ -121,5 +121,4 @@ class BeerEntity extends Entity
             "id" => $this->getId()
         ]);
     }
-
 }
