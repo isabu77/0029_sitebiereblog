@@ -14,7 +14,7 @@
 
     <article class="onePost">
     <h2>Dernier produit Bière</h2>
-    <h3>{{ beer.name }}</h3>
+    <h3>{{ beer.title }}</h3>
     <p>{{ beer.content | slice(0, 100) }}</p>
     <p><a href="{{ beer.AdminUrl }}">Editer</a></p>
     </article>
@@ -35,7 +35,7 @@
     <article class="onePost">
     <h2>Dernière commande</h2>
     <h3>Commande n°{{ order.id }}</h3>
-    <p>Client n°{{ order.idClient }} - {{ order.priceTTC | number_format(2, ',', '.')}}€</p>
+    <p>Client n°{{ order.userInfosId }} - {{ ((order.priceHt * order.tva) + order.port) | number_format(2, ',', '.')}}€</p>
     <p><a href="{{ order.AdminUrl }}">Editer</a></p>
     </article>
     

@@ -101,7 +101,7 @@ $pdo->exec("CREATE TABLE {$prefix}comment (
     `user_id` INT not null,
     `name` VARCHAR(255) not null,
     `content` TEXT(65000) NOT null,
-    `postedAt` datetime default CURRENT_TIMESTAMP
+    `created_at` datetime default CURRENT_TIMESTAMP
     )");
 echo "-||-" . $etape;
 
@@ -113,10 +113,10 @@ echo "-||-" . $etape;
 
 $etape = $pdo->exec("CREATE TABLE {$prefix}config (
     `id` int(11) NOT NULL AUTO_INCREMENT,
-    `date` timestamp NULL DEFAULT current_timestamp(),
     `tva` float NOT NULL,
     `port` float,
     `ship_limit` float,
+    `created_at` timestamp NULL DEFAULT current_timestamp(),
             PRIMARY KEY(id)
   ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 echo "-||-" . $etape;
@@ -128,7 +128,7 @@ $etape = $pdo->exec("CREATE TABLE {$prefix}beer (
     `title` varchar(255) NOT NULL,
     `img` text NOT NULL,
     `content` longtext NOT NULL,
-    `price` float NOT NULL,
+    `price_ht` float NOT NULL,
     `stock` int,
             PRIMARY KEY(id)
   ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
@@ -138,7 +138,7 @@ echo "-||-" . $etape;
 
 $etape = $pdo->exec("CREATE TABLE {$prefix}status (
     `id` int(11) NOT NULL AUTO_INCREMENT,
-    `libelle` varchar(24) NOT NULL,
+    `label` varchar(255) NOT NULL,
             PRIMARY KEY(id)
   ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 echo "-||-" . $etape;
@@ -147,13 +147,14 @@ echo "-||-" . $etape;
 
 $etape = $pdo->exec("CREATE TABLE {$prefix}order (
     `id` int(11) NOT NULL AUTO_INCREMENT,
-    `id_client` int(11) NOT NULL,
+    `user_infos_id` int(11) NOT NULL,
+    `price_ht` float NOT NULL,
+    `port` float NOT NULL DEFAULT 0,
+    `tva` float NOT NULL DEFAULT 0,
+    `status_id` int NOT NULL DEFAULT 0,
     `token` varchar(24) NOT NULL,
     `number` varchar(24),
-    `priceHT` float NOT NULL,
-    `priceTTC` float NOT NULL,
-    `createdAt` timestamp NULL DEFAULT current_timestamp(),
-    `id_status` int NOT NULL DEFAULT 0,
+    `created_at` timestamp NULL DEFAULT current_timestamp(),
             PRIMARY KEY(id)
   ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 echo "-||-" . $etape;
@@ -162,27 +163,11 @@ echo "-||-" . $etape;
 
 $etape = $pdo->exec("CREATE TABLE {$prefix}order_line (
     `id` int(11) NOT NULL AUTO_INCREMENT,
-    `id_user` int(11) NOT NULL,
-    `id_product` int(11) NOT NULL,
+    `user_id` int(11) NOT NULL,
+    `beer_id` int(11) NOT NULL,
+    `beer_qty` int NOT NULL,
+    `beer_price_ht` float NOT NULL,
     `token` varchar(24) NOT NULL,
-    `quantity` int NOT NULL,
-    `priceHT` float NOT NULL,
-    `priceTTC` float NOT NULL,
-             PRIMARY KEY(id)
-  ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
-echo "-||-" . $etape;
-
-// les adresses user_infos
-$etape = $pdo->exec("CREATE TABLE {$prefix}user_infos (
-    `id` int(11) NOT NULL AUTO_INCREMENT,
-    `id_user` int(11),
-    `lastname` varchar(255) NOT NULL,
-    `firstname` varchar(255) NOT NULL,
-    `address` varchar(255) NOT NULL,
-    `zipCode` varchar(255) NOT NULL,
-    `city` varchar(255) NOT NULL,
-    `country` varchar(255) NOT NULL,
-    `phone` varchar(255) NOT NULL,
             PRIMARY KEY(id)
   ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 echo "-||-" . $etape;
@@ -193,11 +178,27 @@ $etape = $pdo->exec("CREATE TABLE {$prefix}user (
     `mail` varchar(255) NOT NULL,
     `password` varchar(255) NOT NULL,
     `token` varchar(24) NOT NULL,
-    `createdAt` timestamp NULL DEFAULT current_timestamp(),
     `verify` tinyint(1) NOT NULL DEFAULT 0,
+     `created_at` timestamp NULL DEFAULT current_timestamp(),
+           PRIMARY KEY(id)
+  ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
+echo "-||-" . $etape;
+
+// les adresses user_infos
+$etape = $pdo->exec("CREATE TABLE {$prefix}user_infos (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `user_id` int(11),
+    `lastname` varchar(255) NOT NULL,
+    `firstname` varchar(255) NOT NULL,
+    `address` varchar(255) NOT NULL,
+    `zip_code` varchar(255) NOT NULL,
+    `city` varchar(255) NOT NULL,
+    `country` varchar(255) NOT NULL,
+    `phone` varchar(255) NOT NULL,
             PRIMARY KEY(id)
   ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 echo "-||-" . $etape;
+
 
 
 /**
@@ -267,7 +268,7 @@ $pdo->exec("INSERT INTO {$prefix}user SET
         verify = 1
         ");
 
-$pdo->exec("INSERT INTO {$prefix}beer (`id`, `title`, `img`, `content`, `price`, `stock`) VALUES
+$pdo->exec("INSERT INTO {$prefix}beer (`id`, `title`, `img`, `content`, `price_ht`, `stock`) VALUES
 (1, 'La Chouffe', 'https://www.beerwulf.com/globalassets/catalog/beerwulf/beers/la-chouffe-blonde-d-ardenne_opt.png?h=500&rev=899257661', 'Bière dorée légèrement trouble à mousse dense, avec un parfum épicé aux notes d’agrumes et de coriandre qui ressortent également au goût.', 1.91, 10),
 (2, 'Duvel', 'https://www.beerwulf.com/globalassets/catalog/beerwulf/beers/duvel_opt.png?h=500&rev=899257661', 'Robe jaune pâle, légèrement trouble, avec une mousse blanche incroyablement riche. L’arôme associe le citron jaune, le citron vert et les épices. La saveur incorpore des agrumes frais, le sucre de l’alcool et une note épicée due au houblon qui tire sur le poivre. En dépit de son taux d’alcool, c’est une bière fraîche qui se déguste facilement. ', 1.66, 10),
 (3, 'Duvel Tripel Hop', 'https://www.beerwulf.com/globalassets/catalog/beerwulf/beers/duvel-tripel-hop-citra.png?h=500&rev=39990364', 'Une variété supplémentaire de houblon est ajoutée à cette Duvel traditionnelle. Le HBC 291 lui procure un caractère légèrement plus épicé et poivré. Cette bière présente un fort taux d’alcool mais reste très facile à déguster grâce à ses arômes d’agrumes frais et acides, entre autres.', 2.24, 10),
@@ -285,7 +286,7 @@ $pdo->exec("INSERT INTO {$prefix}config (`tva` , `port`, `ship_limit`) VALUES
 ");
 echo "-||-";
 
-$pdo->exec("INSERT INTO {$prefix}status (`libelle`) VALUES
+$pdo->exec("INSERT INTO {$prefix}status (`label`) VALUES
 ('En attente de paiement'),
 ('En cours de préparation'),
 ('Expédiée'),

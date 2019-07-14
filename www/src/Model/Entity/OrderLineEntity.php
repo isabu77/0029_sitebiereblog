@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Model\Entity;
 
 use \Core\Controller\Helpers\TextController;
@@ -10,12 +11,11 @@ use \Core\Model\Entity;
 class OrderLineEntity extends Entity
 {
     private $id;
-    private $id_product;
-    private $id_user;
+    private $user_id;
+    private $beer_id;
+    private $beer_price_ht;
+    private $beer_qty;
     private $token;
-    private $quantity;
-    private $priceHT;
-    private $priceTTC;
 
     /**
      *  id
@@ -23,26 +23,21 @@ class OrderLineEntity extends Entity
      **/
     public function getId(): int
     {
-        return ((int)$this->id);
+        return ((int) $this->id);
     }
 
     /**
-     *  id_user
+     *  user_id
      *  @return int
      **/
-    public function getIdUser(): int
+    public function getUserId()
     {
-        return ((int)$this->id_user);
+        return $this->user_id;
     }
 
-    /**
-     *  id_product
-     *  @return int
-     **/
-
-    public function getIdProduct()
+    public function getBeerId()
     {
-        return ((int)$this->id_product);
+        return $this->beer_id;
     }
 
     /**
@@ -51,44 +46,35 @@ class OrderLineEntity extends Entity
      **/
     public function getToken()
     {
-        return ((string)$this->token);
+        return ((string) $this->token);
     }
-   /**
+    /**
      *  contenu
      *  @return int
      **/
-    public function getQuantity()
+    public function getBeerQty()
     {
-        return ((int)$this->quantity);
-    }
-    
-    /**
-     *  prix
-     *  @return float
-     **/
-    public function getPriceHT():float
-    {
-        return ((float)$this->priceHT);
+        return $this->beer_qty;
     }
 
     /**
-     *  prix
+     *  prix ht de la bière à la commande
      *  @return float
      **/
-    public function getPriceTTC():float
+    public function getPriceHt()
     {
-        return ((float)$this->priceTTC);
+        return $this->beer_price_ht;
     }
 
     /**
      * getUrl()
      */
-    public function getUrl():string
+    public function getUrl(): string
     {
         return \App\App::getInstance()
             ->getRouter()
             ->url('orderline', [
-            'id' => $this->getId()
+                'id' => $this->getId()
             ]);
     }
 
@@ -96,50 +82,41 @@ class OrderLineEntity extends Entity
      *  contenu
      *  @return
      **/
-    public function setIdUser(int $id_user)
+    public function setUserId(int $user_id)
     {
-        $this->id_user = $id_user;
+        $this->user_id = $user_id;
     }
-  
+
     /**
      *  contenu
      *  @return
      **/
     public function setToken(string $token)
     {
-        $this->token =$token;
+        $this->token = $token;
     }
     /**
      *  contenu
      *  @return
      **/
-    public function setIdProduct(int $id_product)
+    public function setBeerId(int $beer_id)
     {
-        $this->id_product =$id_product;
+        $this->beer_id = $beer_id;
     }
     /**
      *  contenu
      *  @return
      **/
-    public function setQuantity(int $quantity)
+    public function setBeerQty(int $beer_qty)
     {
-        $this->quantity =$quantity;
+        $this->beer_qty = $beer_qty;
     }
     /**
      *  contenu
      *  @return
      **/
-    public function setPriceHT(float $priceHT)
+    public function setPriceHt(float $price_ht)
     {
-        $this->priceHT =$priceHT;
-    }
-  
-    /**
-     *  contenu
-     *  @return
-     **/
-    public function setPriceTTC(float $priceTTC)
-    {
-        $this->priceTTC =$priceTTC;
+        $this->price_ht = $price_ht;
     }
 }

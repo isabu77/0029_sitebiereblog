@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use \Core\Controller\Controller;
@@ -24,7 +25,7 @@ class UsersController extends Controller
     public function subscribe($post)
     {
         $form = new \Core\Controller\FormController();
-        
+
         $errors = $form->hasErrors();
         if ($errors["post"] != "no-data") {
             $form->field('mail', ["require", "verify"]);
@@ -93,7 +94,8 @@ class UsersController extends Controller
     public function inscription($post, $idUser = 0, $token = "", $createdAt = "")
     {
         if (!empty($post)) {
-            if (isset($post["lastname"]) && !empty($post["lastname"]) &&
+            if (
+                isset($post["lastname"]) && !empty($post["lastname"]) &&
                 isset($post["firstname"]) && !empty($post["firstname"]) &&
                 isset($post["address"]) && !empty($post["address"]) &&
                 isset($post["zipCode"]) && !empty($post["zipCode"]) &&
@@ -137,16 +139,16 @@ class UsersController extends Controller
                             $clientEntity = new UserInfosEntity($post);
 
                             $attributes =
-                            [
-                                "id_user"      => $userId,
-                                "lastname"     => htmlspecialchars($clientEntity->getLastname()),
-                                "firstname"    => htmlspecialchars($clientEntity->getFirstname()),
-                                "address"      => htmlspecialchars($clientEntity->getAddress()),
-                                "zipCode"      => htmlspecialchars($clientEntity->getZipCode()),
-                                "city"         => htmlspecialchars($clientEntity->getCity()),
-                                "country"      => htmlspecialchars($clientEntity->getCountry()),
-                                "phone"        => htmlspecialchars($clientEntity->getPhone())
-                            ];
+                                [
+                                    "user_id"      => $userId,
+                                    "lastname"     => htmlspecialchars($clientEntity->getLastname()),
+                                    "firstname"    => htmlspecialchars($clientEntity->getFirstname()),
+                                    "address"      => htmlspecialchars($clientEntity->getAddress()),
+                                    "zip_code"      => htmlspecialchars($clientEntity->getZipCode()),
+                                    "city"         => htmlspecialchars($clientEntity->getCity()),
+                                    "country"      => htmlspecialchars($clientEntity->getCountry()),
+                                    "phone"        => htmlspecialchars($clientEntity->getPhone())
+                                ];
                             $clientId = $this->userInfos->insert($attributes);
 
                             $user = $this->user->find($userId);
@@ -198,7 +200,8 @@ class UsersController extends Controller
             }
         } else {
             // confirmation d'inscription
-            if (isset($idUser) && !empty($idUser) &&
+            if (
+                isset($idUser) && !empty($idUser) &&
                 isset($token) && !empty($token)
             ) {
                 $user = $this->user->find($idUser);
@@ -245,7 +248,8 @@ class UsersController extends Controller
             // vérifier l'existence du user en base
             $user = $this->user->getUserByMail($userEntity->getMail());
             // vérifier le mot de passe de l'objet en base
-            if ($user  && !empty($userEntity->getPassword())
+            if (
+                $user  && !empty($userEntity->getPassword())
                 && password_verify(htmlspecialchars($userEntity->getPassword()), $user->getPassword())
                 && $user->getVerify()
             ) {
@@ -327,13 +331,14 @@ class UsersController extends Controller
      */
     public function profil($post, int $idClient = null)
     {
-        
+
         // le client connecté
         $userConnect = $this->userOnly(false);
 
         // traitement de la modification du profil
         if (!empty($post)) {
-            if (isset($post["delete"])
+            if (
+                isset($post["delete"])
                 && isset($post["id"]) && !empty($post["id"])
             ) {
                 // suppression du client id s'il n'a pas de commandes
@@ -345,14 +350,16 @@ class UsersController extends Controller
                 } else {
                     $_SESSION['error'] = "Impossible de supprimer cette adresse car des commandes lui sont attachées.";
                 }
-            } elseif (isset($post["passwordOld"]) && !empty($post["passwordOld"]) &&
+            } elseif (
+                isset($post["passwordOld"]) && !empty($post["passwordOld"]) &&
                 isset($post["password"]) && !empty($post["password"]) &&
                 isset($post["passwordVerify"]) && !empty($post["passwordVerify"])
             ) {
                 // vérifier l'existence du user en base
                 $user = $this->user->getUserByMail($userConnect->getMail());
                 // vérifier le mot de passe de l'objet en base
-                if ($user  && !empty($post["passwordOld"])
+                if (
+                    $user  && !empty($post["passwordOld"])
                     && password_verify(htmlspecialchars($post["passwordOld"]), $user->getPassword())
                     && $user->getVerify()
                 ) {
@@ -376,7 +383,8 @@ class UsersController extends Controller
                     //erreur
                     $_SESSION['error'] = 'Mot de passe incorrect';
                 }
-            } elseif (isset($post["lastname"]) && !empty($post["lastname"]) &&
+            } elseif (
+                isset($post["lastname"]) && !empty($post["lastname"]) &&
                 isset($post["firstname"]) && !empty($post["firstname"]) &&
                 isset($post["address"]) && !empty($post["address"]) &&
                 isset($post["zipCode"]) && !empty($post["zipCode"]) &&
@@ -385,25 +393,45 @@ class UsersController extends Controller
                 isset($post["phone"]) && !empty($post["phone"])
             ) {
                 if ($userConnect) {
-                    // update des coordonnées dans la table client
-                    //$clients = $this->userInfos->getClientsByUserId($userConnect->getId());
-                    $client = $this->userInfos->find($post["id"]);
-                    $post['id_user'] = $userConnect->getId();
-                    $res = $this->userInfos->update($client->getId(), $post);
-                    if ($res) {
-                        //message modif ok
-                        $_SESSION['success'] = 'Votre profil a bien été modifié';
+                    $idClient = 0;
+                    if (isset($post["id"]) && is_numeric($post["id"])) {
+                        $idClient = $post["id"];
+                    }
+                    unset($post["id"]);
+                    $post["zip_code"] = $post["zipCode"];
+                    unset($post["zipCode"]);
+                    
+                    if (isset($post["new"]) || $idClient == 0) {
+                        // nouvelle adresse
+                        unset($post["new"]);
+                        $post["user_id"] = $userConnect->getId();
+                        $res = $this->userInfos->insert($post);
+                        if ($res) {
+                            //message modif ok
+                            $_SESSION['success'] = "l'adresse a bien été ajoutée";
+                        } else {
+                            $_SESSION['error'] = "l'adresse n'a pas été ajoutée";
+                        }
+                        $idClient = $this->userInfos->last();
                     } else {
-                        $_SESSION['error'] = "Votre profil n'a pas été modifié";
+                        // update du client dans la table client
+                        unset($post["user_id"]);
+                        $res = $this->userInfos->update($idClient, $post);
+                        if ($res) {
+                            //message modif ok
+                            $_SESSION['success'] = "l'adresse a bien été modifiée";
+                        } else {
+                            $_SESSION['error'] = "l'adresse n'a pas été modifiée";
+                        }
                     }
                 }
             }
         }
 
- 
+
         // lire les clients associés à l'utilisateur (plusieurs adresses)
-        $clients = $this->userInfos->getClientsByUserId($userConnect->getId());
-        
+        $clients = $this->userInfos->getUserInfosByUserId($userConnect->getId());
+
         // les commandes du client affiché
         $orders = [];
         if ($idClient) {
@@ -433,7 +461,8 @@ class UsersController extends Controller
     public function contact($post)
     {
         if (!empty($post)) {
-            if (isset($post["from"]) &&
+            if (
+                isset($post["from"]) &&
                 isset($post["object"]) &&
                 isset($post["message"])
             ) {

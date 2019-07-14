@@ -18,12 +18,12 @@
 		<tbody>
         {% for line in lines %}
 			<tr>
-				<td>{{bieres[line.getIdProduct()].getTitle()}}</td>
+				<td>{{bieres[line.beerId].title}}</td>
 				<td>{{line.priceHT | number_format(2, ',', '.')}}€</td>
 				{% set prix = line.priceHT * constant.TVA %}
 				<td>{{prix|number_format(2, ',', '.')}}€</td>
-				<td>{{line.quantity}}</td>
-				{% set prix = line.priceHT * line.quantity * constant.TVA %}
+				<td>{{line.beerQty}}</td>
+				{% set prix = line.priceHT * line.beerQty * constant.TVA %}
 				<td>{{prix|number_format(2, ',', '.')}}€</td>
 			</tr>
             {% endfor %}
@@ -39,7 +39,7 @@
 				<td></td>
 				<td></td>
 				<td></td>
-				<td><strong>{{order.getPriceTTC()|number_format(2, ',', '.')}}€</strong></td>
+				<td><strong>{{((order.priceHt * order.tva) + order.port)|number_format(2, ',', '.')}}€</strong></td>
 			</tr>
 		</tbody>
 	</table>

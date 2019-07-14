@@ -38,6 +38,7 @@ class CategoryEntity extends Entity
     {
         return ($this->slug);
     }
+    
     /**
      * getUrl()
      */
@@ -51,6 +52,10 @@ class CategoryEntity extends Entity
             ]);
     }
 
+    /**
+     * getAdminUrl()
+     *  @return string
+     */
     public function getAdminUrl():string
     {
         return \App\App::getInstance()->getRouter()->url("admin_category_edit", [
@@ -58,7 +63,12 @@ class CategoryEntity extends Entity
             "id" => $this->getId()
         ]);
     }
-    public function deleteUrl():string
+
+    /**
+     * getAdminDeleteUrl()
+     *  @return string
+     */
+    public function getAdminDeleteUrl():string
     {
         return \App\App::getInstance()->getRouter()->url("admin_category_delete", [
             "slug" => $this->getSlug(),

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Model\Entity;
 
 use \Core\Controller\Helpers\TextController;
@@ -31,7 +32,7 @@ class PostEntity extends Entity
      **/
     public function getName()
     {
-        return ((string)$this->name);
+        return ((string) $this->name);
     }
 
     /**
@@ -41,7 +42,7 @@ class PostEntity extends Entity
 
     public function getSlug()
     {
-        return ((string)$this->slug);
+        return ((string) $this->slug);
     }
 
     /**
@@ -67,13 +68,13 @@ class PostEntity extends Entity
      **/
     public function getContent()
     {
-        return ((string)$this->content);
+        return ((string) $this->content);
     }
     /**
      *  contenu
      *  @return string
      **/
-    public function getExcerpt(int $lg):string
+    public function getExcerpt(int $lg): string
     {
         return htmlentities(TextController::excerpt($this->content, $lg));
     }
@@ -81,7 +82,7 @@ class PostEntity extends Entity
      *  catégories du post
      *  @return string
      **/
-    public function getCategories():Array
+    public function getCategories(): array
     {
         return $this->categories;
     }
@@ -89,7 +90,7 @@ class PostEntity extends Entity
      *  catégories du post
      *  @return string
      **/
-    public function setCategories(Array $categories)
+    public function setCategories(array $categories)
     {
         $this->categories = $categories;
     }
@@ -105,23 +106,31 @@ class PostEntity extends Entity
     /**
      * getUrl()
      */
-    public function getUrl():string
+    public function getUrl(): string
     {
-        return \App\App::getInstance()
-            ->getRouter()
-            ->url('post', [
+        return \App\App::getInstance()->getRouter()->url('post', [
             'slug' => $this->getSlug(),
             'id' => $this->getId()
-            ]);
+        ]);
     }
-    public function getAdminUrl():string
+
+    /**
+     * getAdminUrl()
+     *  @return string
+     */
+    public function getAdminUrl(): string
     {
         return \App\App::getInstance()->getRouter()->url("admin_posts_edit", [
             "slug" => $this->getSlug(),
             "id" => $this->getId()
         ]);
     }
-    public function deleteUrl():string
+
+    /**
+     * getAdminDeleteUrl()
+     *  @return string
+     */
+    public function getAdminDeleteUrl(): string
     {
         return \App\App::getInstance()->getRouter()->url("admin_post_delete", [
             "slug" => $this->getSlug(),

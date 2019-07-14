@@ -85,10 +85,10 @@ class PostController extends Controller
             isset($_POST['id']) && !empty($_POST['id'])) {
             $name = htmlspecialchars($_POST['login']);
             $content = htmlspecialchars($_POST['content']);
-            $id_user = $_POST['id'];
+            $user_id = $_POST['id'];
             $verif = $this->user->exist($_POST["mail"]);
             if ($verif) {
-                $this->comment->post($id, $id_user, $name, $content);
+                $this->comment->post($id, $user_id, $name, $content);
                 $url = $this->generateUrl('post', ['id' => $id, 'slug' => $slug]);
                 header('location: '.$url);
             } else {

@@ -29,16 +29,16 @@
 			<tr id="trcart_{{biere.id}}">
 				{% set line = 0 %}
 				{% for orderline in orderlines %}
-					{% if biere.id == orderline.idProduct %}
+					{% if biere.id == orderline.beerId %}
 						{% set line = orderline %}
 						<td>{{biere.title}}</td>
-						<td><input id="PQTY_{{biere.id}}" class="PQTY" type="number" min="0" value="{{line.quantity}}"/></td>
-						<td id="PHT_{{biere.id}}">{{(line.priceHT * line.quantity)| number_format(2, '.', ',')}}€</td>
-						<td id="PTTC_{{biere.id}}">{{(line.priceHT * line.quantity * constant.TVA)| number_format(2, '.', ',')}}€</td>
-						<td><input type="button" name="update[{{biere.id}}]" value="Modifier" onclick="updateCart({{biere.id}}, {{biere.price}},'P');"/></td>
-						<td><input type="button" name="del[{{biere.id}}]" value="Retirer" onclick="deleteOfCart({{biere.id}}, {{biere.price}});"/></td>
+						<td><input id="PQTY_{{biere.id}}" class="PQTY" type="number" min="0" value="{{line.beerQty}}"/></td>
+						<td id="PHT_{{biere.id}}">{{(line.priceHT * line.beerQty)| number_format(2, '.', ',')}}€</td>
+						<td id="PTTC_{{biere.id}}">{{(line.priceHT * line.beerQty * constant.TVA)| number_format(2, '.', ',')}}€</td>
+						<td><input type="button" name="update[{{biere.id}}]" value="Modifier" onclick="updateCart({{biere.id}}, {{biere.priceHt}},'P');"/></td>
+						<td><input type="button" name="del[{{biere.id}}]" value="Retirer" onclick="deleteOfCart({{biere.id}}, {{biere.priceHt}});"/></td>
 						<input type="hidden" name="id" value="{{biere.id}}" />
-						<input class="HT" type="hidden" name="price" value="{{biere.price}}" />
+						<input class="HT" type="hidden" name="price" value="{{biere.priceHt}}" />
 					{% endif %}
 				{% endfor %}
 			</tr>

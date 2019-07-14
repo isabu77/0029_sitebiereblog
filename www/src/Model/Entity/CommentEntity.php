@@ -10,7 +10,7 @@ class CommentEntity extends Entity
     private $user_id;
     private $name;
     private $content;
-    private $postedAt;
+    private $created_at;
 
     public function getId()
     {
@@ -37,8 +37,8 @@ class CommentEntity extends Entity
         return $this->content;
     }
 
-    public function getPostedAt()
+    public function getCreatedAt()
     {
-        return $this->postedAt;
+        return $this->created_at;
     }
 }

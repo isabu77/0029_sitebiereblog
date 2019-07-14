@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Model\Table;
 
 use \Core\Model\Table;
@@ -10,12 +11,12 @@ use App\Model\Entity\UserInfosEntity;
  **/
 class UserInfosTable extends Table
 {
-        /**
+    /**
      * cherche les clients associés à un id user
      * @return boolean|object
      */
-    public function getClientsByUserId($id)
+    public function getUserInfosByUserId($user_id)
     {
-        return $this->query(" SELECT * FROM {$this->table} WHERE `id_user`  = ?", [$id], false);
+        return $this->query(" SELECT * FROM {$this->table} WHERE `user_id`  = {$user_id}");
     }
 }

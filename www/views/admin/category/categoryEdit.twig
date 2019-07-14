@@ -11,8 +11,10 @@
     <p>SLUG : {{ category.slug }}</p>
     <div>
     <form action="" method="post">
+        <h4>Nom</h4>
         <input type="text" name="cat_name" value="{{ category.name }}">
-       <input type="text" name="cat_slug" value="{{ category.slug }}">
+        <p>Slug</p>
+        <input type="text" name="cat_slug" value="{{ category.slug }}">
         <input type="hidden" name="cat_id" value="{{ category.id }}">
         <button type="submit">Modifier</button>
     </form>
@@ -23,7 +25,7 @@
     <a href="{{ post.AdminUrl }}">{{ post.name }}</a>
 {% endfor %}
     </p>
-    <p><a href="{{ category.deleteURL }}">SUPPRIMER</a></p>
+    <p><a href="{{ category.AdminDeleteURL }}">SUPPRIMER</a></p>
     </article>
 </section>
 {% endblock %}

@@ -7,17 +7,17 @@
     <h2>Edition de commande</h2>
     <article class="onePost">
     <h4>Commande n°{{ order.id }}</h4>
-    <p>Client n°{{ order.idClient }}</p>
+    <p>Client n°{{ order.userInfosId }}</p>
     <div>
     <form action="" method="post">
         <p>Etat de la commande</p>
         </br>
         <select name="select">
             {% for one in status %}
-            {% if order.idStatus == one.id %}
-                <option value="{{ one.id }}" selected>{{ one.libelle }}</option>
+            {% if order.statusId == one.id %}
+                <option value="{{ one.id }}" selected>{{ one.label }}</option>
                 {% else %}
-                <option value="{{ one.id }}">{{ one.libelle }}</option>
+                <option value="{{ one.id }}">{{ one.label }}</option>
                 {% endif %}
             {% endfor %}
         </select>
@@ -27,12 +27,12 @@
     </form>
     </div>
     <ul>
-    {% for product in lines %}
-        <li>{{ product.id_product }} - {{ product.quantity }} x {{ product.priceHT | number_format(2, ',', '.') }}€ HT</li>
+    {% for orderLine in lines %}
+        <li>{{ orderLine.beerId }} - {{ orderLine.beerQty }} x {{ orderLine.priceHt | number_format(2, ',', '.') }}€ HT</li>
     {% endfor %}
     </ul>
-    <h4>Total de {{ order.priceTTC | number_format(2, ',', '.')}}€</h4>
-    <p><a href="{{ order.deleteURL }}">SUPPRIMER</a></p>
+    <h4>Total de {{ ((order.priceHt * order.tva) + order.port) | number_format(2, ',', '.')}}€</h4>
+    <p><a href="{{ order.AdminDeleteURL }}">SUPPRIMER</a></p>
     </article>
 </section>
 {% endblock %}

@@ -33,16 +33,16 @@
 				<td id="TTC_{{biere.id}}">{{biere.getPrixTTC()}}</td>
 				{% set line = 0 %}
 				{% for orderline in orderlines %}
-					{% if biere.id == orderline.idProduct %}
+					{% if biere.id == orderline.beerId %}
 						{% set line = orderline %}
 					{% endif %}
 				{% endfor %}
-				<td><input id="QTY_{{biere.id}}" class="QTY" type="number" min="0" value="" oninput="calcPrice(this, {{biere.id}}, {{biere.price}});" /></td>
+				<td><input id="QTY_{{biere.id}}" class="QTY" type="number" min="0" value="" oninput="calcPrice(this, {{biere.id}}, {{biere.priceHt}});" /></td>
 				<td></td>
-				<td><input type="button" name="add[{{biere.id}}]" value="Ajouter" onclick="addToCart({{biere.id}}, {{biere.price}});"/></td>
-				<td><input type="button" name="update[{{biere.id}}]" value="Modifier" onclick="updateCart({{biere.id}}, {{biere.price}},"");"/></td>
+				<td><input type="button" name="add[{{biere.id}}]" value="Ajouter" onclick="addToCart({{biere.id}}, {{biere.priceHt}});"/></td>
+				<td><input type="button" name="update[{{biere.id}}]" value="Modifier" onclick="updateCart({{biere.id}}, {{biere.priceHt}},"");"/></td>
 				<input type="hidden" name="id" value="{{biere.id}}" />
-				<input class="HT" type="hidden" name="price" value="{{biere.price}}" />
+				<input class="HT" type="hidden" name="price" value="{{biere.priceHt}}" />
 			</tr>
 		{% endfor %}
 		<tr>
@@ -88,16 +88,16 @@
 				<td>{{biere.title}}</td>
 				{% set line = 0 %}
 				{% for orderline in orderlines %}
-					{% if biere.id == orderline.idProduct %}
+					{% if biere.id == orderline.beerId %}
 						{% set line = orderline %}
 					{% endif %}
 				{% endfor %}
-				<td><input id="PQTY_{{biere.id}}" class="PQTY" type="number" name="qty[{{biere.id}}]" min="0" value="{{line.quantity}}" disabled/></td>
-				<td id="PHT_{{biere.id}}">{{(line.priceHT * line.quantity)| number_format(2, '.', ',')}}€</td>
-				<td id="PTTC_{{biere.id}}">{{(line.priceHT * line.quantity * constant.TVA)| number_format(2, '.', ',')}}€</td>
-				<td><input type="button" name="del[{{biere.id}}]" value="Retirer" onclick="deleteOfCart({{biere.id}}, {{biere.price}});"/></td>
+				<td><input id="PQTY_{{biere.id}}" class="PQTY" type="number" name="qty[{{biere.id}}]" min="0" value="{{line.beerQty}}" disabled/></td>
+				<td id="PHT_{{biere.id}}">{{(line.priceHT * line.beerQty)| number_format(2, '.', ',')}}€</td>
+				<td id="PTTC_{{biere.id}}">{{(line.priceHT * line.beerQty * constant.TVA)| number_format(2, '.', ',')}}€</td>
+				<td><input type="button" name="del[{{biere.id}}]" value="Retirer" onclick="deleteOfCart({{biere.id}}, {{biere.priceHt}});"/></td>
 				<input type="hidden" name="id" value="{{biere.id}}" />
-				<input class="HT" type="hidden" name="price" value="{{biere.price}}" />
+				<input class="HT" type="hidden" name="price" value="{{biere.priceHt}}" />
 			</tr>
 		{% endfor %}
 		<tr>
@@ -154,7 +154,7 @@
 	<div class="form-group row">
 		<div class="col">
 			<label class="form-control-sm" for="zipCode">Code Postal</label>
-			<input class="form-control form-control-sm" type="text" id="zipCode" name="zipCode" value="{{client.zipcode}}" required/>
+			<input class="form-control form-control-sm" type="text" id="zipCode" name="zipCode" value="{{client.zipCode}}" required/>
 		</div>
 		<div class="col">
 			<label class="form-control-sm" for="city">VILLE</label>

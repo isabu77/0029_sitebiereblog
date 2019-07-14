@@ -13,14 +13,14 @@ class OrderEditController extends Controller
         $this->loadModel('status');
     }
 
-    public function orderEdit($post, $id, $id_user)
+    public function orderEdit($post, $id, $user_id)
     {
         $order = $this->order->find($id);
         if (!$order) {
             throw new \Exception('Aucune commande ne correspond à cet ID');
         }
-        if ($order->getIdClient() !== (int)$id_user) {
-            $url = $this->generateUrl('admin_order_edit', ['id' => $id, 'id_user' => $order->getIdClient()]);
+        if ($order->getUserInfosId() !== (int)$user_id) {
+            $url = $this->generateUrl('admin_order_edit', ['id' => $id, 'user_id' => $order->getUserInfosId()]);
             http_response_code(301);
             header('Location: ' . $url);
             exit();
@@ -40,18 +40,18 @@ class OrderEditController extends Controller
         ]);
     }
 
-    public function orderUpdate($post, $id, $id_user)
+    public function orderUpdate($post, $id, $user_id)
     {
         $order = $this->order->find($id);
         if (!$order) {
             throw new \Exception('Aucune commande ne correspond à cet ID');
         }
 
-        $url = $this->generateUrl('admin_order_edit', ['id' => $id, 'id_user' => $order->getIdClient()]);
+        $url = $this->generateUrl('admin_order_edit', ['id' => $id, 'user_id' => $order->getUserInfosId()]);
 
         if (isset($post["select"])) {
             //changer le status
-            if ($this->order->update($id, ['id_status'  => $post["select"] ])) {
+            if ($this->order->update($id, ['status_id'  => $post["select"] ])) {
                 $_SESSION['success'] = "La commande a bien été modifiée";
             } else {
                 $_SESSION['error'] = "La commande n'a pas été modifiée";
@@ -60,7 +60,7 @@ class OrderEditController extends Controller
         }
     }
 
-    public function orderDelete($post, $id, $id_user)
+    public function orderDelete($post, $id, $user_id)
     {
 
         $order = $this->order->find($id);

@@ -9,7 +9,7 @@ use \Core\Model\Entity;
 class StatusEntity extends Entity
 {
     private $id;
-    private $libelle;
+    private $label;
 
     /**
      *  id
@@ -24,9 +24,9 @@ class StatusEntity extends Entity
      *  contenu
      *  @return string
      **/
-    public function getLibelle()
+    public function getLabel()
     {
-        return ((string)$this->libelle);
+        return ((string)$this->label);
     }
         
     
@@ -41,8 +41,9 @@ class StatusEntity extends Entity
             'id' => $this->getId()
             ]);
     }
-         /**
-     * getUrlOrders()
+         
+    /**
+     * getAdminUrlStatus()
      */
     public function getAdminUrlOrders():string
     {
@@ -57,8 +58,8 @@ class StatusEntity extends Entity
      *  contenu
      *  @return
      **/
-    public function setLibelle(string $libelle)
+    public function setLabel(string $label)
     {
-        $this->libelle = $libelle;
+        $this->label = $label;
     }
 }

@@ -25,7 +25,7 @@
         {% else %}
             {% for comment in comments %}
             <div class="one-comment">
-                <p class="bold">{{ comment.name }} <span class="small">{{ comment.postedAt | date('d/m/Y H:i') }}</span> :</p>
+                <p class="bold">{{ comment.name }} <span class="small">{{ comment.createdAt | date('d/m/Y H:i') }}</span> :</p>
                 <p>{{ comment.content }}</p>
             </div>
         {% endfor %}

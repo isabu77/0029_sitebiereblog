@@ -10,14 +10,15 @@ use \Core\Model\Entity;
 class OrderEntity extends Entity
 {
     private $id;
-    private $id_client;
-    private $number;
+    private $user_infos_id;
+    private $price_ht;
+    private $port;
+    private $tva;
+    private $status_id;
     private $token;
-    private $id_status;
-    private $priceHT;
-    private $priceTTC;
-    private $createdAt;
-    
+    private $number;
+    private $created_at;
+
     public function getProperties(): array
     {
         return get_object_vars($this);
@@ -33,16 +34,16 @@ class OrderEntity extends Entity
     }
 
     /**
-     *  id_user
+     *  user_id
      *  @return int
      **/
-    public function getIdClient(): int
+    public function getUserInfosId(): int
     {
-        return ((int)$this->id_client);
+        return ((int)$this->user_infos_id);
     }
 
     /**
-     *  number
+     *  numéro de la commande
      *  @return string
      **/
 
@@ -64,38 +65,40 @@ class OrderEntity extends Entity
      *  id_status
      *  @return string
      **/
-    public function getIdStatus()
+    public function getStatusId()
     {
-        return ((string)$this->id_status);
+        return ((string)$this->status_id);
     }
  
-   /**
-     *  contenu
-     *  @return string
-     **/
+    /**
+     * recupère le prix total HT à l'achat
+     * @return float
+     */
+    public function getPriceHt()
+    {
+        return $this->price_ht;
+    }
+    /**
+     * recupère le port à l'achat
+     * @return float
+     */
+    public function getPort()
+    {
+        return $this->port;
+    }
+    /**
+     * recupère la tva à l'achat
+     * @return float
+     */
+    public function getTva()
+    {
+        return $this->tva;
+    }
+
     public function getCreatedAt()
     {
-        return ((string)$this->createdAt);
+        return $this->created_at;
     }
-    
-    /**
-     *  prix
-     *  @return float
-     **/
-    public function getPriceHT():float
-    {
-        return ((float)$this->priceHT);
-    }
-
-    /**
-     *  prix
-     *  @return float
-     **/
-    public function getPriceTTC():float
-    {
-        return ((float)$this->priceTTC);
-    }
-
     /**
      * getUrl()
      */
@@ -108,47 +111,63 @@ class OrderEntity extends Entity
             ]);
     }
 
+    /**
+     * getAdminUrl()
+     *  @return string
+     */
     public function getAdminUrl():string
     {
         return \App\App::getInstance()->getRouter()->url("admin_order_edit", [
             "id" => $this->getId(),
-            "id_user" => $this->getIdClient()
+            "user_id" => $this->getUserInfosId()
         ]);
     }
-    public function deleteUrl():string
+    /**
+     * getAdminDeleteUrl()
+     *  @return string
+     */
+    public function getAdminDeleteUrl():string
     {
         return \App\App::getInstance()->getRouter()->url("admin_order_delete", [
             "id" => $this->getId(),
-            "id_user" => $this->getIdClient()
+            "user_id" => $this->getUserInfosId()
         ]);
     }
 
-
     /**
      *  contenu
      *  @return
      **/
-    public function setIdClient(int $id_client)
+    public function setUserInfosId(int $user_infos_id)
     {
-        $this->id_client = $id_client;
+        $this->user_infos_id = $user_infos_id;
     }
   
     /**
      *  contenu
      *  @return
      **/
-    public function setPriceHT(float $priceHT)
+    public function setPriceHT(float $price_ht)
     {
-        $this->priceHT =$priceHT;
+        $this->price_ht = $price_ht;
     }
   
     /**
      *  contenu
      *  @return
      **/
-    public function setPriceTTC(float $priceTTC)
+    public function setTva(float $tva)
     {
-        $this->priceTTC =$priceTTC;
+        $this->tva = $tva;
+    }
+  
+    /**
+     *  contenu
+     *  @return
+     **/
+    public function setPort(float $port)
+    {
+        $this->port = $port;
     }
   
     /**
@@ -171,16 +190,16 @@ class OrderEntity extends Entity
      *  contenu
      *  @return
      **/
-    public function setIdStatus(string $id_status)
+    public function setStatusId(string $status_id)
     {
-        $this->id_status =$id_status;
+        $this->status_id =$status_id;
     }
     /**
      *  contenu
      *  @return
      **/
-    public function setCreatedAt(string $createdAt)
+    public function setCreatedAt(string $created_at)
     {
-        $this->createdAt =$createdAt;
+        $this->created_at =$created_at;
     }
 }

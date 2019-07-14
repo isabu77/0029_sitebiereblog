@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Model\Table;
 
 use \Core\Model\Table;
@@ -19,24 +20,15 @@ class CategoryTable extends Table
         LEFT JOIN {$this->table} c on pc.category_id = c.id
         WHERE post_id IN (" . $ids . ")");
     }
-
+    /**
+     * lecture des 3 derniers enregistrements
+     */
     public function lastThirdItems($ids)
     {
         return $this->query("SELECT *
                             FROM {$this->prefix}post_category 
-                            LEFT JOIN post on {$this->prefix}post_category.post_id = post.id
+                            LEFT JOIN {$this->prefix}post on {$this->prefix}post_category.post_id = {$this->prefix}post.id
                             WHERE category_id IN (" . $ids . ") ORDER BY id DESC LIMIT 3");
     }
 
-    public function insertCategory($name, $slug)
-    {
-        $sql = "INSERT INTO {$this->table} 
-        (`name`, `slug`) 
-        VALUES ( :name, :slug)";
-        $attributes = [
-            ":name"         => $name,
-            ":slug"         => $slug
-        ];
-        return $this->query($sql, $attributes);
-    }
 }

@@ -8,7 +8,7 @@
     <p><a href="/admin/beerInsert">Ajouter une bière</a></p>
 {% for beer in beers %}
     <article class="onePost">
-    <h3>{{ beer.name }}</h3>
+    <h3>{{ beer.title }}</h3>
     <p>{{ beer.content | slice(0, 200) }}</p>
     <p><a href="{{ beer.AdminUrl }}">Editer</a></p>
     </article>

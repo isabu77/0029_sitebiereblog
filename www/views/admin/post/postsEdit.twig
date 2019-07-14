@@ -11,11 +11,12 @@
     <p>SLUG : {{ post.slug }}</p>
     <div>
     <form action="" method="post">
-        <input type="text" name="post_name" value="{{ post.name }}">
-        <input type="hidden" name="post_id" value="{{ post.id }}">
+        <h4>Nom</h4>
+         <input type="text" name="post_name" value="{{ post.name }}">
+        <h4>Slug</h4>
         <input type="text" name="post_slug" value="{{ post.slug }}">
-        <input type="hidden" name="post_id" value="{{ post.id }}">
-        <textarea name="post_content">{{ post.content }}</textarea>
+         <h4>Contenu</h4>
+       <textarea name="post_content">{{ post.content }}</textarea>
         <input type="hidden" name="post_id" value="{{ post.id }}">
         <button type="submit">Enregistrer</button>
     </form>
@@ -35,7 +36,7 @@
             {% endfor %}
         </select>
     </form>
-    <p><a href="{{ post.deleteURL }}">SUPPRIMER</a></p>
+    <p><a href="{{ post.AdminDeleteURL }}">SUPPRIMER</a></p>
     </article>
 </section>
 {% endblock %}

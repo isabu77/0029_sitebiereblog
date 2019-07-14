@@ -9,7 +9,7 @@ use \Core\Model\Entity;
 class ConfigEntity extends Entity
 {
     private $id;
-    private $date;
+    private $created_at;
     private $tva;
     private $port;
     private $ship_limit;
@@ -27,9 +27,9 @@ class ConfigEntity extends Entity
      *  contenu
      *  @return string
      **/
-    public function getDate()
+    public function getCreatedAt()
     {
-        return ((string)$this->date);
+        return ((string)$this->created_at);
     }
 
      /**

@@ -128,7 +128,7 @@ function afficheCart(data, id, originalPrice) {
     //console.log(data);
     obj = JSON.parse(data);
     if (obj) {
-        var pHT = originalPrice * obj.quantity;
+        var pHT = originalPrice * obj.beer_qty;
         var pTTC = pHT * tva;
 
         // on vide la partie commande
@@ -139,7 +139,7 @@ function afficheCart(data, id, originalPrice) {
         }
         // on remplit la ligne du panier
         if (document.getElementById('PQTY_' + id)) {
-            document.getElementById('PQTY_' + id).value = obj.quantity; //qty;
+            document.getElementById('PQTY_' + id).value = obj.beer_qty; //qty;
             document.getElementById('PHT_' + id).innerHTML = String(pHT.toFixed(2)).replace('.', ',') + "€";
             document.getElementById('PTTC_' + id).innerHTML = String(pTTC.toFixed(2)).replace('.', ',') + "€";
         }

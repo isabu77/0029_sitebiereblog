@@ -24,8 +24,11 @@ class UserTable extends Table
             return null;
         }
     }
+    /**
+     * supprime le token d'un user
+     */
     public function deleteToken($id)
     {
-        return $this->query("UPDATE {$this->table} SET token = '' WHERE id_user = ?", [$id]);
+        return $this->query("UPDATE {$this->table} SET token = '' WHERE id = ?", [$id]);
     }
 }

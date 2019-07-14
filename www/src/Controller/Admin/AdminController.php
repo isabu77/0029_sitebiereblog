@@ -88,7 +88,7 @@ class AdminController extends Controller
     public function orders($post, $idStatus = 0)
     {
         if ($idStatus) {
-            $orders = $this->order->allInIdStatus($idStatus);
+            $orders = $this->order->allInStatusId($idStatus);
         } else {
             $orders = $this->order->allWithoutLimit();
         }

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Model\Entity;
 
 use \Core\Controller\Helpers\TextController;
@@ -9,39 +10,95 @@ use \Core\Model\Entity;
  **/
 class BeerEntity extends Entity
 {
+    /**
+     * id de la biere
+     * @var int
+     */
     private $id;
+    /**
+     * titre de la bière
+     * @var string
+     */
     private $title;
+    /**
+     * url de l'image
+     * @var  string
+     */
     private $img;
+    /**
+     * content
+     * @var  string
+     */
     private $content;
-    private $price;
+    /**
+     * prix HT
+     * @var  float
+     */
+    private $price_ht;
+    /**
+     * stock
+     * @var  int
+     */
+    private $stock;
+
+    /**
+     * slug
+     * @var  int
+     */
     private $slug;
 
     /**
-     *  id
-     *  @return int
-     **/
+     * recupère l'id de la bière
+     * @return int
+     */
     public function getId(): int
     {
-        return ($this->id);
+        return $this->id;
     }
-
+    
     /**
-     *  title
-     *  @return string
-     **/
+     * recupère le titre de la bière
+     * @return string
+     */
     public function getTitle(): string
     {
-        return ((string)$this->title);
+        return $this->title;
     }
 
     /**
-     *  img
-     *  @return string
-     **/
-
+     * recupère l'url de l'image de la bière
+     * @return string
+     */
     public function getImg(): string
     {
-        return ((string)$this->img);
+        return $this->img;
+    }
+
+    /**
+     * recupère le contenu de la bière
+     * @return string
+     */
+    public function getContent(): string
+    {
+        return $this->content;
+    }
+
+    /**
+     * recupère le prix HT de la bière
+     * @return float
+     */
+    public function getPriceHt(): float
+    {
+        return $this->price_ht;
+    }
+
+    /**
+     * recupère le stock de la bière
+     * @return int
+     */
+    public function getStock(): int
+    {
+        return $this->stock;
     }
 
     /**
@@ -56,65 +113,57 @@ class BeerEntity extends Entity
      *  contenu
      *  @return string
      **/
-    public function getContent(): string
-    {
-        return ((string)$this->content);
-    }
-    /**
-     *  contenu
-     *  @return string
-     **/
     public function getExcerpt(int $lg = 100): string
     {
         return TextController::excerpt($this->content, $lg);
     }
-    
-    /**
-     *  prix
-     *  @return float
-     **/
-    public function getPrice(): float
-    {
-        return ((float)$this->price);
-    }
+
     /**
      *  prix ht
      *  @return string
      **/
     public function getPrixHt(): string
     {
-        return (String)number_format($this->price, 2, ',', ' ').'€';
+        return (string) number_format($this->price_ht, 2, ',', ' ') . '€';
     }
-    
+
     /**
      *  prix
      *  @return string
      **/
     public function getPrixTTC(): string
     {
-        return (String)number_format($this->price * \App\App::getInstance()->getEnv('ENV_TVA'), 2, ',', ' ').'€';
+        return (string) number_format($this->price_ht * \App\App::getInstance()->getEnv('ENV_TVA'), 2, ',', ' ') . '€';
     }
 
     /**
      * getUrl()
+     *  @return string
      */
-    public function getUrl():string
+    public function getUrl(): string
     {
-        return \App\App::getInstance()
-            ->getRouter()
-            ->url('beer', [
+        return \App\App::getInstance()->getRouter()->url('beer', [
             'id' => $this->getId()
-            ]);
+        ]);
     }
 
-    public function getAdminUrl():string
+    /**
+     * getAdminUrl()
+     *  @return string
+     */
+    public function getAdminUrl(): string
     {
         return \App\App::getInstance()->getRouter()->url("admin_beer_edit", [
             "slug" => $this->getSlug(),
             "id" => $this->getId()
         ]);
     }
-    public function deleteUrl():string
+
+    /**
+     * getAdminDeleteUrl()
+     *  @return string
+     */
+    public function getAdminDeleteUrl(): string
     {
         return \App\App::getInstance()->getRouter()->url("admin_beer_delete", [
             "slug" => $this->getSlug(),

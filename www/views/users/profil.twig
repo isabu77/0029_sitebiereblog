@@ -74,7 +74,7 @@
         <div><button name="delete" formaction="/profil" formmethod="POST" type="submit">Supprimer</button></div>
     </div>
     <input id="id" type="hidden" name="id" value="{{user.id}}" /></div>
-    <input id="id_user" type="hidden" name="id_user" value="{{user.id_user}}" /></div>
+    <input id="user_id" type="hidden" name="user_id" value="{{user.user_id}}" /></div>
 </form>
 
 <h1 class="titreduhaut">Les commandes de {{user.firstname}} {{user.lastname}}</h1>
@@ -90,11 +90,11 @@
 			</tr>
 		</thead>
 		<tbody>
-    {% for cmd in orders %}
+    {% for order in orders %}
 			<tr>
-                <td><a href='/orderconfirm/{{ cmd.id }}'>Commande n°{{ cmd.id }}</a></td>
-                <td>{{ cmd.priceTTC|number_format(2, ',' ,'.') }} €</td>
-                <td>{{ cmd.getIdStatus() }}</td>
+                <td><a href='/orderconfirm/{{ order.id }}'>Commande n°{{ order.id }}</a></td>
+                <td>{{ ((order.priceHt * order.tva) + order.port) | number_format(2, ',' ,'.') }} €</td>
+                <td>{{ order.statusId }}</td>
 {#                <form action="/profil" method="POST">
                     <input type="hidden" name="id" value="{{cmd.id}}" />
                     <td><input type="submit" name="delete" value="Supprimer" /></td>

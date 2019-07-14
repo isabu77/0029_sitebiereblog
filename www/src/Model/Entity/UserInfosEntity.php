@@ -10,12 +10,12 @@ use \Core\Model\Entity;
 class UserInfosEntity extends Entity
 {
     private $id;
-    private $id_user;
+    private $user_id;
     private $lastname;
     private $firstname;
     private $address;
-    private $zipCode;
     private $city;
+    private $zip_code;
     private $country;
     private $phone;
 
@@ -33,12 +33,12 @@ class UserInfosEntity extends Entity
     }
 
     /**
-     *  id_user
+     *  user_id
      *  @return int
      **/
-    public function getIdUser(): int
+    public function getUserId(): int
     {
-        return ((int)$this->id_user);
+        return ((int)$this->user_id);
     }
 
     /**
@@ -66,7 +66,7 @@ class UserInfosEntity extends Entity
      **/
     public function getZipCode()
     {
-        return ((string)$this->zipCode);
+        return ((string)$this->zip_code);
     }
     /**
      *  contenu
@@ -125,12 +125,12 @@ class UserInfosEntity extends Entity
     }
 
     /**
-     *  id_user
+     *  user_id
      *  @return
      **/
-    public function setIdUser(string $id_user)
+    public function setUserId(string $user_id)
     {
-        $this->id_user = $id_user;
+        $this->user_id = $user_id;
     }
 
     /**
@@ -156,9 +156,9 @@ class UserInfosEntity extends Entity
      *  contenu
      *  @return
      **/
-    public function setZipCode(string $zipCode)
+    public function setZipCode(string $zip_code)
     {
-        $this->zipCode = $zipCode;
+        $this->zip_code = $zip_code;
     }
     /**
      *  contenu

@@ -13,7 +13,7 @@ class UserEntity extends Entity
     private $mail;
     private $password;
     private $token;
-    private $createdAt;
+    private $created_at;
     private $verify;
 
     /**
@@ -58,7 +58,7 @@ class UserEntity extends Entity
      **/
     public function getCreatedAt()
     {
-        return ((string)$this->createdAt);
+        return ((string)$this->created_at);
     }
         
      /**
@@ -81,6 +81,10 @@ class UserEntity extends Entity
             'id' => $this->getId()
             ]);
     }
+    /**
+     * getAdminUrl()
+     *  @return string
+     */
     public function getAdminUrl():string
     {
         return \App\App::getInstance()->getRouter()->url("admin_user_edit", [
@@ -88,7 +92,11 @@ class UserEntity extends Entity
             "id" => $this->getId()
         ]);
     }
-    public function deleteUrl():string
+    /**
+     * getAdminDeleteUrl()
+     *  @return string
+     */
+    public function getAdminDeleteUrl():string
     {
         return \App\App::getInstance()->getRouter()->url("admin_user_delete", [
             "lastname" => $this->getToken(),
@@ -116,8 +124,8 @@ class UserEntity extends Entity
      *  contenu
      *  @return string
      **/
-    public function setCreatedAt(string $createdAt)
+    public function setCreatedAt(string $created_at)
     {
-        $this->createdAt =$createdAt;
+        $this->created_at =$created_at;
     }
 }
