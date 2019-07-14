@@ -131,8 +131,6 @@ class BeerController extends Controller
                                 $priceHT = $_POST["price"];
                             }
 
-                            //$priceTTC = $priceHT * $this->getApp()->getEnv('ENV_TVA');
-                            //$priceHT = $_POST["price"];
                             $attributes = [
                                 "beer_qty"        => $qty,
                                 "beer_price_ht"         => $priceHT
@@ -163,8 +161,6 @@ class BeerController extends Controller
                     $priceHT = $_POST["price"];
                 }
                 // insertion en base de la ligne panier
-                //$priceTTC = $priceHT * $this->getApp()->getEnv('ENV_TVA');
-                //$priceHT = $_POST["price"];
                 if (empty($token)) {
                     $token = substr(md5(uniqid()), 0, 24);
                 }

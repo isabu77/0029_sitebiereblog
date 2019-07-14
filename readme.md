@@ -5,16 +5,17 @@ Modèle MVC avec un dossier 'Core' contenant les classes génériques réutilisa
 - Les variables d'environnement, à adapter selon le serveur, sont définies dans le fichier www/src/config.php, 
 à créer sur le modèle de www/src/config.sample.php :
     $env = [
-        'ENV_DEV' => true,
-        'MYSQL_HOSTNAME' => 'blog.mysql',     
-        'MYSQL_ROOT_PASSWORD' => 'blog',
-        'MYSQL_DATABASE' => 'blog',
-        'MYSQL_USER' => 'userblog',
-        'MYSQL_PASSWORD' => 'blogpwd',
-        'ENV_TVA' => 1.2,
-        'GMAIL_USER' => '',
-        'GMAIL_PWD' => '',
-        'GMAIL_PSEUDO' => ''
+        'ENV_DEV' => true, 
+        'TABLE_PREFIX' => 'blog_', 
+        'MYSQL_HOSTNAME' => 'blog.mysql',      
+        'MYSQL_ROOT_PASSWORD' => 'blog', 
+        'MYSQL_DATABASE' => 'blog', 
+        'MYSQL_USER' => 'userblog', 
+        'MYSQL_PASSWORD' => 'blogpwd', 
+        'ENV_TVA' => 1.2, 
+        'GMAIL_USER' => '', 
+        'GMAIL_PWD' => '', 
+        'GMAIL_PSEUDO' => '' 
     ];
 
 - le fichier .env est utilisé dans un environnement Docker sur Linux, 
@@ -32,9 +33,10 @@ Modèle MVC avec un dossier 'Core' contenant les classes génériques réutilisa
         ServerName sitebiere
         ServerAlias sitebiere
         DocumentRoot "${INSTALL_DIR}/www/sitebiere/public
-       
 
+## Le Diagramme de classes
 
+![Classes](sitebiereClasses.jpg "classes")
 
 ## LE SITE "Bread Beer Shop" : la page d'accueil
 Un menu dans le Header de toutes les pages :
@@ -48,14 +50,16 @@ Un menu dans le Header de toutes les pages :
 - Contact
 - Blog
 
-### - "Boutique" : Affiche les produits (bières)
-    un clic sur un produit affiche une modale pour ajouter une quatité au panier
+### - "Boutique" : Affiche les produits (bières) 
+un clic sur un produit affiche une modale pour ajouter une quantité au panier
 
-### - "Connexion" permet de saisir son adresse mail et son mot de passe pour se connecter, 
-    disparait si la connexion réussit pour faire apparaitre "Bon de commande", "Profil" et "Déconnexion"
+### - "Connexion" permet de saisir son adresse mail et son mot de passe pour se connecter  
+disparait si la connexion réussit pour faire apparaitre "Bon de commande", 
+"Profil" et "Déconnexion"
 
-### - "Inscription" permet de saisir ses coordonnées, 
-    son adresse mail et son mot de passe pour s'inscrire', envoie un mail de confirmation pour valider l'inscription.
+### - "Inscription" permet de saisir ses coordonnées  
+son adresse mail et son mot de passe pour s'inscrire', 
+envoie un mail de confirmation pour valider l'inscription.
 
 ### - La validation de l'inscription affiche la page de connexion
 
@@ -78,18 +82,27 @@ Un menu dans le Header de toutes les pages :
 ### - "Déconnexion" déconnecte l'utilisateur et affiche la page "Identification"
 
 ### - Contact affiche un formulaire de contact
-    ce formulaire envoie un email à l'adresse définie dans config.php
+Ce formulaire envoie un email à l'adresse définie dans config.php
 
 ### Le BLOG :
-- Navigation : un menu contenant 'Bread Beer Shop' 'Home' 'Catégories'
+- Un menu dans le Header de toutes les pages :
+- Boutique
+- Articles
+- Catégories
+- Contact
+- Connexion
+- Inscription
+- Profil
+- Déconnexion
+
 - Page d'accueil : Liste des articles avec leurs catégories et un lien 'lire plus"
 - Page Catégories : liste des catégories avec lien sur chacune et la liste de ses articles
 - Page Catégorie : Une catégorie avec la liste de ses articles
-- Page d'un article : contenu et catégories de l'article
+- Page d'un article : contenu et catégories de l'article et commentaires à poster
 
 ### L'ENVIRONNEMENT physique de TRAVAIL
 
-- les fichiers : pour Github et DOCKER
+- LES FICHIERS: pour Github et DOCKER
 
 - .env.sample : variables d'environnement à déclarer pour docker dans .env
 - .gitignore : fichiers et dossiers à ne pas versionner
@@ -101,7 +114,7 @@ Un menu dans le Header de toutes les pages :
 - stop.sh : arrêt et destruction de l'environnement docker
 
 
-- les dossiers :
+- LES DOSSIERS :
 
 #### docker : contient le fichier 'Dockerfile' 
 - Dockerfile : décrit l'image 'blog' à construire par :
@@ -117,7 +130,7 @@ Un menu dans le Header de toutes les pages :
 - .htaccess : contient les règles pour utiliser Altorouter
 - adminer.php : pour administrer la base
 - dossier assets : contient les dossiers css, js et img 
-- **index.php** : le fichier principal de l'application qui charge la classe principale App.php
+- **index.php** : le fichier principal de l'application qui charge la classe principale **App.php**
 
 ##### www/commande : Dossier des outils externes
 
@@ -127,7 +140,8 @@ docker exec blog php commande/createsql.php
 ##### www/core : Environnement générique MVC
 
 - www/core/Controller : les classes génériques de contrôleurs 
-    controller.php : contrôleur général
+    Controller.php : contrôleur général, classe parente
+    FormController.php : Contrôleur de formulaire
     RouterController.php : contrôleur des routes
     URLController.php : contrôleur des url
     PaginatedQueryController.php : contrôleur de la pagination
@@ -136,7 +150,7 @@ docker exec blog php commande/createsql.php
     Helpers/MailController.php : contrôleur des envois de mail par SwiftMail
 
 - www/core/Model : les classes génériques du modèle 
-    Table.php : requêtes aux tables
+    Table.php : Classe abstraite de requêtes aux tables
     Entity.php : Description d'un enregistrement de table
 
 ##### www/src : Environnement spécifique de l'application
@@ -145,16 +159,24 @@ docker exec blog php commande/createsql.php
 
 - **App.php** : la classe principale de l'application, chargée par www/public/index.php
 
-- **www/src/Controller** : les classes spécifiques du contrôleur qui héritent de core/controller
+- **www/src/Controller** : les classes spécifiques du contrôleur qui héritent de core/Controller
     
     ConfigController.php : contrôleur de la table config (tva, frais de port)
+    PaginatedQueryAppController.php : contrôleur de la pagination
     
     CategoryController.php : contrôleur des catégories du BLOG
     PostController.php : contrôleur des articles du BLOG
-    PaginatedQueryAppController.php : contrôleur de la pagination
 
     BeerController.php : contrôleur des produits de la boutique de bières
     UsersController.php : contrôleur des clients de la boutique de bières
+
+- **www/src/Controller/Admin** : les classes de la partir **Administration**
+    AdminController.php : page principale
+    BeerEditController.php : Edition d'une bière
+    CategoryEditController.php : Edition d'une catégorie
+    OrderEditController.php : Edition d'une commande
+    PostEditController.php : Edition d'un article du blog
+    UserEditController.php : Edition d'un utilisateur du site/blog
 
 - **www/src/Model** : les classes spécifiques du modèle qui héritent de core/Model
     
@@ -185,18 +207,29 @@ docker exec blog php commande/createsql.php
     Table/UserInfosTable.php : requêtes à la table des clients de la boutique de bières
     Entity/UserInfosEntity.php : Description d'un enregistrement de la table des clients de la boutique de bières
 
-
 ##### www/views : les vues HTML des pages de l'application 
 
 - www/views/layout/default.twig : modèle d'une page 'modèle' du BLOG (header + contenu + footer)
-- www/views/layoutsitebiere.twig : modèle d'une page 'modèle' du SITE BIERE (header + contenu + footer)
+- www/views/layout/sitebiere.twig : modèle d'une page 'modèle' du SITE BIERE (header + contenu + footer)
+- www/views/layout/admindefault.twig : modèle d'une page 'modèle' du de l'administration du SITE BIERE (header + contenu + footer)
 
-- www/views/category : templates .twig des pages pour les catégories (all.twig et show.twig)
-- www/views/post : templates .twig des pages pour les articles (card.twig, all.twig et show.twig)
-- www/views/beer : templates .twig des pages pour les bières (index.twig, cgv.twig, all.twig , mentions.twig, puchase.twig, orderconfirm.twig, cart.twig)
-- www/views/users : templates .twig des pages pour les clients du site bières (connexion.twig, inscription.twig, contact.twig, profil.twig, resetpwd.twig)
+- www/views/category/ : templates .twig des pages pour les catégories (all.twig et show.twig)
+- www/views/post/ : templates .twig des pages pour les articles (card.twig, all.twig et show.twig)
+- www/views/beer/ : templates .twig des pages pour les bières (index.twig, cgv.twig, all.twig , mentions.twig, puchase.twig, orderconfirm.twig, cart.twig)
+- www/views/users/ : templates .twig des pages pour les clients du site bières (connexion.twig, inscription.twig, contact.twig, profil.twig, resetpwd.twig)
 
+- www/views/admin/index.twig : Template .twig de la page de l'administration du site
+
+- www/views/admin/beer/ : templates .twig des pages pour l'administration des bières
+- www/views/admin/category/ : templates .twig des pages pour l'administration des catégories
+- www/views/admin/order/ : templates .twig des pages pour l'administration des commandes
+- www/views/admin/post/ : templates .twig des pages pour l'administration des articles
+- www/views/admin/user/ : templates .twig des pages pour l'administration des utilisateurs
 
 ##### www/tests : les tests unitaires des classes de l'application 
 
 - www/tests/Core/Controller/Helpers/TextTest.php : classe de tests unitaires de la classe \Core\Controller\Helpers\TextController
+- www/tests/Core/Controller/FormTest.php : classe de tests unitaires de la classe \Core\Controller\FormController
+- www/tests/Core/Model/TableTest.php : classe de tests unitaires de la classe \Core\Model\Table
+- www/tests/Core/Model/ClassTest/ClassNameTable.php : classe pour les tests unitaires de la classe \Core\Model\Table
+- www/tests/Core/Model/ClassTest/MotMotTable.php : classe pour les tests unitaires de la classe \Core\Model\Table

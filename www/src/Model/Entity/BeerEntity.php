@@ -55,7 +55,7 @@ class BeerEntity extends Entity
     {
         return $this->id;
     }
-    
+
     /**
      * recupère le titre de la bière
      * @return string
@@ -108,7 +108,7 @@ class BeerEntity extends Entity
     {
         return $this->slug;
     }
-    
+
     /**
      *  contenu
      *  @return string
@@ -133,7 +133,7 @@ class BeerEntity extends Entity
      **/
     public function getPrixTTC(): string
     {
-        return (string) number_format($this->price_ht * \App\App::getInstance()->getEnv('ENV_TVA'), 2, ',', ' ') . '€';
+        return (string) number_format($this->price_ht * TVA, 2, ',', ' ') . '€';
     }
 
     /**
