@@ -5,18 +5,13 @@
 
 <form method="POST" action="/cart" id="formOrder">
     <input type="hidden" id="id" name="idClient" value="{{client.id}}" />
-	<table class="table-striped bg-success">
+	<table class="table-striped panier">
 		<thead>
 			<tr>
-				<th>Votre PANIER:</th>
-				<th></th>
-				<th></th>
-				<th></th>
-				<th></th>
-				<th></th>
+				<th id="titrePanier">Votre PANIER</th>
 			</tr>
-			<tr>
-				<td>Nom</td>
+			<tr id="titresPanier">
+				<th>Nom</th>
 				<th>Quantité</th>
 				<th>Prix HT</th>
 				<th>Prix TTC</th>
@@ -43,7 +38,7 @@
 				{% endfor %}
 			</tr>
 		{% endfor %}
-		<tr>
+		<tr id="panierTotal">
 			<td>Total</td>
 			<td id="PQTY"><strong></strong></td>
 			<td id="PHT"></td>
@@ -51,7 +46,7 @@
 			<td></td>
 			<td></td>
 		</tr>
-		<tr>
+		<tr id="panierPort">
 			<td><strong>Frais de port</strong></td>
 			<td></td>
 			<td></td>
@@ -61,8 +56,8 @@
 		</tbody>
 	</table>
 	<h1 class="titreduhaut">Vos adresses</h1>
-	<div class="form-group row centrer">
-		<ul class="nav nav-tabs nav-justified flex-column flex-sm-row">
+	<div class="form-group">
+		<ul class="nav nav-pills nav-justified flex-column flex-sm-row">
 			{% for cli in clients %}
 			{% if cli.id == client.id %}
 			<li class="nav-item" onClick="selectAdresse({{cli.id}})"><a id="a_{{cli.id}}" class="nav-link active" >{{cli.firstname}} {{cli.lastname}}</a></li>

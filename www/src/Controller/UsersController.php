@@ -282,34 +282,6 @@ class UsersController extends Controller
     }
 
     /**
-     * la déconnexion du site
-     *
-     */
-    public function deconnexion()
-    {
-        parent::deconnectSession();
-        header('Location: /');
-        exit();
-    }
-
-    /**
-     * verifie qu'un utilisateur est connecté
-     * @return array|void
-     */
-    public function userOnly($verify = false): ?object
-    {
-        $user = parent::connectedSession();
-        if (!$user) {
-            if ($verify) {
-                return null;
-            }
-            header('location: /connexion');
-            exit();
-        }
-        return $user;
-    }
-
-    /**
      * lecture d'un client par son id (appelée par javascript en ajax)
      *
      */
@@ -332,8 +304,8 @@ class UsersController extends Controller
     public function profil($post, int $idClient = null)
     {
 
-        // le client connecté
-        $userConnect = $this->userOnly(false);
+        // le user connecté
+        $userConnect = $this->connectedSession();
 
         // traitement de la modification du profil
         if (!empty($post)) {

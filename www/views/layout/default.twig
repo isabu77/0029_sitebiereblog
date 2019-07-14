@@ -22,17 +22,24 @@
         <div class="collapse navbar-collapse" id="navbarColor01">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="/">Bread Beer shop<span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="/">Boutique<span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item active">
                     <a class="nav-link" href="/blog">Posts<span class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item active">
                     <a class="nav-link" href="/categories">Categories</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item active">
                     <a class="nav-link" href="/contact">Contact</a>
                 </li>
+                {% if session.auth %}
+                <li class="nav-item active"><a class="nav-link" href="/profil">Profil</a></li>
+                <li class="nav-item active"><a class="nav-link" href="/deconnexion">Déconnexion</a></li>
+                {% else %}
+                <li class="nav-item active"><a class="nav-link" href="/connexion">Connexion</a></li>
+                <li class="nav-item active"><a class="nav-link" href="/inscription">Inscription</a></li>
+                {% endif %}
             </ul>
             <form class="form-inline my-2 my-lg-0">
                 <input class="form-control mr-sm-2" id="searchSaisie" onchange="search()" type="text" placeholder="Search">

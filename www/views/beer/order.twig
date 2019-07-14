@@ -7,13 +7,7 @@
 	<table class="table-striped">
 		<thead>
 			<tr>
-				<th>les bières:</th>
-				<th></th>
-				<th></th>
-				<th></th>
-				<th></th>
-				<th></th>
-				<th></th>
+				<th>LES BIERES</th>
 			</tr>
 			<tr>
 				<th>Nom</th>
@@ -40,7 +34,7 @@
 				<td><input id="QTY_{{biere.id}}" class="QTY" type="number" min="0" value="" oninput="calcPrice(this, {{biere.id}}, {{biere.priceHt}});" /></td>
 				<td></td>
 				<td><input type="button" name="add[{{biere.id}}]" value="Ajouter" onclick="addToCart({{biere.id}}, {{biere.priceHt}});"/></td>
-				<td><input type="button" name="update[{{biere.id}}]" value="Modifier" onclick="updateCart({{biere.id}}, {{biere.priceHt}},"");"/></td>
+				<td><input type="button" name="update[{{biere.id}}]" value="Modifier" onclick="updateCart({{biere.id}}, {{biere.priceHt}},'');"/></td>
 				<input type="hidden" name="id" value="{{biere.id}}" />
 				<input class="HT" type="hidden" name="price" value="{{biere.priceHt}}" />
 			</tr>
@@ -65,17 +59,13 @@
 		</tbody>
 	</table>
 	</br>
-	<table class="table-striped bg-info">
+	<table class="table-striped panier">
 		<thead>
 			<tr>
-				<th>Votre PANIER:</th>
-				<th></th>
-				<th></th>
-				<th></th>
-				<th></th>
+				<th id="titrePanier">Votre PANIER</th>
 			</tr>
 			<tr>
-				<td>Nom</td>
+				<th>Nom</th>
 				<th>Quantité</th>
 				<th>Total HT</th>
 				<th>Total TTC</th>
@@ -93,8 +83,13 @@
 					{% endif %}
 				{% endfor %}
 				<td><input id="PQTY_{{biere.id}}" class="PQTY" type="number" name="qty[{{biere.id}}]" min="0" value="{{line.beerQty}}" disabled/></td>
-				<td id="PHT_{{biere.id}}">{{(line.priceHT * line.beerQty)| number_format(2, '.', ',')}}€</td>
+				{% if line.beerQty == 0%}
+				<td id="PHT_{{biere.id}}"></td>
+				<td id="PTTC_{{biere.id}}"></td>
+				{% else %}
+				<td id="PHT_{{biere.id}}">{{ (line.priceHT * line.beerQty)| number_format(2, '.', ',')}}€</td>
 				<td id="PTTC_{{biere.id}}">{{(line.priceHT * line.beerQty * constant.TVA)| number_format(2, '.', ',')}}€</td>
+				{% endif %}
 				<td><input type="button" name="del[{{biere.id}}]" value="Retirer" onclick="deleteOfCart({{biere.id}}, {{biere.priceHt}});"/></td>
 				<input type="hidden" name="id" value="{{biere.id}}" />
 				<input class="HT" type="hidden" name="price" value="{{biere.priceHt}}" />
@@ -118,8 +113,8 @@
 	</table>
     <input type="hidden" id="id" name="idClient" value="{{client.id}}" />
 	<h1 class="titreduhaut">Vos adresses</h1>
-	<div class="form-group row centrer">
-		<ul class="nav nav-tabs nav-justified flex-column flex-sm-row">
+	<div class="form-group">
+		<ul class="nav nav-pills nav-justified flex-column flex-sm-row">
 			{% for cli in clients %}
 			{% if cli.id == client.id %}
 			<li class="nav-item" onClick="selectAdresse({{cli.id}})"><a id="a_{{cli.id}}" class="nav-link active" >{{cli.firstname}} {{cli.lastname}}</a></li>

@@ -5,7 +5,13 @@ body {
     display: flex;
     font-family: Roboto, sans-serif;
     box-sizing: border-box;
-    height: 200vw;
+    height: 100vw;
+}
+
+#wrapper {
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: space-around;
 }
 
 h1 {
@@ -17,11 +23,10 @@ h1 {
 
 aside {
     background: #afafaf;
-    height: 100%;
-    width: 25%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 25vw;
 }
 
 aside>* {
@@ -32,8 +37,8 @@ aside>* {
 
 aside ul li {
     width: 100%;
-    margin: 10% 0;
-    padding: 10% 0;
+    margin: 10px 0;
+    padding: 10px 0;
     border-top: 1px solid #333;
 }
 
@@ -56,12 +61,15 @@ li a {
 }
 
 main {
-    width: 75%;
     background: #efefef;
+    overflow: scroll;
+    height: 100vw;
+    width: 75vw;
 }
 
 h2 {
     color: #444;
+    width: 75%;
     font-size: 1.5em;
     font-weight: bold;
     letter-spacing: 2px;
@@ -90,6 +98,7 @@ h4 {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    overflow: auto;
 }
 
 .onePost {
@@ -167,6 +176,7 @@ h4 {
 
 .pagination li {
     margin: 0 1%;
+    padding: 3px;
 }
 
 

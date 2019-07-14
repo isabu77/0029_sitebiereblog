@@ -9,9 +9,11 @@
     <link rel="stylesheet" href="/assets/css/admin.css">
 </head>
 <body>
+<section id="wrapper">
+<div>
     <aside>
         <header>
-            <h1>{% block title %}{{ title }}{% endblock %}</h1>
+            <h1>{% block title %}Bread Beer Shop {{ title }}{% endblock %}</h1>
         </header>
         <ul>
             <li><a href="/admin">HOME</a></li>
@@ -23,7 +25,8 @@
             <li><a href="/">EXIT</a></li>
         </ul>
     </aside>
-
+</div>
+<div>
     <main>
     {% if session.success %}
         <div class="alert-success">{{ session.success }}</div>
@@ -33,5 +36,7 @@
         {% block content %}
         {% endblock %}
     </main>
+    </div>
+</section>
 </body>
 </html>

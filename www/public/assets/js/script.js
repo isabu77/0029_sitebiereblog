@@ -193,9 +193,25 @@ function totaux(prefix = "", totalPanier = 0) {
     if (prefix !== "") {
         if (total > 0) {
             document.getElementById('panier').innerHTML = Number(total);
+            document.getElementById('titrePanier').innerHTML = "Votre PANIER";
+            if (document.getElementById('commander')) {
+                document.getElementById('commander').disabled = false;
+            }
         } else {
             document.getElementById('panier').innerHTML = "";
-
+            document.getElementById('titrePanier').innerHTML = "Votre panier est vide";
+            if (document.getElementById('commander')) {
+                document.getElementById('commander').disabled = true;
+            }
+            if (document.getElementById('titresPanier')) {
+                document.getElementById('titresPanier').hidden = true;
+            }
+            if (document.getElementById('panierTotal')) {
+                document.getElementById('panierTotal').hidden = true;
+            }
+            if (document.getElementById('panierPort')) {
+                document.getElementById('panierPort').hidden = true;
+            }
         }
 
     }

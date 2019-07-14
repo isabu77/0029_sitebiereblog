@@ -17,6 +17,10 @@ class PostController extends Controller
 
         // $this->category est créée dynamiquement pour accéder aux méthodes de CategoryTable
         $this->loadModel('category');
+
+        $this->loadModel('comment');
+        $this->loadModel('user');
+
     }
 
     /**
@@ -46,7 +50,10 @@ class PostController extends Controller
      */
     public function show($post, string $slug, int $id)
     {
-        // lecture de l'article dans la base (objet Post) par son id
+         // le user connecté
+        $userConnect = $this->connectedSession(false);
+
+         // lecture de l'article dans la base (objet Post) par son id
         $post = $this->post->find($id);
 
         if (!$post) {
@@ -62,6 +69,9 @@ class PostController extends Controller
             exit();
         }
 
+        // les commentaires sur l'article
+        $comments = $this->comment->allInId($id);
+
         // les catégories de l'article par CategoryTable
         $post->setCategories($this->category->allInId($post->getId()));
         $title = $post->getName();
@@ -69,32 +79,39 @@ class PostController extends Controller
         // affichage HTML avec post/show.twig
         return $this->render('post/show', [
             'post' => $post,
-            'title' => $title
+            'title' => $title,
+            'user' => $userConnect,
+            'comments'  => $comments
         ]);
     }
 
-    public function comment(string $slug, int $id)
+    /**
+     * commentaire sur un article by 'Poster'
+     */
+    public function comment($post, string $slug, int $id)
     {
-        if (empty($_POST)) {
+        if (empty($post)) {
             header('location: /posts');
         }
         
-        if (isset($_POST['mail']) && !empty($_POST['mail']) &&
-            isset($_POST['login']) && !empty($_POST['login']) &&
-            isset($_POST['content']) && !empty($_POST['content']) &&
-            isset($_POST['id']) && !empty($_POST['id'])) {
-            $name = htmlspecialchars($_POST['login']);
-            $content = htmlspecialchars($_POST['content']);
-            $user_id = $_POST['id'];
-            $verif = $this->user->exist($_POST["mail"]);
-            if ($verif) {
-                $this->comment->post($id, $user_id, $name, $content);
-                $url = $this->generateUrl('post', ['id' => $id, 'slug' => $slug]);
-                header('location: '.$url);
-            } else {
-                $_SESSION['error'] = 'Veuillez vous enregistrer';
-                unset($_SESSION['error']);
-            }
+        if (isset($post['mail']) && !empty($post['mail']) &&
+            isset($post['content']) && !empty($post['content']) &&
+            isset($post['id']) && !empty($post['id'])) {
+
+            $name = htmlspecialchars($post['login']);
+            $content = htmlspecialchars($post['content']);
+            $attributes = [
+                "post_id"  => $id,
+                "user_id"  => $post['id'],
+                "name"     => $name,
+                "content"  => $content
+            ];
+            $result = $this->comment->insert($attributes);
+
+            $url = $this->generateUrl('post', ['slug' => $slug, 'id' => $id]);
+            http_response_code(301);
+            header('location: '.$url);
+            
         } else {
             $_SESSION['error'] = 'Erreur';
             unset($_SESSION['error']);

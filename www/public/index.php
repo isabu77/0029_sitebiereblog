@@ -32,12 +32,13 @@ $app->getRouter($basepath)
     ->match('/connexion', 'Users#connexion', 'connexion')
     //->post('/connexion', 'Users#connexion', 'connexion_profil')
 
-    ->get('/deconnexion', 'Users#deconnexion', 'deconnexion')
+    ->get('/deconnexion', 'Users#deconnectSession', 'deconnexion')
 
     ->get('/orderconfirm/[i:id]', 'Beer#orderconfirm', 'orderconfirm')
 
     ->get('/article/[*:slug]-[i:id]', 'Post#show', 'post')
-    
+    ->post('/article/[*:slug]-[i:id]', 'post#comment', 'comment')   
+
     ->get('/categories', 'Category#all', 'categories')
     ->get('/category/[*:slug]-[i:id]', 'Category#show', 'category')
 

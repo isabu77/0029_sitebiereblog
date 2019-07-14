@@ -75,15 +75,17 @@ class Controller
      * retourne l'utilisateur connecté
      * @return object|void
      */
-    public function connectedSession():?object
+    public function connectedSession($isConnected = true):?object
     {
         if (session_status() != PHP_SESSION_ACTIVE) {
             session_start();
         }
         // n'est pas defini et false
         if (!$_SESSION["auth"]) {
-            header('Location: /');
-            exit();
+            if ($isConnected ){
+                header('Location: /connexion');
+                exit();
+            }
         }
         return $_SESSION["auth"];
     }

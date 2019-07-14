@@ -31,15 +31,15 @@
         {% endfor %}
         {% endif %}
         </div>
-        <form class="posting" method="post">
+        <form class="posting" method="post" action="">
             <input readonly type="email" name="mail" value="{{ user.mail }}" />
-            <input type="text" name="login" placeholder="Pseudo" value="{{ user.firstname }}" />
+            <input type="text" name="login" placeholder="Pseudo" value="" />
             <input type="hidden" name="id" value="{{ user.id }}" />
             <textarea name="content" placeholder="Votre commentaire"></textarea>
             {% if user %}
                 <button type="submit">Poster</button>
             {% else %}
-                <p>Pour poster un commentaire veuillez <a href="/connect">vous connecter</a> !</p>
+                <p>Pour poster un commentaire veuillez <a href="/connexion">vous connecter</a> !</p>
                 <button type="submit" disabled>Poster</button>
             {% endif %}
         </form>

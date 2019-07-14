@@ -9,18 +9,4 @@ class CommentTable extends Table
     {
         return $this->query("SELECT * FROM {$this->table} WHERE post_id = ?", [$id]);
     }
-
-    public function post($post_id, $user_id, $name, $content)
-    {
-        $sql = "INSERT INTO {$this->table} 
-        (`post_id`, `user_id`, `name`, `content`) 
-        VALUES ( :post_id, :user_id, :name, :content)";
-        $attributes = [
-            ":post_id"  => $post_id,
-            ":user_id"  => $user_id,
-            ":name"     => $name,
-            ":content"  => $content
-        ];
-        return $this->query($sql, $attributes);
-    }
 }

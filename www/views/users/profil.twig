@@ -16,7 +16,7 @@
     </div>
 </form>
 <h1 class="titreduhaut">Vos adresses</h1>
-<ul class="nav nav-tabs nav-justified flex-column flex-sm-row">
+<ul class="nav nav-pills nav-justified flex-column flex-sm-row">
     {% for client in clients %}
     {% if client.id == user.id %}
     <li class="nav-item"><a class="nav-link active" href="/profil/{{client.id}}">{{client.firstname}} {{client.lastname}}</a></li>
