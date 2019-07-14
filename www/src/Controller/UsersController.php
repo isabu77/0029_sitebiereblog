@@ -5,8 +5,7 @@ namespace App\Controller;
 use \Core\Controller\Controller;
 use \Core\Controller\Helpers\MailController;
 use \Core\Controller\Helpers\TextController;
-use App\Model\Entity\UserEntity;
-use App\Model\Entity\UserInfosEntity;
+use \Core\Controller\FormController;
 
 class UsersController extends Controller
 {
@@ -24,7 +23,7 @@ class UsersController extends Controller
 
     public function subscribe($post)
     {
-        $form = new \Core\Controller\FormController();
+        $form = new FormController();
 
         $errors = $form->hasErrors();
         if ($errors["post"] != "no-data") {
@@ -94,60 +93,54 @@ class UsersController extends Controller
     public function inscription($post, $idUser = 0, $token = "", $createdAt = "")
     {
         if (!empty($post)) {
-            if (
-                isset($post["lastname"]) && !empty($post["lastname"]) &&
-                isset($post["firstname"]) && !empty($post["firstname"]) &&
-                isset($post["address"]) && !empty($post["address"]) &&
-                isset($post["zipCode"]) && !empty($post["zipCode"]) &&
-                isset($post["city"]) && !empty($post["city"]) &&
-                isset($post["country"]) && !empty($post["country"]) &&
-                isset($post["phone"]) && !empty($post["phone"]) &&
-                isset($post["mail"]) && !empty($post["mail"]) &&
-                isset($post["mailVerify"]) && !empty($post["mailVerify"]) &&
-                isset($post["password"]) && !empty($post["password"]) &&
-                isset($post["passwordVerify"]) && !empty($post["passwordVerify"])
-            ) {
-                if ((filter_var($post["mail"], FILTER_VALIDATE_EMAIL) &&
-                        $post["mail"] == $post["mailVerify"]) && ($post["password"] == $post["passwordVerify"])
-                ) {
-                    // créer l'objet users
-                    $userEntity = new UserEntity($post);
+            // traitement du formulaire
+            $form = new FormController();
+            $errors = $form->hasErrors();
+            if ($errors["post"] != "no-data") {
+                $form->field('mail', ["require", "verify"]);
+                $form->field('password', ["require", "verify"]);
+                $form->field('lastname', ["require"]);
+                $form->field('firstname', ["require"]);
+                $form->field('address', ["require"]);
+                $form->field('zipCode', ["require"]);
+                $form->field('city', ["require"]);
+                $form->field('country', ["require"]);
+                $form->field('phone', ["require"]);
+                $errors = $form->hasErrors();
+                if (empty($errors) && filter_var($post["mail"], FILTER_VALIDATE_EMAIL)) {
+                    $datas = $form->getDatas();
 
                     // vérifier l'existence du user en base
-                    $user = $this->user->getUserByMail($userEntity->getMail());
+                    $user = $this->user->getUserByMail($datas['mail']);
 
                     if (!$user) {
                         // il n'existe pas : insertion en base
-                        $userEntity->setPassword(password_hash(htmlspecialchars($post["password"]), PASSWORD_BCRYPT));
+                        $password = password_hash(htmlspecialchars($datas["password"]), PASSWORD_BCRYPT);
                         $token = TextController::randpwd(24);
 
                         // insérer l'objet en base dans la table users
                         $attributes =
                             [
-                                "mail"         => htmlspecialchars($userEntity->getMail()),
-                                "password"     => $userEntity->getPassword(),
+                                "mail"         => htmlspecialchars($datas['mail']),
+                                "password"     => $password,
                                 "token"        => $token,
                                 "verify"       => 0
                             ];
 
-                        $userId = $this->user->insert($attributes);
+                        if ($this->user->insert($attributes)) {
+                            $userId = $this->user->last();
 
-                        if ($userId) {
-                            // insérer l'objet en base dans la table clients
-
-                            // créer l'objet client
-                            $clientEntity = new UserInfosEntity($post);
-
+                            // insérer l'objet en base dans la table UserInfos
                             $attributes =
                                 [
                                     "user_id"      => $userId,
-                                    "lastname"     => htmlspecialchars($clientEntity->getLastname()),
-                                    "firstname"    => htmlspecialchars($clientEntity->getFirstname()),
-                                    "address"      => htmlspecialchars($clientEntity->getAddress()),
-                                    "zip_code"      => htmlspecialchars($clientEntity->getZipCode()),
-                                    "city"         => htmlspecialchars($clientEntity->getCity()),
-                                    "country"      => htmlspecialchars($clientEntity->getCountry()),
-                                    "phone"        => htmlspecialchars($clientEntity->getPhone())
+                                    "lastname"     => htmlspecialchars($datas['lastname']),
+                                    "firstname"    => htmlspecialchars($datas['firstname']),
+                                    "address"      => htmlspecialchars($datas['address']),
+                                    "zip_code"      => htmlspecialchars($datas['zipCode']),
+                                    "city"         => htmlspecialchars($datas['city']),
+                                    "country"      => htmlspecialchars($datas['country']),
+                                    "phone"        => htmlspecialchars($datas['phone'])
                                 ];
                             $clientId = $this->userInfos->insert($attributes);
 
@@ -164,7 +157,7 @@ class UsersController extends Controller
                                 . ' Merci de ne pas y répondre.</p>'];
 
                             $res = MailController::sendMail(
-                                $post["mail"],
+                                $datas["mail"],
                                 "Confirmation Inscription Beer Shop",
                                 $texte
                             );
@@ -199,7 +192,7 @@ class UsersController extends Controller
                 }
             }
         } else {
-            // confirmation d'inscription
+            // confirmation d'inscription par le mail envoyé
             if (
                 isset($idUser) && !empty($idUser) &&
                 isset($token) && !empty($token)
@@ -242,33 +235,41 @@ class UsersController extends Controller
     public function connexion($post)
     {
         if (!empty($post)) {
-            // créer l'objet users
-            $userEntity = new UserEntity($post);
-
-            // vérifier l'existence du user en base
-            $user = $this->user->getUserByMail($userEntity->getMail());
-            // vérifier le mot de passe de l'objet en base
-            if (
-                $user  && !empty($userEntity->getPassword())
-                && password_verify(htmlspecialchars($userEntity->getPassword()), $user->getPassword())
-                && $user->getVerify()
-            ) {
-                // connecter l'utilisateur
-                $user->setPassword("");
-                parent::connectSession($user);
-                if ($user->getToken() === "ADMIN") {
-                    header('Location: /admin');
-                } else {
-                    header('Location: /profil');
-                }
-                exit();
-            } else {
-                $_SESSION['auth'] = false;
-                //signaler erreur
-                if ($user && !$user->getVerify()) {
-                    $_SESSION['error'] = "Votre inscription n'est pas validée, veuillez recommencer.";
-                } else {
-                    $_SESSION['error'] = "Adresse mail ou mot de passe invalide";
+            // traitement du formulaire
+            $form = new FormController();
+            $errors = $form->hasErrors();
+            if ($errors["post"] != "no-data") {
+                $form->field('mail', ["require"]);
+                $form->field('password', ["require"]);
+                $errors = $form->hasErrors();
+                if (empty($errors)) {
+                    $datas = $form->getDatas();
+                    // vérifier l'existence du mail en base
+                    $user = $this->user->getUserByMail($datas['mail']);
+                    // vérifier le mot de passe de l'objet en base
+                    if (
+                        $user  && !empty($datas['password'])
+                        && password_verify(htmlspecialchars($datas['password']), $user->getPassword())
+                        && $user->getVerify()
+                    ) {
+                        // connecter l'utilisateur
+                        $user->setPassword("");
+                        parent::connectSession($user);
+                        if ($user->getToken() === "ADMIN") {
+                            header('Location: /admin');
+                        } else {
+                            header('Location: /profil');
+                        }
+                        exit();
+                    } else {
+                        $_SESSION['auth'] = false;
+                        //signaler erreur
+                        if ($user && !$user->getVerify()) {
+                            $_SESSION['error'] = "Votre inscription n'est pas validée, veuillez recommencer.";
+                        } else {
+                            $_SESSION['error'] = "Adresse mail ou mot de passe invalide";
+                        }
+                    }
                 }
             }
         }
@@ -303,10 +304,8 @@ class UsersController extends Controller
      */
     public function profil($post, int $idClient = null)
     {
-
-        // le user connecté
+        // l'utilisateur connecté
         $userConnect = $this->connectedSession();
-
         // traitement de la modification du profil
         if (!empty($post)) {
             if (
@@ -317,90 +316,106 @@ class UsersController extends Controller
                 $orders = $this->order->allInId($post["id"]);
                 if (!count($orders)) {
                     $this->userInfos->delete($post["id"]);
-                    $_SESSION['success'] = "L'adresse a bien été supprimée.";
+                    $_SESSION['success'] = "Les coordonnées ont bien été supprimées.";
                     $idClient = null;
                 } else {
-                    $_SESSION['error'] = "Impossible de supprimer cette adresse car des commandes lui sont attachées.";
+                    $_SESSION['error'] = "Impossible de supprimer ces coordonnées car des commandes leur sont attachées.";
                 }
             } elseif (
                 isset($post["passwordOld"]) && !empty($post["passwordOld"]) &&
                 isset($post["password"]) && !empty($post["password"]) &&
                 isset($post["passwordVerify"]) && !empty($post["passwordVerify"])
             ) {
-                // vérifier l'existence du user en base
-                $user = $this->user->getUserByMail($userConnect->getMail());
-                // vérifier le mot de passe de l'objet en base
-                if (
-                    $user  && !empty($post["passwordOld"])
-                    && password_verify(htmlspecialchars($post["passwordOld"]), $user->getPassword())
-                    && $user->getVerify()
-                ) {
-                    if ($post["password"] == $post["passwordVerify"]) {
-                        // modification du mot de passe en base
-                        $password = password_hash(htmlspecialchars($post["password"]), PASSWORD_BCRYPT);
+                // traitement du formulaire de changement de password
+                $form = new FormController();
+                $errors = $form->hasErrors();
+                if ($errors["post"] != "no-data") {
+                    $form->field('password', ["require", "verify"]);
+                    $form->field('passwordOld', ["require"]);
+                    $errors = $form->hasErrors();
+                    if (empty($errors)) {
+                        $datas = $form->getDatas();
 
-                        $res = $this->user->update($userConnect->getId(), ["password" => $password]);
+                        // vérifier l'existence du user en base
+                        $user = $this->user->getUserByMail($userConnect->getMail());
+                        if (
+                            $user
+                            && password_verify(htmlspecialchars($post["passwordOld"]), $user->getPassword())
+                            && $user->getVerify()
+                        ) {
 
-                        if ($res) {
-                            //message modif ok
-                            $_SESSION['success'] = 'Votre mot de passe a bien été modifié';
+
+                            // modification du mot de passe en base
+                            $password = password_hash(htmlspecialchars($post["password"]), PASSWORD_BCRYPT);
+
+                            $res = $this->user->update($userConnect->getId(), ["password" => $password]);
+
+                            if ($res) {
+                                //message modif ok
+                                $_SESSION['success'] = 'Votre mot de passe a bien été modifié';
+                            } else {
+                                $_SESSION['error'] = "Votre mot de passe n'a pas été modifié";
+                            }
                         } else {
-                            $_SESSION['error'] = "Votre mot de passe n'a pas été modifié";
+                            //mdp correspondent pas
+                            $_SESSION['error'] = 'Les deux mots de passe ne correspondent pas.';
                         }
                     } else {
-                        //mdp correspondent pas
-                        $_SESSION['error'] = 'Les deux mots de passe ne correspondent pas.';
+                        //erreur
+                        $_SESSION['error'] = 'Mot de passe incorrect';
                     }
-                } else {
-                    //erreur
-                    $_SESSION['error'] = 'Mot de passe incorrect';
                 }
             } elseif (
-                isset($post["lastname"]) && !empty($post["lastname"]) &&
-                isset($post["firstname"]) && !empty($post["firstname"]) &&
-                isset($post["address"]) && !empty($post["address"]) &&
-                isset($post["zipCode"]) && !empty($post["zipCode"]) &&
-                isset($post["city"]) && !empty($post["city"]) &&
-                isset($post["country"]) && !empty($post["country"]) &&
-                isset($post["phone"]) && !empty($post["phone"])
+                isset($post["id"]) && !empty($post["id"])
+                && $userConnect != null
             ) {
-                if ($userConnect) {
-                    $idClient = 0;
-                    if (isset($post["id"]) && is_numeric($post["id"])) {
+                // traitement du formulaire
+                $form = new FormController();
+                $errors = $form->hasErrors();
+                if ($errors["post"] != "no-data") {
+                    $form->field('lastname', ["require"]);
+                    $form->field('firstname', ["require"]);
+                    $form->field('address', ["require"]);
+                    $form->field('zipCode', ["require"]);
+                    $form->field('city', ["require"]);
+                    $form->field('country', ["require"]);
+                    $form->field('phone', ["require"]);
+                    $errors = $form->hasErrors();
+                    if (empty($errors)) {
+                        $datas = $form->getDatas();
+
                         $idClient = $post["id"];
-                    }
-                    unset($post["id"]);
-                    $post["zip_code"] = $post["zipCode"];
-                    unset($post["zipCode"]);
-                    
-                    if (isset($post["new"]) || $idClient == 0) {
-                        // nouvelle adresse
-                        unset($post["new"]);
-                        $post["user_id"] = $userConnect->getId();
-                        $res = $this->userInfos->insert($post);
-                        if ($res) {
-                            //message modif ok
-                            $_SESSION['success'] = "l'adresse a bien été ajoutée";
+                        unset($post["id"]);
+                        $post["zip_code"] = $post["zipCode"];
+                        unset($post["zipCode"]);
+
+                        if (isset($post["new"]) || $idClient == 0) {
+                            // nouvelle adresse
+                            unset($post["new"]);
+                            $post["user_id"] = $userConnect->getId();
+                            $res = $this->userInfos->insert($post);
+                            if ($res) {
+                                //message modif ok
+                                $_SESSION['success'] = "les coordonnées ont bien été ajoutées";
+                            } else {
+                                $_SESSION['error'] = "les coordonnées n'ont pas été ajoutées";
+                            }
+                            $idClient = $this->userInfos->last();
                         } else {
-                            $_SESSION['error'] = "l'adresse n'a pas été ajoutée";
-                        }
-                        $idClient = $this->userInfos->last();
-                    } else {
-                        // update du client dans la table client
-                        unset($post["user_id"]);
-                        $res = $this->userInfos->update($idClient, $post);
-                        if ($res) {
-                            //message modif ok
-                            $_SESSION['success'] = "l'adresse a bien été modifiée";
-                        } else {
-                            $_SESSION['error'] = "l'adresse n'a pas été modifiée";
+                            // update du client dans la table client
+                            unset($post["user_id"]);
+                            $res = $this->userInfos->update($idClient, $post);
+                            if ($res) {
+                                //message modif ok
+                                $_SESSION['success'] = "les coordonnées ont bien été modifiées";
+                            } else {
+                                $_SESSION['error'] = "les coordonnées n'ont pas été modifiées";
+                            }
                         }
                     }
                 }
             }
         }
-
-
         // lire les clients associés à l'utilisateur (plusieurs adresses)
         $clients = $this->userInfos->getUserInfosByUserId($userConnect->getId());
 
