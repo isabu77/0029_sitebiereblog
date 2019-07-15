@@ -5,6 +5,7 @@ namespace App\Controller;
 use \Core\Controller\Controller;
 use App\Controller\PaginatedQueryAppController;
 use \App\Controller\UserInfosController;
+use \App\Controller\OrderController;
 
 class CartController extends Controller
 {
@@ -278,58 +279,10 @@ class CartController extends Controller
                 $client = $this->userInfos->find($user_Infos_id);
 
                 // valider le panier enregistré dans la session et dans la table orderline
-                if (isset($_COOKIE[PANIER])) {
-                    $token = $_COOKIE[PANIER];
-
-                    if (!empty($token)) {
-                        // lecture en base des lignes de commande du token
-                        $orderlines = $this->orderLine->allInToken($token);
-                        if (count($orderlines)) {
-                            $priceHT = 0;
-                            $priceTTC = 0;
-                            foreach ($orderlines as $line) {
-                                // le prix HT de la bière en base
-                                $biere = $this->beer->find($line->getBeerId());
-
-                                $priceHT += $biere->getPriceHt() * $line->getBeerQty();
-                            }
-                            $priceTTC = $priceHT * TVA;
-
-                            if ($priceTTC > 0) {
-                                $FraisPort = PORT;
-                                if ($priceTTC < SHIPLIMIT) {
-                                    $priceTTC += $FraisPort;
-                                } else {
-                                    $FraisPort = 0.00;
-                                }
-                                // créer la commande dans la table orders avec totaux et token des lignes
-
-                                // insérer l'objet en base
-                                $attributes = [
-                                    "token"        => $token,
-                                    "user_infos_id"    => $user_Infos_id,
-                                    "price_ht"      => $priceHT,
-                                    "status_id"    => 1,
-                                    "tva"     => TVA,
-                                    "port"  => $FraisPort
-                                ];
-
-                                $result = $this->order->insert($attributes);
-                                if ($result) {
-                                    // vider le panier
-                                    setcookie(PANIER, "", time() - 3600 * 24);
-                                    setcookie(QTYPANIER, 0, time() - 3600 * 24);
-                                    //return $this->orderconfirm(null, $this->order->last());
-                                    header('Location: /orderconfirm/' . $this->order->last());
-                                    exit();
-                                } else {
-                                    //TODO : signaler erreur
-                                    $_SESSION['error'] = "Erreur d'enregistrement de la commande dans la base";
-                                    //header('Location: /order');
-                                }
-                            }
-                        }
-                    }
+                $order = new OrderController();
+                if ($order->createOrderFromCart($user_Infos_id)) {
+                    header('Location: /orderconfirm/' . $this->order->last());
+                    exit();
                 }
             }
         }

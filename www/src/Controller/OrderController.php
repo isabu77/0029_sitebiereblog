@@ -26,6 +26,68 @@ class OrderController extends Controller
     /**
      * commande des produits bière
      */
+    public function createOrderFromCart(int $user_Infos_id = null)
+    {
+        // valider le panier enregistré dans la session et dans la table orderline
+        if (isset($_COOKIE[PANIER])) {
+            $token = $_COOKIE[PANIER];
+
+            if (!empty($token)) {
+                // lecture en base des lignes de commande du token
+                $orderlines = $this->orderLine->allInToken($token);
+                if (count($orderlines)) {
+                    $priceHT = 0;
+                    $priceTTC = 0;
+                    foreach ($orderlines as $line) {
+                        // le prix HT de la bière en base
+                        $biere = $this->beer->find($line->getBeerId());
+
+                        $priceHT += $biere->getPriceHt() * $line->getBeerQty();
+                    }
+                    $priceTTC = $priceHT * TVA;
+
+                    if ($priceTTC > 0) {
+                        $FraisPort = PORT;
+                        if ($priceTTC < SHIPLIMIT) {
+                            $priceTTC += $FraisPort;
+                        } else {
+                            $FraisPort = 0.00;
+                        }
+                        // créer la commande dans la table orders avec totaux et token des lignes
+
+                        // insérer l'objet en base
+                        $attributes = [
+                            "token"         => $token,
+                            "user_infos_id" => $user_Infos_id,
+                            "price_ht"      => $priceHT,
+                            "status_id"     => 1,
+                            "tva"           => TVA,
+                            "port"          => $FraisPort
+                        ];
+
+                        $result = $this->order->insert($attributes);
+                        if ($result) {
+                            // vider le panier
+                            setcookie(PANIER, "", time() - 3600 * 24);
+                            setcookie(QTYPANIER, 0, time() - 3600 * 24);
+                            return true;
+                        } else {
+                            //TODO : signaler erreur
+                            $_SESSION['error'] = "Erreur d'enregistrement de la commande dans la base";
+                            return false;
+                            //header('Location: /order');
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+
+    }
+
+    /**
+     * commande des produits bière
+     */
     public function order($post, int $user_Infos_id = null)
     {
         // le client connecté
@@ -55,63 +117,15 @@ class OrderController extends Controller
             if ($user_Infos_id) {
                 $client = $this->userInfos->find($user_Infos_id);
 
-                 // valider le panier enregistré dans la session et dans la table orderline
-                if (isset($_COOKIE[PANIER])) {
-                    $token = $_COOKIE[PANIER];
-
-                    if (!empty($token)) {
-                        // lecture en base des lignes de commande du token
-                        $orderlines = $this->orderLine->allInToken($token);
-                        if (count($orderlines)) {
-                            $priceHT = 0;
-                            $priceTTC = 0;
-                            foreach ($orderlines as $line) {
-                                // le prix HT de la bière en base
-                                $biere = $this->beer->find($line->getBeerId());
-
-                                $priceHT += $biere->getPriceHt() * $line->getBeerQty();
-                            }
-                            $priceTTC = $priceHT * TVA;
-
-                            if ($priceTTC > 0) {
-                                $FraisPort = PORT;
-                                if ($priceTTC < SHIPLIMIT) {
-                                    $priceTTC += $FraisPort;
-                                } else {
-                                    $FraisPort = 0.00;
-                                }
-                                // créer la commande dans la table orders avec totaux et token des lignes
-
-                                // insérer l'objet en base
-                                $attributes = [
-                                    "token"        => $token,
-                                    "user_infos_id"    => $user_Infos_id,
-                                    "price_ht"      => $priceHT,
-                                    "status_id"    => 1,
-                                    "tva"     => TVA,
-                                    "port"  => $FraisPort
-                                ];
-
-                                $result = $this->order->insert($attributes);
-                                if ($result) {
-                                    // vider le panier
-                                    setcookie(PANIER, "", time() - 3600 * 24);
-                                    setcookie(QTYPANIER, 0, time() - 3600 * 24);
-
-                                    return $this->orderconfirm(null, $this->order->last());
-                                    //header('Location: /orderconfirm/' . $result);
-                                    exit();
-                                } else {
-                                    //TODO : signaler erreur
-                                    $_SESSION['error'] = "Erreur d'enregistrement de la commande dans la base";
-                                    //header('Location: /order');
-                                }
-                            }
-                        }
-                    }
+                // valider le panier enregistré dans la session et dans la table orderline
+                if ($this->createOrderFromCart($user_Infos_id)){
+                    return $this->orderconfirm(null, $this->order->last());
+                    //header('Location: /orderconfirm/' . $result);
+                    exit();
                 }
             }
         }
+
         // vérifier si une commande existe en session panier
         $orderlines = [];
         if (isset($_COOKIE[PANIER])) {
@@ -204,5 +218,4 @@ class OrderController extends Controller
             'title' => $title
         ]);
     }
-
 }
