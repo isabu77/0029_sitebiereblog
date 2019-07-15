@@ -14,9 +14,8 @@ $app::load();
 $app->getRouter($basepath)
     ->get('/', 'Beer#index', 'home')
     ->get('/boutique', 'Beer#all', 'boutique')
-    ->get('/order', 'Beer#order', 'order')
-    ->get('/cart', 'Beer#cart', 'cart')
-    ->get('/boutique/panier', 'Beer#panier', 'panier')
+    ->get('/order', 'Order#order', 'order')
+    ->get('/cart', 'Cart#cart', 'cart')
     ->get('/blog', 'Post#all', 'posts')
     ->get('/contact', 'Users#contact', 'contact')
     ->get('/about', 'about#index', 'about')
@@ -26,7 +25,7 @@ $app->getRouter($basepath)
     ->match('/inscription', 'Users#inscription', 'inscription')
     //->post('/inscription', 'Users#inscription', 'inscription_profil')
 
-    ->get('/profil', 'Users#profil', 'profil')
+    ->get('/profil', 'UserInfos#profil', 'profil')
     ->get('/resetpwd', 'users#resetpwd', 'resetpwd')
 
     ->match('/connexion', 'Users#connexion', 'connexion')
@@ -34,7 +33,7 @@ $app->getRouter($basepath)
 
     ->get('/deconnexion', 'Users#deconnectSession', 'deconnexion')
 
-    ->get('/orderconfirm/[i:id]', 'Beer#orderconfirm', 'orderconfirm')
+    ->get('/orderconfirm/[i:id]', 'Order#orderconfirm', 'orderconfirm')
 
     ->get('/article/[*:slug]-[i:id]', 'Post#show', 'post')
     ->post('/article/[*:slug]-[i:id]', 'post#comment', 'comment')   
@@ -44,27 +43,27 @@ $app->getRouter($basepath)
 
     ->get('/identification/verify/[i:id]&[*:token]', 'Users#inscription', 'inscription_Verify')
 
-    ->post('/profil', 'Users#profil', 'profil_update')
-    ->get('/profil/[i:idClient]', 'Users#profil', 'profil_post')
+    ->post('/profil', 'UserInfos#profil', 'profil_update')
+    ->get('/profil/[i:idClient]', 'UserInfos#profil', 'profil_post')
 
-    ->post('/order', 'Beer#order', 'order_order')
-    ->match('/order/[i:idClient]', 'Beer#order', 'order_profil')
+    ->post('/order', 'Order#order', 'order_order')
+    ->match('/order/[i:idClient]', 'Order#order', 'order_profil')
     //->post('/order/[i:idClient]', 'Beer#order', 'order_post')
 
-    ->post('/cart', 'Beer#cart', 'cart_post')
+    ->post('/cart', 'Cart#cart', 'cart_post')
     ->post('/contact', 'users#contact', 'contact_send')
     ->post('/resetpwd', 'users#resetpwd', 'resetpwd_send')
 
-    ->match('/addcart', 'Beer#addcart', 'order_addcart')
+    //->match('/addcart', 'Cart#addcart', 'order_addcart')
     //->post('/addcart', 'Beer#addcart', 'order_addcart_post')
 
-    ->post('/addToCart', 'Beer#addToCart', 'order_addToCart_post')
+    ->post('/addToCart', 'Cart#addToCart', 'order_addToCart_post')
 
-    ->match('/updatecart', 'Beer#updatecart', 'order_updatecart')
+    ->match('/updatecart', 'Cart#updatecart', 'order_updatecart')
     //->post('/updatecart', 'Beer#updatecart', 'order_updatecart_post')
-    ->match('/deletecart', 'Beer#deletecart', 'order_deletecart')
+    ->match('/deletecart', 'Cart#deletecart', 'order_deletecart')
     //->post('/deletecart', 'Beer#deletecart', 'order_deletecart_post')
-    ->post('/getClient', 'Users#getClient', 'getClient')
+    ->post('/getClient', 'UserInfos#getClient', 'getClient')
     
     ->get('/admin', 'admin\Admin#index', 'admin')
     ->get('/admin/posts', 'admin\Admin#posts', 'admin_posts')

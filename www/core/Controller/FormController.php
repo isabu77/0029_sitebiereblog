@@ -23,15 +23,27 @@ class FormController
             $this->errors["post"] = "no-data";
         }
     }
+    /**
+     * pour ne pas oublier l'échappement des caractères
+     * dans la récupération du champ saisi
+     */
+    private function addToDatas(string $key, $data = null): void
+    {
+        if (is_null($data)) {
+            $data = htmlspecialchars($this->postDatas[$key]);
+        }
+        $this->datas[$key] = $data;
+    }
 
     /**
      * vérifie la contrainte "require"
      */
-    private function fieldRequire(string $field)
+    private function fieldRequire(string $field, bool $value)
     {
         if (!empty($this->postDatas[$field])) {
             // associer valeurs de fields avec data
-            $this->datas[$field] = htmlspecialchars($this->postDatas[$field]);
+            $this->addToDatas($field);
+            //$this->datas[$field] = htmlspecialchars($this->postDatas[$field]);
         } else {
             unset($this->datas[$field]);
             $this->errors[$field] = "Le champ {$field} ne peut pas être vide";
@@ -41,12 +53,13 @@ class FormController
     /**
      * vérifie la contrainte "verify"
      */
-    private function fieldVerify(string $field)
+    private function fieldVerify(string $field, bool $value)
     {
         if (!empty($this->postDatas[$field . 'Verify'])) {
             if ($this->postDatas[$field] == $this->postDatas[$field . 'Verify']) {
                 // associer valeurs de fields avec data
-                $this->datas[$field] = htmlspecialchars($this->postDatas[$field]);
+                $this->addToDatas($field);
+                //$this->datas[$field] = htmlspecialchars($this->postDatas[$field]);
             } else {
                 unset($this->datas[$field]);
                 $this->errors[$field] = "Les champs {$field} doivent correspondre";
@@ -66,7 +79,8 @@ class FormController
         //echo " strlen = " . strlen($this->postDatas[$field]);
         if (strlen($this->postDatas[$field]) >= $value) {
             // associer valeurs de fields avec data
-            $this->datas[$field] = htmlspecialchars($this->postDatas[$field]);
+            $this->addToDatas($field);
+            //$this->datas[$field] = htmlspecialchars($this->postDatas[$field]);
         } else {
             unset($this->datas[$field]);
             $this->errors[$field] = "Le champ {$field} doit avoir au minimum {$value} caractères";
@@ -78,7 +92,25 @@ class FormController
      */
     public function field(string $field, array $constraints = [])
     {
+        // pour les contraintes 'require' et 'verify' :
+        // remplace la clé par la valeur avec true en valeur
+        foreach ($constraints as $key => $value) {
+            if (!is_string($key)) {
+                unset($constraints[$key]);
+                $constraints[$value] = true;
+            }
+        }
+        
+        // les contraintes du champ
         $this->fields[$field] = $constraints;
+
+        // si pas de contraintes : on met le champ dans les datas
+        if (empty($constraints)){
+            $this->addToDatas($field);
+            //$this->datas[$field] = htmlspecialchars($this->postDatas[$field]);
+        }
+
+        return $this;
     }
 
     /**
@@ -89,9 +121,17 @@ class FormController
     {
         if (!$this->errors['post']) {
             foreach ($this->fields as $field => $constraints) {
-                // vérifier que data est rempli
+                // vérifier les contraintes de tous les champs
                 foreach ($constraints as $key => $value) {
-                    if ($value == "require") {
+                    // chercher la méthode 'field' associée à la contrainte par sa clé
+                    $constraint = "field" . ucfirst(strtolower($key));
+                    if (method_exists($this, $constraint)) {
+                        $this->$constraint($field, $value);
+                    } else {
+                        throw new \Exception("La contrainte $key n'existe pas", 1);
+                    }
+
+/*                     if ($value == "require") {
                         $this->fieldRequire($field);
                     }
                     if ($value == "verify") {
@@ -100,7 +140,7 @@ class FormController
                     if ($key == "length") {
                         $this->fieldLength($field, (int) $value);
                     }
-                }
+ */                }
             }
         }
         return $this->errors;

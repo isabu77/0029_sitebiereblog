@@ -8,3 +8,4 @@ SchemaMvc.pdf
 www/composer.lock
 www/core/Controller/config.php
 www/src/config.php
+www/public/temp

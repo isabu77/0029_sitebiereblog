@@ -42,6 +42,7 @@ function search() {
 
 /* $("#searchButton").on("click", search); */
 
+// calcul du prix dans les champs ddu bon de commande
 function calcPrice(obj, id, originalPrice) {
     var qty = obj.value;
     var pHT = originalPrice * qty;
@@ -56,6 +57,7 @@ function calcPrice(obj, id, originalPrice) {
 
 }
 
+// calcul du prix dans les champs du panier
 function calcPriceCart(obj, id, originalPrice) {
     var qty = obj.value;
     var pHT = originalPrice * qty;
@@ -68,85 +70,6 @@ function calcPriceCart(obj, id, originalPrice) {
     // totaux panier
     totaux('P');
 
-}
-
-// ajouter au panier
-function commander(id, originalPrice) {
-    var qty = parseInt(document.getElementById('QTY_' + id).value);
-    if (qty == 0) {
-        return;
-    }
-
-    // appel AJAX pour lancer un post d'insertion en base de la ligne de commande du panier
-    $.post("/updatecart", { idBeer: id, quantity: qty, price: originalPrice, addqty: true },
-        function(data) {
-            afficheQtyCart(data, id, originalPrice);
-        });
-}
-
-function afficheQtyCart(data, id, originalPrice) {
-    //console.log(data);
-    obj = JSON.parse(data);
-    if (obj) {
-        // on vide la partie commande
-        document.getElementById('QTY_' + id).value = 0;
-
-        // on remplit la ligne du panier
-        document.getElementById('PQTY_' + id).value = obj.quantity; //qty;
-
-        // totaux panier
-    }
-}
-// ajouter au panier
-function addToCart(id, originalPrice) {
-    var qty = parseInt(document.getElementById('QTY_' + id).value);
-    if (qty == 0) {
-        return;
-    }
-
-    // appel AJAX pour lancer un post d'insertion en base de la ligne de commande du panier
-    $.post("/updatecart", { idBeer: id, quantity: qty, price: originalPrice, addqty: true },
-        function(data) {
-            afficheCart(data, id, originalPrice);
-        });
-}
-
-// update la ligne du panier
-function updateCart(id, originalPrice, prefix = "") {
-    var qty = parseInt(document.getElementById(prefix + 'QTY_' + id).value);
-    if (qty == 0) {
-        return;
-    }
-    // appel AJAX pour lancer un post de modification de la ligne de commande du panier
-    $.post("/updatecart", { idBeer: id, quantity: qty, price: originalPrice, addqty: false },
-        function(data) {
-            afficheCart(data, id, originalPrice);
-        });
-}
-
-function afficheCart(data, id, originalPrice) {
-    //console.log(data);
-    obj = JSON.parse(data);
-    if (obj) {
-        var pHT = originalPrice * obj.beer_qty;
-        var pTTC = pHT * tva;
-
-        // on vide la partie commande
-        if (document.getElementById('HT_' + id)) {
-            document.getElementById('HT_' + id).innerHTML = String(originalPrice.toFixed(2)).replace('.', ',') + "€";
-            document.getElementById('TTC_' + id).innerHTML = String((originalPrice * tva).toFixed(2)).replace('.', ',') + "€";
-            document.getElementById('QTY_' + id).value = 0;
-        }
-        // on remplit la ligne du panier
-        if (document.getElementById('PQTY_' + id)) {
-            document.getElementById('PQTY_' + id).value = obj.beer_qty; //qty;
-            document.getElementById('PHT_' + id).innerHTML = String(pHT.toFixed(2)).replace('.', ',') + "€";
-            document.getElementById('PTTC_' + id).innerHTML = String(pTTC.toFixed(2)).replace('.', ',') + "€";
-        }
-        // totaux panier
-        totaux('P');
-        totaux();
-    }
 }
 
 // delete la ligne du panier
@@ -168,7 +91,7 @@ function deleteOfCart(id, originalPrice) {
         });
 }
 
-// totaux calcule le total du panier (si $prefix = 'P') ou du coté commande
+// calcule le total du panier (si $prefix = 'P') ou du coté commande
 function totaux(prefix = "", totalPanier = 0) {
     var totalHT = 0.0;
     var totalTTC = 0.0;
@@ -216,9 +139,6 @@ function totaux(prefix = "", totalPanier = 0) {
 
     }
 
-    //if ($prefix !== "")
-    //    document.getElementById('commander').disabled = (total == 0);
-
     if (totalTTC > shiplimit) {
         frais = 0;
     }
@@ -239,7 +159,7 @@ function totaux(prefix = "", totalPanier = 0) {
 
 }
 
-// affichage de la page modale d'une bière pour l'ajouter au panier
+// affichage de la carte modale d'une bière pour l'ajouter au panier
 function getProductsModal(title, img, content, price, id) {
     $('#modal-message').removeAttr('class').text('');
 
@@ -252,7 +172,7 @@ function getProductsModal(title, img, content, price, id) {
 
 }
 
-// ajouter une bière au panier par la modale
+// ajouter une bière au panier par la carte modale
 function addCart(id, qtyId) {
     var qty = document.getElementById(qtyId).value;
     if (qty <= 0) {
@@ -265,6 +185,61 @@ function addCart(id, qtyId) {
         });
 }
 
+// ajouter au panier par la modale
+function addToCart(id, originalPrice) {
+    var qty = parseInt(document.getElementById('QTY_' + id).value);
+    if (qty == 0) {
+        return;
+    }
+
+    // appel AJAX pour lancer un post d'insertion en base de la ligne de commande du panier
+    $.post("/updatecart", { idBeer: id, quantity: qty, price: originalPrice, addqty: true },
+        function(data) {
+            afficheCart(data, id, originalPrice);
+        });
+}
+
+// update la ligne du panier dans la page commande ou panier
+function updateCart(id, originalPrice, prefix = "") {
+    var qty = parseInt(document.getElementById(prefix + 'QTY_' + id).value);
+    if (qty == 0) {
+        return;
+    }
+    // appel AJAX pour lancer un post de modification de la ligne de commande du panier
+    $.post("/updatecart", { idBeer: id, quantity: qty, price: originalPrice, addqty: false },
+        function(data) {
+            afficheCart(data, id, originalPrice);
+        });
+}
+
+// affichage du panier et de la commande
+function afficheCart(data, id, originalPrice) {
+    //console.log(data);
+    obj = JSON.parse(data);
+    if (obj) {
+        var pHT = originalPrice * obj.beer_qty;
+        var pTTC = pHT * tva;
+
+        // on vide la partie commande si elle existe
+        if (document.getElementById('HT_' + id)) {
+            document.getElementById('HT_' + id).innerHTML = String(originalPrice.toFixed(2)).replace('.', ',') + "€";
+            document.getElementById('TTC_' + id).innerHTML = String((originalPrice * tva).toFixed(2)).replace('.', ',') + "€";
+            document.getElementById('QTY_' + id).value = 0;
+        }
+        // on remplit la ligne du panier
+        if (document.getElementById('PQTY_' + id)) {
+            document.getElementById('PQTY_' + id).value = obj.beer_qty; //qty;
+            document.getElementById('PHT_' + id).innerHTML = String(pHT.toFixed(2)).replace('.', ',') + "€";
+            document.getElementById('PTTC_' + id).innerHTML = String(pTTC.toFixed(2)).replace('.', ',') + "€";
+        }
+        // totaux panier
+        totaux('P');
+        totaux();
+    }
+}
+
+// lecture en base et affichage des coordonnées d'un user_infos
+// à partir d'un select contenant la liste des user_infos_id
 function selectClient() {
     var index = document.getElementById("clients").selectedIndex;
     var id = document.getElementById("clients").options[index].value;
@@ -275,7 +250,6 @@ function selectClient() {
             obj = JSON.parse(data);
             if (obj) {
                 for (var input in obj) {
-                    //console.log(obj[input]);
                     if (document.getElementById(input)) {
                         document.getElementById(input).value = obj[input];
                     }
@@ -284,6 +258,8 @@ function selectClient() {
         });
 }
 
+// lecture en base et affichage des coordonnées d'un user_infos
+// à partir d'un navbar
 function selectAdresse(id) {
     // appel AJAX pour lancer un post 
     $.post("/getClient", { idClient: id },
@@ -305,6 +281,8 @@ function selectAdresse(id) {
         });
 }
 
+// sélection d'un état de commande 
+// pour afficher seulement les commandes ayant cet état
 function selectStatus(id) {
     // var index = document.getElementById("status").selectedIndex;
     //var id = document.getElementById("status").options[index].value;
