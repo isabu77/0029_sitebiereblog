@@ -28,10 +28,76 @@ class UserInfosController extends Controller
     {
         $post = $_POST;
         if (!empty($post)) {
-            if (isset($post["idClient"])) {
+            if (isset($post["user_infos_id"])) {
                 // lecture en base des clients du user
-                $client = $this->userInfos->find($post["idClient"]);
-                echo json_encode($client->getProperties());
+                $userInfos = $this->userInfos->find($post["user_infos_id"]);
+                echo json_encode($userInfos->getProperties());
+            }
+        }
+    }
+
+    /**
+     * mise à jour d'un profil d'utilisateur (user_Infos)
+     * à partir d'un formulaire
+     *
+     */
+    public function updateProfil(array $post, int $user_id)
+    {
+        $user_Infos_id = 0;
+        if (isset($post["user_infos_id"]) && is_numeric($post["user_infos_id"])) {
+            $user_Infos_id = $post["user_infos_id"];
+        }
+        // supprimer les champs inutiles pour l'enregistrement en base
+        unset($post["user_infos_id"]);
+        unset($post["price"]);
+        unset($post["id"]);
+
+        // traitement du formulaire
+        $form = new FormController($post);
+        $errors = $form->hasErrors();
+        if ($errors["post"] != "no-data") {
+            $form->field('lastname', ["require"]);
+            $form->field('firstname', ["require"]);
+            $form->field('address', ["require"]);
+            $form->field('zipCode', ["require"]);
+            $form->field('city', ["require"]);
+            $form->field('country', ["require"]);
+            $form->field('phone', ["require"]);
+            $errors = $form->hasErrors();
+            if (empty($errors)) {
+
+                $datas = $form->getDatas();
+
+                // enregistrement des coordonnées dans user_infos
+                $datas["zip_code"] = $datas["zipCode"];
+                unset($datas["zipCode"]);
+
+                if ($post["new"] || $user_Infos_id == 0) {
+                    // nouvelle adresse
+                    unset($post["new"]);
+                    $datas["user_id"] = $user_id;
+                    $res = $this->userInfos->insert($datas);
+                    if ($res) {
+                        //message modif ok
+                        $_SESSION['success'] = "les coordonnées ont bien été ajoutées";
+                    } else {
+                        $_SESSION['error'] = "les coordonnées n'ont pas été ajoutées";
+                    }
+                    return $this->userInfos->last();
+                } else {
+                    // update du client dans la table client
+                    $res = $this->userInfos->update($user_Infos_id, $datas);
+                    if ($res) {
+                        //message modif ok
+                        $_SESSION['success'] = "les coordonnées ont bien été modifiées";
+                    } else {
+                        $_SESSION['error'] = "les coordonnées n'ont pas été modifiées";
+                    }
+                    return $user_Infos_id;
+                }
+            } else {
+                $_SESSION['error'] = $errors;
+                return null;
             }
         }
     }
@@ -40,10 +106,11 @@ class UserInfosController extends Controller
      * la page profil du site bière
      *
      */
-    public function profil($post, int $idClient = null)
+    public function profil($post, int $user_Infos_id = null)
     {
         // l'utilisateur connecté
         $userConnect = $this->connectedSession();
+
         // traitement de la modification du profil
         if (!empty($post)) {
             if (
@@ -81,8 +148,6 @@ class UserInfosController extends Controller
                             && password_verify(htmlspecialchars($post["passwordOld"]), $user->getPassword())
                             && $user->getVerify()
                         ) {
-
-
                             // modification du mot de passe en base
                             $password = password_hash(htmlspecialchars($post["password"]), PASSWORD_BCRYPT);
 
@@ -104,63 +169,23 @@ class UserInfosController extends Controller
                     }
                 }
             } elseif (
-                isset($post["id"]) && !empty($post["id"])
+                isset($post["user_infos_id"]) && !empty($post["user_infos_id"])
                 && $userConnect != null
             ) {
-                // traitement du formulaire
-                $form = new FormController();
-                $errors = $form->hasErrors();
-                if ($errors["post"] != "no-data") {
-                    $form->field('lastname', ["require"]);
-                    $form->field('firstname', ["require"]);
-                    $form->field('address', ["require"]);
-                    $form->field('zipCode', ["require"]);
-                    $form->field('city', ["require"]);
-                    $form->field('country', ["require"]);
-                    $form->field('phone', ["require"]);
-                    $errors = $form->hasErrors();
-                    if (empty($errors)) {
-                        $datas = $form->getDatas();
+                // enregistrement des coordonnées dans user_infos
+                $userInfos = new UserInfosController();
+                $user_Infos_id = $userInfos->updateProfil($post, $userConnect->getId());
 
-                        $idClient = $post["id"];
-                        unset($post["id"]);
-                        $post["zip_code"] = $post["zipCode"];
-                        unset($post["zipCode"]);
-
-                        if (isset($post["new"]) || $idClient == 0) {
-                            // nouvelle adresse
-                            unset($post["new"]);
-                            $post["user_id"] = $userConnect->getId();
-                            $res = $this->userInfos->insert($post);
-                            if ($res) {
-                                //message modif ok
-                                $_SESSION['success'] = "les coordonnées ont bien été ajoutées";
-                            } else {
-                                $_SESSION['error'] = "les coordonnées n'ont pas été ajoutées";
-                            }
-                            $idClient = $this->userInfos->last();
-                        } else {
-                            // update du client dans la table client
-                            unset($post["user_id"]);
-                            $res = $this->userInfos->update($idClient, $post);
-                            if ($res) {
-                                //message modif ok
-                                $_SESSION['success'] = "les coordonnées ont bien été modifiées";
-                            } else {
-                                $_SESSION['error'] = "les coordonnées n'ont pas été modifiées";
-                            }
-                        }
-                    }
-                }
             }
         }
+
         // lire les clients associés à l'utilisateur (plusieurs adresses)
         $clients = $this->userInfos->getUserInfosByUserId($userConnect->getId());
 
         // les commandes du client affiché
         $orders = [];
-        if ($idClient) {
-            $client = $this->userInfos->find($idClient);
+        if ($user_Infos_id) {
+            $client = $this->userInfos->find($user_Infos_id);
         } else {
             if ($clients[0]) {
                 $client = $this->userInfos->find($clients[0]->getId());
@@ -179,5 +204,4 @@ class UserInfosController extends Controller
             'title' => $title
         ]);
     }
-
 }

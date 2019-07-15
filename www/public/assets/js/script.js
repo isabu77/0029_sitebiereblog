@@ -262,7 +262,7 @@ function selectClient() {
 // à partir d'un navbar
 function selectAdresse(id) {
     // appel AJAX pour lancer un post 
-    $.post("/getClient", { idClient: id },
+    $.post("/getClient", { user_infos_id: id },
         function(data) {
             elts = document.getElementsByClassName("nav-link active");
             for (var elt = 0; elt < elts.length; elt++) {
@@ -270,6 +270,7 @@ function selectAdresse(id) {
             }
             $('#a_' + id).addClass("active");
             obj = JSON.parse(data);
+            //document.getElementById("user_infos_id").value = obj["id"];
             if (obj) {
                 for (var input in obj) {
                     if (document.getElementById(input)) {
