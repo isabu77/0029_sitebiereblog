@@ -29,7 +29,6 @@
 <div>
     <main>
   {% if success %}
-    <p>messages flash</p>
     {% for msg in success %}
     <div class="alert-success">
       {{msg}}
@@ -38,7 +37,6 @@
   {% endif %}
 
   {% if alert %}
-    <p>messages flash</p>
     {% for msg in alert %}
     <div class="alert-error">
       {{msg}}

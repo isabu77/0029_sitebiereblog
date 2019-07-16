@@ -77,12 +77,12 @@ class ExercicesTest extends TestCase
     public function testExercice9(): void
     {
         $exo = new Exercices();
-        try{
+/*         try{
             $this->assertEquals(0, $exo->exercice9("gfgs") );
-
         }catch( Exception $e){
             echo 'EXCEPTION : ' . $e->getMassage();
         }
+ */        
         $this->assertEquals(15, $exo->exercice9(4, 5,6) );
         $this->assertEquals(15, $exo->exercice9(6,5,4) );
         $this->assertEquals(10, $exo->exercice9(1,1,1,1,1,1,1,1,1,1) );

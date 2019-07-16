@@ -1,6 +1,7 @@
 <?php
 namespace Core\Controller;
 use Core\Controller\Session\FlashService;
+use Core\Controller\Session\PhpSession;
 
 class Controller
 {
@@ -60,12 +61,14 @@ class Controller
     /**
      * retourne l'instance de la classe App (Application)
      */
-    protected function getFlashService()
+    protected function getFlashService(): FlashService
     {
-        if (is_null($this->flashService)) {
-            $this->flashService = new FlashService();
+ /*        if (is_null($this->flashService)) {
+            $this->flashService = new FlashService(new PhpSession(), true);
         }
         return $this->flashService;
+ */        
+        return $this->getApp()->getFlashService();
     }
 
     /**

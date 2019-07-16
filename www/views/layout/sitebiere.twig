@@ -46,8 +46,7 @@
   <h1 class="titreduhaut">{% block title %}Bread Beer Shop - {{title}}{% endblock %}</h1>
 <div>
   {% if success %}
-    <p>messages flash</p>
-    {% for msg in success %}
+   {% for msg in success %}
     <div class="msgsuccess">
       {{msg}}
     </div>
@@ -55,7 +54,6 @@
   {% endif %}
 
   {% if alert %}
-    <p>messages flash</p>
     {% for msg in alert %}
     <div class="msgerror">
       {{msg}}

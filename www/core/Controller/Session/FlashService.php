@@ -1,23 +1,28 @@
 <?php
 
 namespace Core\Controller\Session;
+use Core\Controller\Session\SessionInterface;
 
 class FlashService
 {
     private $messages = [];
+    private $session;
     private $bTest;
 
     /**
      * constructeur
      */
-    public function __construct(bool $bTest = false)
+    public function __construct(SessionInterface $session, bool $bTest = false)
     {
         $this->bTest = $bTest;
 
         if (!$this->bTest) {
             if (session_status() === PHP_SESSION_NONE) {
                 session_start();
+                $this->session = $_SESSION;
             }
+        }else{
+            $this->session = $session;
         }
     }
 
@@ -29,7 +34,8 @@ class FlashService
         if (!$this->bTest) {
             $_SESSION["success"][] = $message;
         } else {
-            $this->messages["success"][] = $message;
+            //$this->messages["success"][] = $message;
+            $this->session->set("success", $message);
         }
     }
 
@@ -41,7 +47,8 @@ class FlashService
         if (!$this->bTest) {
             $_SESSION["alert"][] = $message;
         } else {
-            $this->messages["alert"][] = $message;
+            $this->session->set("alert", $message);
+            //$this->messages["alert"][] = $message;
         }
     }
 
@@ -57,11 +64,16 @@ class FlashService
                 return $messages;
             }
         } else {
-            if (isset($this->messages[$key])) {
+            $message = $this->session->get($key, []);
+            $this->session->delete($key);
+            return $message;
+
+/*             if (isset($this->messages[$key])) {
                 $messages = $this->messages[$key];
                 unset($this->messages[$key]);
                 return $messages;
             }
+ */
         }
         return [];
     }
@@ -74,7 +86,12 @@ class FlashService
         if (!$this->bTest) {
             return isset($_SESSION[$key]);
         } else {
-            return isset($this->messages[$key]);
+            if ($this->session->get($key, false)){
+                return true;
+            }else{
+                return false;
+            }
+            //return isset($this->messages[$key]);
         }
     }
 }

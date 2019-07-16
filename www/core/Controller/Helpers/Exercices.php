@@ -66,7 +66,7 @@ class Exercices
         return $num1 + $num2 + $num3;
     }
 
-    public function exercice9(int... $args): int
+    public function exercice9(int ...$args): int
     {
         return array_sum($args);
         //return array_sum(func_get_args());

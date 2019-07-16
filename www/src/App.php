@@ -7,6 +7,8 @@ use \Core\Controller\URLController;
 use \Core\Controller\Database\DatabaseMysqlController;
 use \App\Model\Table\ConfigTable;
 use \App\Controller\ConfigController;
+use Core\Controller\Session\FlashService;
+use Core\Controller\Session\PhpSession;
 
 /**
  * classe SINGLETON : classe PRINCIPALE de l'application
@@ -24,6 +26,7 @@ class App
     private $db_instance;
     private $config_instance;
     private $configTable;
+    private $flashService;
 
     /**
      * retourne l'instance UNIQUE de la classe App
@@ -137,6 +140,17 @@ class App
             $this->router = new RouterController($basePath . 'views');
         }
         return $this->router;
+    }
+
+        /**
+     * retourne l'instance de la classe App (Application)
+     */
+    public function getFlashService(): FlashService
+    {
+        if (is_null($this->flashService)) {
+            $this->flashService = new FlashService(new PhpSession(), true);
+        }
+        return $this->flashService;
     }
 
     /**

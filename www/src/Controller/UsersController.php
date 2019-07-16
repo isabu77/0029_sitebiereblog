@@ -6,6 +6,8 @@ use \Core\Controller\Controller;
 use \Core\Controller\Helpers\MailController;
 use \Core\Controller\Helpers\TextController;
 use \Core\Controller\FormController;
+use Core\Controller\Session\FlashService;
+use Core\Controller\Session\PhpSession;
 
 class UsersController extends Controller
 {
@@ -54,12 +56,17 @@ class UsersController extends Controller
                         throw new \Exception("erreur en base de données");
                     }
 
+                    $flashMessages = new FlashService(new PhpSession());
+                    $flashMessages->addSuccess("Vous êtes bien enregistré");
+
                     // envoyer mail de confirmation
                     $mail = new MailController();
                     $mail->object("validez votre compte")
                         ->to($datas["mail"])
                         ->message('confirmation', compact("datas"))
                         ->send();
+
+                    $flashMessages->addSuccess("Vérifiez votre boite mail");
 
                     // utiliser le nom de la route pour que l'url ne puisse être modifiée que dans index.php
                     header('location: ' . $this->generateUrl("usersLogin"));
