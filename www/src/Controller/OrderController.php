@@ -73,7 +73,7 @@ class OrderController extends Controller
                             return true;
                         } else {
                             //TODO : signaler erreur
-                            $_SESSION['error'] = "Erreur d'enregistrement de la commande dans la base";
+                            $this->getFlashService()->addAlert("Erreur d'enregistrement de la commande dans la base");
                             return false;
                             //header('Location: /order');
                         }
@@ -177,7 +177,7 @@ class OrderController extends Controller
         //On vérifie l'id de l'utilisateur
         //Et l'existence de la commande
         if (!$order || $order->getUserInfosId() != $client->getId()) {
-            $_SESSION['error'] = "Cette commande n'appartient pas à l'utilisateur connecté";
+            $this->getFlashService()->addAlert("Cette commande n'appartient pas à l'utilisateur connecté");
             header('location: /profil');
             exit();
         }
@@ -195,7 +195,7 @@ class OrderController extends Controller
         //$lines = unserialize($order->getIdsProduct());
         $priceTTC = 0;
         if (count($lines) == 0) {
-            $_SESSION['error'] = "la commande est vide";
+            $this->getFlashService()->addAlert("la commande est vide");
             header('location: /order');
             exit();
         }

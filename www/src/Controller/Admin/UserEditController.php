@@ -40,9 +40,9 @@ class UserEditController extends Controller
                 $mail = $post['user_mail'];
                 $res = $this->user->update($id, ['mail' => $mail, 'token ' => $token]);
                 if ($res) {
-                    $_SESSION['success'] = "L'utilisateur a bien été modifié";
+                    $this->getFlashService()->addSuccess("L'utilisateur a bien été modifié");
                 } else {
-                    $_SESSION['error'] = "L'utilisateur n'a pas été modifié";
+                    $this->getFlashService()->addAlert("L'utilisateur n'a pas été modifié");
                 }
                 header('location: '.$url);
             }

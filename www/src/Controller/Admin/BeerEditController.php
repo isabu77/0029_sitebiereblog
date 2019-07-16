@@ -44,9 +44,9 @@ class BeerEditController extends Controller
 
             $res = $this->beer->update($id, $attributes);
             if ($res) {
-                $_SESSION['success'] = "La bière a bien été modifiée";
+                $this->getFlashService()->addSuccess("La bière a bien été modifiée");
             } else {
-                $_SESSION['error'] = "La bière n'a pas été modifiée";
+                $this->getFlashService()->addAlert("La bière n'a pas été modifiée");
             }
 
             header('Location: ' . $url);
@@ -69,9 +69,9 @@ class BeerEditController extends Controller
             ];
             $res = $this->beer->insert($attributes);
             if ($res) {
-                $_SESSION['success'] = "La bière a bien été ajoutée";
+                $this->getFlashService()->addSuccess("La bière a bien été ajoutée");
             } else {
-                $_SESSION['error'] = "La bière n'a pas été ajoutée";
+                $this->getFlashService()->addAlert("La bière n'a pas été ajoutée");
             }
         }
 

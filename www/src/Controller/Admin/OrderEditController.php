@@ -52,9 +52,9 @@ class OrderEditController extends Controller
         if (isset($post["select"])) {
             //changer le status
             if ($this->order->update($id, ['status_id'  => $post["select"] ])) {
-                $_SESSION['success'] = "La commande a bien été modifiée";
+                $this->getFlashService()->addSuccess("La commande a bien été modifiée");
             } else {
-                $_SESSION['error'] = "La commande n'a pas été modifiée";
+                $this->getFlashService()->addAlert("La commande n'a pas été modifiée");
             }
             header('location: '.$url);
         }

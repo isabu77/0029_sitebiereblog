@@ -18,8 +18,12 @@ class UsersController extends Controller
         // $this->users qui est créée dynamiquement
         $this->loadModel('user');
         $this->loadModel('userInfos');
-     }
+    }
 
+    /**
+     * Inscription d'un utilisateur
+     * correction de Julien avec utilisation de FormContoller
+     */
     public function subscribe($post)
     {
         $form = new FormController();
@@ -29,11 +33,44 @@ class UsersController extends Controller
             $form->field('mail', ["require", "verify"]);
             $form->field('password', ["require", "verify", "length" => 8]);
 
-            $datas = $form->getDatas();
+            $errors = $form->hasErrors();
+            if (!isset($errors["post"])) {
+                $datas = $form->getDatas();
 
-            // vérifier que le mail n'existe pas en base
-            //
+                // vérifier mail et mot de passe
+                if (empty($errors)) {
+
+                    // vérifier que le mail n'existe pas en base
+                    if ($this->user->find($datas["mail"], "mail")) {
+                        throw new \Exception("utilisateur existe déjà");
+                    }
+                    // crypter pwd
+                    $data["password"] = password_hash($datas["password"], PASSWORD_BCRYPT);
+
+                    $data["token"] = substr(md5(uniqid()), 0, 10);
+
+                    // persister en bdd
+                    if (!$this->user->newUser($datas)) {
+                        throw new \Exception("erreur en base de données");
+                    }
+
+                    // envoyer mail de confirmation
+                    $mail = new MailController();
+                    $mail->object("validez votre compte")
+                        ->to($datas["mail"])
+                        ->message('confirmation', compact("datas"))
+                        ->send();
+
+                    // utiliser le nom de la route pour que l'url ne puisse être modifiée que dans index.php
+                    header('location: ' . $this->generateUrl("usersLogin"));
+                } else {
+                    // afficher les erreurs
+                }
+            }
         }
+
+        unset($errors["post"]);
+        return $this->render('user/subscribe', ["errors" => $errors]);
     }
     /**
      * reset du password par mail
@@ -59,7 +96,7 @@ class UsersController extends Controller
                         "Le nouveau mot de passe est : " .  $passwordrdn
                     );
                     if ($res) {
-                        $_SESSION['success'] = "Votre nouveau mot de passe vous a été envoyé par mail";
+                        $this->getFlashService()->addSuccess("Votre nouveau mot de passe vous a été envoyé par mail");
                         // Page de connexion
                         $title = 'Connexion';
 
@@ -68,13 +105,13 @@ class UsersController extends Controller
                             'title' => $title
                         ]);
                     } else {
-                        $_SESSION['error'] = "Erreur d'envoi du mail, recommencez.";
+                        $this->getFlashService()->addAlert("Erreur d'envoi du mail, recommencez.");
                     }
                 } else {
-                    $_SESSION['error'] = "Erreur de modification du mot de passe en base";
+                    $this->getFlashService()->addAlert("Erreur de modification du mot de passe en base");
                 }
             } else {
-                $_SESSION['error'] = "Cet utilisateur n'existe pas. Recommencez.";
+                $this->getFlashService()->addAlert("Cet utilisateur n'existe pas. Recommencez.");
             }
         }
         $title = 'Réinitialisation du mot de passe';
@@ -161,15 +198,16 @@ class UsersController extends Controller
                                 $texte
                             );
                             if ($res) {
-                                $_SESSION['success'] =
+                                $this->getFlashService()->addSuccess(
                                     "Veuillez confirmer votre inscription "
-                                    . "en cliquant sur le lien qui vous a été envoyé par mail";
+                                        . "en cliquant sur le lien qui vous a été envoyé par mail"
+                                );
                             } else {
-                                $_SESSION['error'] = "Erreur d'envoi du mail de confirmation, recommencez.";
+                                $this->getFlashService()->addAlert("Erreur d'envoi du mail de confirmation, recommencez.");
                             }
                         } else {
                             //signaler erreur
-                            $_SESSION['error'] = "Erreur d'enregistrement en base, recommencez.";
+                            $this->getFlashService()->addAlert("Erreur d'enregistrement en base, recommencez.");
                             header('Location: /inscription');
                             exit();
                         }
@@ -180,13 +218,13 @@ class UsersController extends Controller
                     }
                 } else {
                     if (!filter_var($post["mail"], FILTER_VALIDATE_EMAIL)) {
-                        $_SESSION['error'] = "L'adresse mail est invalide.";
+                        $this->getFlashService()->addAlert("L'adresse mail est invalide.");
                     }
                     if ($post["mail"] !== $post["mailVerify"]) {
-                        $_SESSION['error'] = "Les deux mails ne correspondent pas.";
+                        $this->getFlashService()->addAlert("Les deux mails ne correspondent pas.");
                     }
                     if ($post["password"] !== $post["passwordVerify"]) {
-                        $_SESSION['error'] = "Les deux mots de passe ne correspondent pas.";
+                        $this->getFlashService()->addAlert("Les deux mots de passe ne correspondent pas.");
                     }
                 }
             }
@@ -203,7 +241,7 @@ class UsersController extends Controller
                         // validation en base
                         $res = $this->user->update($user->getId(), ["verify" => 1]);
                         if ($res) {
-                            $_SESSION['success'] = 'Votre inscription est validée, vous pouvez vous connecter.';
+                            $this->getFlashService()->addSuccess('Votre inscription est validée, vous pouvez vous connecter.');
                             // Page de connexion
                             $title = 'Connexion';
 
@@ -211,11 +249,11 @@ class UsersController extends Controller
                                 'title' => $title
                             ]);
                         } else {
-                            $_SESSION['error'] = "Votre inscription n'est pas validée, veuillez recommencer.";
+                            $this->getFlashService()->addAlert("Votre inscription n'est pas validée, veuillez recommencer.");
                         }
                     }
                 } else {
-                    $_SESSION['error'] = "Cet utilisateur n'existe pas, veuillez recommencer votre inscription.";
+                    $this->getFlashService()->addAlert("Cet utilisateur n'existe pas, veuillez recommencer votre inscription.");
                 }
             }
         }
@@ -264,9 +302,9 @@ class UsersController extends Controller
                         $_SESSION['auth'] = false;
                         //signaler erreur
                         if ($user && !$user->getVerify()) {
-                            $_SESSION['error'] = "Votre inscription n'est pas validée, veuillez recommencer.";
+                            $this->getFlashService()->addAlert("Votre inscription n'est pas validée, veuillez recommencer.");
                         } else {
-                            $_SESSION['error'] = "Adresse mail ou mot de passe invalide";
+                            $this->getFlashService()->addAlert("Adresse mail ou mot de passe invalide");
                         }
                     }
                 }
@@ -304,7 +342,7 @@ class UsersController extends Controller
                 $from = filter_input(INPUT_POST, 'from', FILTER_VALIDATE_EMAIL);
                 if ($from === null || $from === MAIL_FROM) {
                     $errors[] = 'Vous devez renseigner votre adresse de courrier électronique.';
-                    $_SESSION['error'] = 'Vous devez renseigner votre adresse de courrier électronique.';
+                    $this->getFlashService()->addAlert('Vous devez renseigner votre adresse de courrier électronique.');
                 } elseif ($from === false) { // si le courriel fourni n'est pas valide
                     $errors[] = 'L\'adresse de courrier électronique n\'est pas valide.';
                     $from = filter_input(INPUT_POST, 'from', FILTER_SANITIZE_EMAIL);
@@ -337,15 +375,17 @@ class UsersController extends Controller
                 }
                 // si le message a bien été envoyé, on affiche le récapitulatif
                 if ($mailSent === true) {
-                    $_SESSION['success'] = 'Votre message a bien été envoyé. Courriel pour la réponse :'
-                        . $from . '. Objet : ' . $object . '. Message : ' . nl2br(htmlspecialchars($message));
+                    $this->getFlashService()->addSuccess('Votre message a bien été envoyé. Courriel pour la réponse :'
+                        . $from . '. Objet : ' . $object . '. Message : ' . nl2br(htmlspecialchars($message)));
                 } else {
                     // le formulaire est affiché pour la première fois
                     // ou le formulaire a été soumis mais contenait des erreurs
                     if (count($errors) !== 0) {
-                        $_SESSION['error'] = $errors;
+                        foreach ($errors as $key => $value) {
+                            $this->getFlashService()->addAlert($value);
+                        }
                     } else {
-                        $_SESSION['error'] = "Tous les champs sont obligatoires...";
+                        $this->getFlashService()->addAlert("Tous les champs sont obligatoires...");
                     }
                 }
             }

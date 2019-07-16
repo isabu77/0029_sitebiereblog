@@ -53,9 +53,9 @@ class PostEditController extends Controller
 
             $res = $this->post->update($id, $attributes);
             if ($res) {
-                $_SESSION['success'] = "L'article a bien été modifié";
+                $this->getFlashService()->addSuccess("L'article a bien été modifié");
             } else {
-                $_SESSION['error'] = "L'article n'a pas été modifié";
+                $this->getFlashService()->addAlert("L'article n'a pas été modifié");
             }
 
             header('location: '.$url);
@@ -80,13 +80,13 @@ class PostEditController extends Controller
                     ];
                     $res = $this->post->insert($attributes);
                     if ($res) {
-                        $_SESSION['success'] = "L'article a bien été ajouté";
+                        $this->getFlashService()->addSuccess("L'article a bien été ajouté");
                     } else {
-                        $_SESSION['error'] = "L'article n'a pas été ajouté";
+                        $this->getFlashService()->addAlert("L'article n'a pas été ajouté");
                     }
                 }
             } else {
-                $_SESSION['error'] = 'slug déjà existant';
+                $this->getFlashService()->addAlert('slug déjà existant');
                 $title = "Ajouter un article";
                 $categories = $this->category->allWithoutLimit();
                 return $this->render("admin/post/postInsert", ["title" => $title,"categories" => $categories]);

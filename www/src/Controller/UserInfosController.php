@@ -79,9 +79,9 @@ class UserInfosController extends Controller
                     $res = $this->userInfos->insert($datas);
                     if ($res) {
                         //message modif ok
-                        $_SESSION['success'] = "les coordonnées ont bien été ajoutées";
+                        $this->getFlashService()->addSuccess("les coordonnées ont bien été ajoutées");
                     } else {
-                        $_SESSION['error'] = "les coordonnées n'ont pas été ajoutées";
+                        $this->getFlashService()->addAlert("les coordonnées n'ont pas été ajoutées");
                     }
                     return $this->userInfos->last();
                 } else {
@@ -89,14 +89,14 @@ class UserInfosController extends Controller
                     $res = $this->userInfos->update($user_Infos_id, $datas);
                     if ($res) {
                         //message modif ok
-                        $_SESSION['success'] = "les coordonnées ont bien été modifiées";
+                        $this->getFlashService()->addSuccess("les coordonnées ont bien été modifiées");
                     } else {
-                        $_SESSION['error'] = "les coordonnées n'ont pas été modifiées";
+                        $this->getFlashService()->addAlert("les coordonnées n'ont pas été modifiées");
                     }
                     return $user_Infos_id;
                 }
             } else {
-                $_SESSION['error'] = $errors;
+                $this->getFlashService()->addAlert($errors);
                 return null;
             }
         }
@@ -121,10 +121,10 @@ class UserInfosController extends Controller
                 $orders = $this->order->allInId($post["id"]);
                 if (!count($orders)) {
                     $this->userInfos->delete($post["id"]);
-                    $_SESSION['success'] = "Les coordonnées ont bien été supprimées.";
+                    $this->getFlashService()->addSuccess("Les coordonnées ont bien été supprimées.");
                     $idClient = null;
                 } else {
-                    $_SESSION['error'] = "Impossible de supprimer ces coordonnées car des commandes leur sont attachées.";
+                    $this->getFlashService()->addAlert("Impossible de supprimer ces coordonnées car des commandes leur sont attachées.");
                 }
             } elseif (
                 isset($post["passwordOld"]) && !empty($post["passwordOld"]) &&
@@ -155,17 +155,17 @@ class UserInfosController extends Controller
 
                             if ($res) {
                                 //message modif ok
-                                $_SESSION['success'] = 'Votre mot de passe a bien été modifié';
+                                $this->getFlashService()->addSuccess('Votre mot de passe a bien été modifié');
                             } else {
-                                $_SESSION['error'] = "Votre mot de passe n'a pas été modifié";
+                                $this->getFlashService()->addAlert("Votre mot de passe n'a pas été modifié");
                             }
                         } else {
                             //mdp correspondent pas
-                            $_SESSION['error'] = 'Les deux mots de passe ne correspondent pas.';
+                            $this->getFlashService()->addAlert('Les deux mots de passe ne correspondent pas.');
                         }
                     } else {
                         //erreur
-                        $_SESSION['error'] = 'Mot de passe incorrect';
+                        $this->getFlashService()->addAlert('Mot de passe incorrect');
                     }
                 }
             } elseif (

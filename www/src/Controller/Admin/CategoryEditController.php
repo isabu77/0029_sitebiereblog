@@ -55,9 +55,9 @@ class CategoryEditController extends Controller
             }
             $res = $this->category->update($id, $attributes);
             if ($res) {
-                $_SESSION['success'] = "La catégorie a bien été modifiée";
+                $this->getFlashService()->addSuccess("La catégorie a bien été modifiée");
             } else {
-                $_SESSION['error'] = "La catégorie n'a pas été modifiée";
+                $this->getFlashService()->addAlert("La catégorie n'a pas été modifiée");
             }
         }
     }
@@ -76,15 +76,14 @@ class CategoryEditController extends Controller
                     ];
                     $res = $this->category->insert($attributes);
                     if ($res) {
-                        $_SESSION['success'] = "La catégorie a bien été ajoutée";
+                        $this->getFlashService()->addSuccess("La catégorie a bien été ajoutée");
                     } else {
-                        $_SESSION['error'] = "La catégorie n'a pas été ajoutée";
+                        $this->getFlashService()->addAlert("La catégorie n'a pas été ajoutée");
                     }
                 }
             } else {
-                $_SESSION['error'] = 'slug déjà existant';
+                $this->getFlashService()->addAlert('slug déjà existant');
                 return $this->render("admin/category/categoryInsert", ["title" => "Ajouter une catégorie"]);
-                unset($_SESSION['error']);
             }
         }
         return $this->render("admin/category/categoryInsert", [

@@ -113,8 +113,8 @@ class PostController extends Controller
             header('location: '.$url);
             
         } else {
-            $_SESSION['error'] = 'Erreur';
-            unset($_SESSION['error']);
+            $this->getFlashService()->addAlert('Erreur');
+            //unset($_SESSION['error']);
         }
     }
 }

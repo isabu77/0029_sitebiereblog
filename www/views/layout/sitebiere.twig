@@ -45,16 +45,22 @@
   <section class="container">
   <h1 class="titreduhaut">{% block title %}Bread Beer Shop - {{title}}{% endblock %}</h1>
 <div>
-  {% if session.success %}
-  <div class="msgsuccess">
-    {{session.success}}
+  {% if success %}
+    <p>messages flash</p>
+    {% for msg in success %}
+    <div class="msgsuccess">
+      {{msg}}
     </div>
+    {% endfor %}
   {% endif %}
 
-  {% if session.error %}
+  {% if alert %}
+    <p>messages flash</p>
+    {% for msg in alert %}
     <div class="msgerror">
-    {{session.error}}
+      {{msg}}
     </div>
+    {% endfor %}
   {% endif %}
 </div>
   {% block content %}

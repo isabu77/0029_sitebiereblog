@@ -28,11 +28,23 @@
 </div>
 <div>
     <main>
-    {% if session.success %}
-        <div class="alert-success">{{ session.success }}</div>
-    {% elseif session.error %}
-        <div class="alert-error">{{ session.error }}</div>
-    {% endif %}
+  {% if success %}
+    <p>messages flash</p>
+    {% for msg in success %}
+    <div class="alert-success">
+      {{msg}}
+    </div>
+    {% endfor %}
+  {% endif %}
+
+  {% if alert %}
+    <p>messages flash</p>
+    {% for msg in alert %}
+    <div class="alert-error">
+      {{msg}}
+    </div>
+    {% endfor %}
+  {% endif %}
         {% block content %}
         {% endblock %}
     </main>

@@ -24,13 +24,20 @@ class MailController extends Controller
         // Crée le Transport
         if (\App\App::getInstance()->getEnv('ENV_DEV')) {
             $transport = new \Swift_SmtpTransport('mailCatcher', 25);
+            $sender = ["mail@test.fr" => "adminDev"];
+
         } else {
+            // 'smtp.gmail.com' peut être dans une variable d'environnement 
+            // pour laisser le choix du fournisseur 
             $transport = new \Swift_SmtpTransport('smtp.gmail.com', 587, 'tls');
             $transport->setUsername(\App\App::getInstance()->getEnv('GMAIL_USER'));
             $transport->setPassword(\App\App::getInstance()->getEnv('GMAIL_PWD'));
+            $sender = [\App\App::getInstance()->getEnv('GMAIL_USER') => \App\App::getInstance()->getEnv('GMAIL_PSEUDO')];
         }
+
         // Crée le Mailer utilisant le Transport
         $mailer = new \Swift_Mailer($transport);
+        
         // Crée le message en HTML et texte
         $message = new \Swift_Message($sujet);
         $message->setFrom([\App\App::getInstance()->getEnv('GMAIL_USER')

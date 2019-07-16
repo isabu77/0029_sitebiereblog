@@ -1,10 +1,12 @@
 <?php
 namespace Core\Controller;
+use Core\Controller\Session\FlashService;
 
 class Controller
 {
     private $app;
     private $twig;
+    private $flashService;
 
     /**
      * Rendu d'une page en .twig
@@ -16,10 +18,14 @@ class Controller
         $variable['session'] =  $_SESSION;
         $variable['constant'] =  get_defined_constants();
 
+        //$variable['flashmessages'] =  $this->getFlashService()->getMessages();
+        $variable['success'] =  $this->getFlashService()->getMessages("success");
+        $variable['alert'] =  $this->getFlashService()->getMessages("alert");
+
         echo $this->getTwig()->render($view . '.twig', $variable);
         
-        unset($_SESSION["success"]); //Supprime la SESSION['success']
-        unset($_SESSION["error"]); //Supprime la SESSION['error']
+        //unset($_SESSION["success"]); //Supprime la SESSION['success']
+        //unset($_SESSION["error"]); //Supprime la SESSION['error']
     }
 
     /**
@@ -49,6 +55,17 @@ class Controller
             $this->app = \App\App::getInstance();
         }
         return $this->app;
+    }
+
+    /**
+     * retourne l'instance de la classe App (Application)
+     */
+    protected function getFlashService()
+    {
+        if (is_null($this->flashService)) {
+            $this->flashService = new FlashService();
+        }
+        return $this->flashService;
     }
 
     /**
