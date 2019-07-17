@@ -1,17 +1,19 @@
 <?php
+
 namespace App;
 
 use \Core\Controller\Controller;
 use \Core\Controller\RouterController;
 use \Core\Controller\URLController;
 use \Core\Controller\Database\DatabaseMysqlController;
-use \App\Model\Table\ConfigTable;
+use \App\Model\Entity\UserEntity;
 use \App\Controller\ConfigController;
 use Core\Controller\Session\FlashService;
 use Core\Controller\Session\PhpSession;
 
 /**
  * classe SINGLETON : classe PRINCIPALE de l'application
+ * méthodes acessibles de partout (controller et model)
  */
 class App
 {
@@ -20,13 +22,12 @@ class App
 
     public $title;
 
-    private $config;
+    private $configTable;
     private $router;
     private $startTime;
     private $db_instance;
-    private $config_instance;
-    private $configTable;
     private $flashService;
+    private $phpSession;
 
     /**
      * retourne l'instance UNIQUE de la classe App
@@ -55,9 +56,9 @@ class App
         }
 
         // lecture dans la base de la table config contenant tva, port et shiplimit
-        // dans Twig : constant.TVA
-        $config = new ConfigController();
-        $configObj = $config->config->lastConfig();
+        // accès dans Twig : constant.TVA
+        $configTable = new ConfigController();
+        $configObj = $configTable->config->lastConfig();
         if ($configObj) {
             define('TVA', $configObj->getTva());
             define('PORT', $configObj->getPort());
@@ -72,10 +73,12 @@ class App
         define('PANIER', 'panier');
         define('QTYPANIER', 'qtypanier');
 
+
         if (session_status() != PHP_SESSION_ACTIVE) {
             session_start();
         }
 
+        // la pagination
         $numPage = URLController::getPositiveInt("page");
 
         if ($numPage !== null) {
@@ -105,36 +108,45 @@ class App
         return $env[$name];
     }
 
-
     /**
-     * crée l'instance de la config stockée en base
+     * crée l'instance de la session
      * et la retourne
      */
-    public function getConfigTable()
+    public function getSession(): PhpSession
     {
-        if (is_null($this->configTable)) {
-            $this->configTable = new ConfigTable();
+        if (is_null($this->phpSession)) {
+            $this->phpSession = new PhpSession();
         }
-        return $this->configTable;
+        return $this->phpSession;
     }
 
     /**
-     * crée l'instance de la config générale
-     * et la retourne
+     * retourne l'utilisateur connecté
+     * @return object|void
      */
-    public function getConfig()
+    public function getConnectedUser($isConnected = true):?UserEntity
     {
-        if (is_null($this->config_instance)) {
-            $this->config_instance = new Controller();
+        
+        //if (session_status() != PHP_SESSION_ACTIVE) {
+        //    session_start();
+        //}
+        // n'est pas defini et false
+        //if (!$_SESSION["auth"]) {
+        if (!$this->getSession()->get("auth", null)) {
+            if ($isConnected) {
+                header('Location: /connexion');
+                exit();
+            }
         }
-        return $this->config_instance;
-    }
+        //return $_SESSION["auth"];
+        return $this->getSession()->get("auth", null)[0];
+   }
 
     /**
      * crée l'instance du Router
      * et la retourne
      */
-    public function getRouter(string $basePath = '/var/www')
+    public function getRouter(string $basePath = '/var/www'): RouterController
     {
         if (is_null($this->router)) {
             $this->router = new RouterController($basePath . 'views');
@@ -142,7 +154,7 @@ class App
         return $this->router;
     }
 
-        /**
+    /**
      * retourne l'instance de la classe App (Application)
      */
     public function getFlashService(): FlashService
@@ -164,7 +176,7 @@ class App
     /**
      *
      */
-    public function getDebugTime()
+    public function getDebugTime(): string
     {
         return number_format((microtime(true) - $this->startTime) * 1000, 2);
     }

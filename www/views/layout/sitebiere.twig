@@ -30,9 +30,9 @@
         <li><a class="text-light mt-1" href="/connexion">Connexion</a></li>
         <li><a class="text-light mt-1" href="/inscription">Inscription</a></li>
         {% endif %}
-    	<li><a class="text-light mt-1" href="/contact">Contact</a></li>
-    	<li><a class="text-light mt-1" href="/blog">Blog</a></li>
-      <li>
+    	  <li><a class="text-light mt-1" href="/contact">Contact</a></li>
+    	  <li><a class="text-light mt-1" href="/blog">Blog</a></li>
+        <li>
 				<a class="text-light mt-1" href="/cart">
         <i class="fas fa-beer"></i>
           <span id="panier" class="badge badge-success">{{ cookie.qtypanier }}</span>
@@ -42,7 +42,7 @@
     </nav>
 </header >
 
-  <section class="container">
+  <section class="container body">
   <h1 class="titreduhaut">{% block title %}Bread Beer Shop - {{title}}{% endblock %}</h1>
 <div>
   {% if success %}

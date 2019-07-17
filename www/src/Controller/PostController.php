@@ -50,7 +50,7 @@ class PostController extends Controller
     public function show($post, string $slug, int $id)
     {
          // le user connecté
-        $userConnect = $this->connectedSession(false);
+        $userConnect = $this->getApp()->getConnectedUser();
 
          // lecture de l'article dans la base (objet Post) par son id
         $post = $this->post->find($id);

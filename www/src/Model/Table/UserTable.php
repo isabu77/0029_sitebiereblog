@@ -3,7 +3,7 @@ namespace App\Model\Table;
 
 use \Core\Model\Table;
 use \Core\Controller\Helpers\TextController;
-use App\Model\Entity\UserEntity;
+
 use phpDocumentor\Reflection\Types\Boolean;
 
 /**

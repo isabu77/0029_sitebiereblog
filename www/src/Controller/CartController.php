@@ -94,8 +94,8 @@ class CartController extends Controller
                 if (empty($token)) {
                     $token = substr(md5(uniqid()), 0, 24);
                 }
-                // le client connecté
-                $user = $this->connectedSession();
+                // le user connecté
+                $user = $this->getApp()->getConnectedUser();
 
                 $attributes = [
                     "user_id"    => $user->getId(),
@@ -217,7 +217,7 @@ class CartController extends Controller
                         $token = substr(md5(uniqid()), 0, 24);
                     }
                     // le client connecté
-                    $user = $this->connectedSession();
+                    $user = $this->getApp()->getConnectedUser();
 
                     $attributes = [
                         "user_id"    => $user->getId(),
@@ -252,7 +252,7 @@ class CartController extends Controller
     public function cart($post)
     {
         // le client connecté
-        $user = $this->connectedSession();
+        $user = $this->getApp()->getConnectedUser();
 
         // prévoir plusieurs clients par user : afficher un select des clients associés
         // et prévoir un système pour ajouter un nouveau client (nouvelle adresse)

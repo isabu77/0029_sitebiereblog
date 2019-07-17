@@ -2,16 +2,43 @@
 
 namespace Core\Controller\Session;
 
+/**
+ * classe de session sur $_SESSION
+ */
 class PhpSession implements SessionInterface, \ArrayAccess
 {
+    /**
+     * démarrage de la session
+     */
+    private function ensureStarted(): void
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+    }
+    /**
+     * récupère la session entière
+     * @param mixed $default
+     * @return array
+     */
+    public function getSessionGlobale($default = null): ?array
+    {
+        $this->ensureStarted();
+
+        if (isset($_SESSION)) {
+            return $_SESSION;
+        } else {
+            return $default;
+        }
+    }
+
     /**
      * récupère une info en session
      * @param string $key
      * @param mixed $default
      * @return mixed
      */
-
-    public function get(string $key, $default = null)
+    public function get(string $key, $default = null): ?array
     {
         $this->ensureStarted();
 
@@ -36,7 +63,7 @@ class PhpSession implements SessionInterface, \ArrayAccess
     }
 
     /**
-     * mettre une info en session
+     * supprimer une info en session
      * @param string $key
      * @return void
      */
@@ -45,13 +72,6 @@ class PhpSession implements SessionInterface, \ArrayAccess
         $this->ensureStarted();
         
         unset($_SESSION[$key]);
-    }
-
-    private function ensureStarted(): void
-    {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
     }
 
     public function offsetExists($offset): bool

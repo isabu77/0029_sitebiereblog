@@ -5,6 +5,7 @@ namespace App\Controller;
 use \Core\Controller\Controller;
 use \Core\Controller\Helpers\TextController;
 use \Core\Controller\FormController;
+use App\Model\Entity\UserEntity;
 
 class UserInfosController extends Controller
 {
@@ -95,7 +96,9 @@ class UserInfosController extends Controller
                     return $user_Infos_id;
                 }
             } else {
-                $this->getFlashService()->addAlert($errors);
+                foreach ($errors as $value){
+                    $this->getFlashService()->addAlert($value);
+                }
                 return null;
             }
         }
@@ -108,7 +111,7 @@ class UserInfosController extends Controller
     public function profil($post, int $user_Infos_id = null)
     {
         // l'utilisateur connecté
-        $userConnect = $this->connectedSession();
+        $userConnect = $this->getApp()->getConnectedUser();
 
         // traitement de la modification du profil
         if (!empty($post)) {

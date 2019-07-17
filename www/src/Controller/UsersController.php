@@ -8,6 +8,7 @@ use \Core\Controller\Helpers\TextController;
 use \Core\Controller\FormController;
 use Core\Controller\Session\FlashService;
 use Core\Controller\Session\PhpSession;
+use \App\Model\Entity\UserEntity;
 
 class UsersController extends Controller
 {
@@ -20,6 +21,26 @@ class UsersController extends Controller
         // $this->users qui est créée dynamiquement
         $this->loadModel('user');
         $this->loadModel('userInfos');
+    }
+
+    /**
+     * la connexion de l'utilisateur au site 
+     *
+     */
+    private function connectSession(UserEntity $user)
+    {
+        $this->getApp()->getSession()->set("auth", $user);
+    }
+
+    /**
+     * la déconnexion du site
+     *
+     */
+    public function deconnectSession()
+    {
+        $this->getApp()->getSession()->delete("auth");
+        header('Location: /');
+        exit();
     }
 
     /**
@@ -299,7 +320,7 @@ class UsersController extends Controller
                     ) {
                         // connecter l'utilisateur
                         $user->setPassword("");
-                        parent::connectSession($user);
+                        $this->connectSession($user);
                         if ($user->getToken() === "ADMIN") {
                             header('Location: /admin');
                         } else {
@@ -311,7 +332,7 @@ class UsersController extends Controller
                         //signaler erreur
                         if ($user && !$user->getVerify()) {
                             $this->getFlashService
-                            addAlert("Votre inscription n'est pas validée, veuillez recommencer.");
+                            ->addAlert("Votre inscription n'est pas validée, veuillez recommencer.");
                         } else {
                             $this->getFlashService()->addAlert("Adresse mail ou mot de passe invalide");
                         }

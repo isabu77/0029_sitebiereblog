@@ -90,7 +90,7 @@ class OrderController extends Controller
     public function order($post, int $user_Infos_id = null)
     {
         // le client connecté
-        $user = $this->connectedSession();
+        $user = $this->getApp()->getConnectedUser();
 
         // prévoir plusieurs clients par user : afficher un select des clients associés
         // et prévoir un système pour ajouter un nouveau client (nouvelle adresse)
@@ -168,7 +168,7 @@ class OrderController extends Controller
         $order = $this->order->find($idOrder);
 
         // le user connecté
-        $user = $this->connectedSession();
+        $user = $this->getApp()->getConnectedUser();
 
         // le client associé à la commande
         $client = $this->userInfos->find($order->getUserInfosId());

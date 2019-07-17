@@ -2,6 +2,9 @@
 
 namespace Core\Controller\Session;
 
+/**
+ * Classe de session dans un tableau
+ */
 class ArraySession implements SessionInterface
 {
     private $session = [];
@@ -13,7 +16,7 @@ class ArraySession implements SessionInterface
      * @return mixed
      */
 
-    public function get(string $key, $default = null)
+    public function get(string $key, $default = null): ?array
     {
         if (array_key_exists($key, $this->session)) {
             return $this->session[$key];

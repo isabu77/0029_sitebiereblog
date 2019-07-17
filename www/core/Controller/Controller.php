@@ -17,7 +17,7 @@ class Controller
     {
         $variable['debugTime'] = $this->getApp()->getDebugTime();
         $variable['cookie'] = $_COOKIE;
-        $variable['session'] =  $_SESSION;
+        $variable['session'] =  $this->getApp()->getSession()->getSessionGlobale();
         $variable['constant'] =  get_defined_constants();
 
         //$variable['flashmessages'] =  $this->getFlashService()->getMessages();
@@ -25,9 +25,6 @@ class Controller
         $variable['alert'] =  $this->getFlashService()->getMessages("alert");
 
         echo $this->getTwig()->render($view . '.twig', $variable);
-        
-        //unset($_SESSION["success"]); //Supprime la SESSION['success']
-        //unset($_SESSION["error"]); //Supprime la SESSION['error']
     }
 
     /**
@@ -39,6 +36,7 @@ class Controller
             // initialisation de Twig : moteur de template PHP
             $loader = new \Twig\Loader\FilesystemLoader(dirname(dirname(__dir__)) . '/views/');
             $this->twig = new \Twig\Environment($loader);
+
             // passage des variables globales de session et de constantes
             //$this->twig->addGlobal('cookie', $_COOKIE);
             //$this->twig->addGlobal('session', $_SESSION);
@@ -64,11 +62,6 @@ class Controller
      */
     protected function getFlashService(): FlashService
     {
- /*        if (is_null($this->flashService)) {
-            $this->flashService = new FlashService(new PhpSession(), true);
-        }
-        return $this->flashService;
- */
         return $this->getApp()->getFlashService();
     }
 
@@ -92,48 +85,5 @@ class Controller
         $this->$nameTable = $this->getApp()->getTable($nameTable);
     }
 
-    /**
-     * retourne l'utilisateur connecté
-     * @return object|void
-     */
-    public function connectedSession($isConnected = true):?object
-    {
-        if (session_status() != PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-        // n'est pas defini et false
-        if (!$_SESSION["auth"]) {
-            if ($isConnected) {
-                header('Location: /connexion');
-                exit();
-            }
-        }
-        return $_SESSION["auth"];
-    }
 
-    /**
-     * la connexion au site
-     *
-     */
-    public function connectSession($user)
-    {
-        if (session_status() != PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-        $_SESSION['auth'] = $user;
-    }
-
-    /**
-     * la déconnexion du site
-     *
-     */
-    public function deconnectSession()
-    {
-        if (session_status() != PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-        unset($_SESSION["auth"]);
-        header('Location: /');
-        exit();
-    }
 }

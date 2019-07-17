@@ -124,23 +124,12 @@ class FormController
                 // vérifier les contraintes de tous les champs
                 foreach ($constraints as $key => $value) {
                     // chercher la méthode 'field' associée à la contrainte par sa clé
-                    $constraint = "field" . ucfirst(strtolower($key));
-                    if (method_exists($this, $constraint)) {
-                        $this->$constraint($field, $value);
+                    $constraintMethode = "field" . ucfirst(strtolower($key));
+                    if (method_exists($this, $constraintMethode)) {
+                        $this->$constraintMethode($field, $value);
                     } else {
                         throw new \Exception("La contrainte $key n'existe pas", 1);
                     }
-
-/*                     if ($value == "require") {
-                        $this->fieldRequire($field);
-                    }
-                    if ($value == "verify") {
-                        $this->fieldVerify($field);
-                    }
-                    if ($key == "length") {
-                        $this->fieldLength($field, (int) $value);
-                    }
- */
                 }
             }
         }
