@@ -140,7 +140,7 @@ class App
         }
         //return $_SESSION["auth"];
         return $this->getSession()->get("auth", null)[0];
-   }
+    }
 
     /**
      * crée l'instance du Router

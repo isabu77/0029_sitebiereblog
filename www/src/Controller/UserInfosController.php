@@ -96,7 +96,7 @@ class UserInfosController extends Controller
                     return $user_Infos_id;
                 }
             } else {
-                foreach ($errors as $value){
+                foreach ($errors as $value) {
                     $this->getFlashService()->addAlert($value);
                 }
                 return null;

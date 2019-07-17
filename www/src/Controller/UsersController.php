@@ -24,7 +24,7 @@ class UsersController extends Controller
     }
 
     /**
-     * la connexion de l'utilisateur au site 
+     * la connexion de l'utilisateur au site
      *
      */
     private function connectSession(UserEntity $user)
@@ -76,8 +76,8 @@ class UsersController extends Controller
                         throw new \Exception("erreur en base de données");
                     }
 
-                    $flashMessages = new FlashService(new PhpSession());
-                    $flashMessages->addSuccess("Vous êtes bien enregistré");
+                    //$flashMessages = new FlashService(new PhpSession());
+                    $this->messageFlash->addSuccess("Vous êtes bien enregistré");
 
                     // envoyer mail de confirmation
                     $mail = new MailController();
@@ -86,7 +86,7 @@ class UsersController extends Controller
                         ->message('confirmation', compact("datas"))
                         ->send();
 
-                    $flashMessages->addSuccess("Vérifiez votre boite mail");
+                    $this->messageFlash->addSuccess("Vérifiez votre boite mail");
 
                     // utiliser le nom de la route pour que l'url ne puisse être modifiée que dans index.php
                     header('location: ' . $this->generateUrl("usersLogin"));
@@ -331,10 +331,14 @@ class UsersController extends Controller
                         $_SESSION['auth'] = false;
                         //signaler erreur
                         if ($user && !$user->getVerify()) {
-                            $this->getFlashService
+                            $this->getFlashService()
                             ->addAlert("Votre inscription n'est pas validée, veuillez recommencer.");
                         } else {
-                            $this->getFlashService()->addAlert("Adresse mail ou mot de passe invalide");
+                            $this->getFlashService()
+                            ->addAlert("Adresse mail ou mot de passe invalide");
+                            
+                            // avec FlashController dans $_SESSION['flash']
+                            $this->messageFlash()->error("Adresse mail ou mot de passe invalide");
                         }
                     }
                 }

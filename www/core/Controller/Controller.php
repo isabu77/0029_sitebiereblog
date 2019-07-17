@@ -2,13 +2,14 @@
 namespace Core\Controller;
 
 use Core\Controller\Session\FlashService;
-use Core\Controller\Session\PhpSession;
+use Core\Extension\Twig\FlashExtension;
+use Core\Extension\Twig\PriceExtension;
 
 class Controller
 {
     private $app;
     private $twig;
-    private $flashService;
+    private $messageFlash;
 
     /**
      * Rendu d'une page en .twig
@@ -24,6 +25,8 @@ class Controller
         $variable['success'] =  $this->getFlashService()->getMessages("success");
         $variable['alert'] =  $this->getFlashService()->getMessages("alert");
 
+        // charger l'extension dans Twig
+        
         echo $this->getTwig()->render($view . '.twig', $variable);
     }
 
@@ -36,6 +39,8 @@ class Controller
             // initialisation de Twig : moteur de template PHP
             $loader = new \Twig\Loader\FilesystemLoader(dirname(dirname(__dir__)) . '/views/');
             $this->twig = new \Twig\Environment($loader);
+            $this->twig->addExtension(new FlashExtension());
+            $this->twig->addExtension(new PriceExtension());
 
             // passage des variables globales de session et de constantes
             //$this->twig->addGlobal('cookie', $_COOKIE);
@@ -57,6 +62,14 @@ class Controller
         return $this->app;
     }
 
+    protected function messageFlash()
+    {
+        if (is_null($this->messageFlash)) {
+            $this->messageFlash = new FlashController();
+        }
+        return $this->messageFlash;
+    }
+    
     /**
      * retourne l'instance de la classe App (Application)
      */
@@ -84,6 +97,4 @@ class Controller
         // (par exemple : 'post' crée une instance $post= new PostTable() )
         $this->$nameTable = $this->getApp()->getTable($nameTable);
     }
-
-
 }

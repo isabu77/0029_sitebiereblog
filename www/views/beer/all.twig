@@ -2,14 +2,17 @@
 
 {% block content %}
 <!-- PAGE PRINCIPALE de présentation des bières -->
+       <h2>{{tourne(10)}}</h2>
 <section id="boutiques">
+
     <!-- BOUCLE de lecture du tableau pour afficher un article par bière -->
     {% for biere in bieres %}
       <article class='bieres productField' onclick="getProductsModal('{{ biere.title }}', '{{ biere.img }}', '{{ biere.content }}', '{{ (biere.price * constant.TVA)| number_format(2, ',', '.') }}', {{ biere.id }})" data-toggle="modal" data-target="#modal">
         <h2>{{biere.title}}</h2>
         <div><img src="{{biere.img}}" alt="{{biere.title}}"/></div>
         <p>{{biere.excerpt}}</p>
-        <p class="price">{{biere.getPrixTTC()}}</p>
+        <p class="price">{{getPriceHt(biere.priceHt)}}</p>
+        <p class="price">{{getPriceTtc(biere.priceHt)}}</p>
     </article>
     {% endfor %}
     <div id="modal" class="modal" tabindex="-1" role="dialog">
