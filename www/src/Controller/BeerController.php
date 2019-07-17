@@ -89,5 +89,4 @@ class BeerController extends Controller
             'title' => $title
         ]);
     }
-
 }

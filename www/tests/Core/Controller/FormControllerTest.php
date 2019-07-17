@@ -15,7 +15,6 @@ class FormControllerTest extends TestCase
             [],
             $form->hasErrors()
         );
-
     }
 
     public function testNewWithoutPost(): void
@@ -42,9 +41,9 @@ class FormControllerTest extends TestCase
         $form = new FormController();
 
         $this->assertEquals(
-                $form, 
-                $form->field('firstname')
-            );
+            $form,
+            $form->field('firstname')
+        );
     }
 
     public function testGetDatasWithFields(): void
@@ -56,9 +55,9 @@ class FormControllerTest extends TestCase
         $form->hasErrors();
 
         $this->assertEquals(
-                ["firstname" => "toto", "lastname" =>  "titi"], 
-                $form->getDatas()
-            );
+            ["firstname" => "toto", "lastname" =>  "titi"],
+            $form->getDatas()
+        );
     }
 
     public function testFormGetDatas(): void
@@ -169,5 +168,4 @@ class FormControllerTest extends TestCase
             $form->hasErrors()
         );
     }
-
 }

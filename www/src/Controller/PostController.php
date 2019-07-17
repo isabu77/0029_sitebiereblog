@@ -20,7 +20,6 @@ class PostController extends Controller
 
         $this->loadModel('comment');
         $this->loadModel('user');
-
     }
 
     /**
@@ -97,7 +96,6 @@ class PostController extends Controller
         if (isset($post['mail']) && !empty($post['mail']) &&
             isset($post['content']) && !empty($post['content']) &&
             isset($post['id']) && !empty($post['id'])) {
-
             $name = htmlspecialchars($post['login']);
             $content = htmlspecialchars($post['content']);
             $attributes = [
@@ -111,7 +109,6 @@ class PostController extends Controller
             $url = $this->generateUrl('post', ['slug' => $slug, 'id' => $id]);
             http_response_code(301);
             header('location: '.$url);
-            
         } else {
             $this->getFlashService()->addAlert('Erreur');
             //unset($_SESSION['error']);

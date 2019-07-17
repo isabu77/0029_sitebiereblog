@@ -36,7 +36,7 @@ $app->getRouter($basepath)
     ->get('/orderconfirm/[i:id]', 'Order#orderconfirm', 'orderconfirm')
 
     ->get('/article/[*:slug]-[i:id]', 'Post#show', 'post')
-    ->post('/article/[*:slug]-[i:id]', 'post#comment', 'comment')   
+    ->post('/article/[*:slug]-[i:id]', 'post#comment', 'comment')
 
     ->get('/categories', 'Category#all', 'categories')
     ->get('/category/[*:slug]-[i:id]', 'Category#show', 'category')

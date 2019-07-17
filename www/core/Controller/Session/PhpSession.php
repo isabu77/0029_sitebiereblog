@@ -15,9 +15,9 @@ class PhpSession implements SessionInterface, \ArrayAccess
     {
         $this->ensureStarted();
 
-        if (array_key_exists($key, $_SESSION)){
+        if (array_key_exists($key, $_SESSION)) {
             return $_SESSION[$key];
-        }else{
+        } else {
             return $default;
         }
     }
@@ -52,7 +52,6 @@ class PhpSession implements SessionInterface, \ArrayAccess
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-
     }
 
     public function offsetExists($offset): bool
@@ -74,5 +73,4 @@ class PhpSession implements SessionInterface, \ArrayAccess
     {
         $this->delete($offset);
     }
-
 }

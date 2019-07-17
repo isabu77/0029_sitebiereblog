@@ -26,9 +26,8 @@ class CategoryTable extends Table
     public function lastThirdItems($ids)
     {
         return $this->query("SELECT *
-                            FROM {$this->prefix}post_category 
-                            LEFT JOIN {$this->prefix}post on {$this->prefix}post_category.post_id = {$this->prefix}post.id
-                            WHERE category_id IN (" . $ids . ") ORDER BY id DESC LIMIT 3");
+            FROM {$this->prefix}post_category 
+            LEFT JOIN {$this->prefix}post on {$this->prefix}post_category.post_id = {$this->prefix}post.id
+            WHERE category_id IN (" . $ids . ") ORDER BY id DESC LIMIT 3");
     }
-
 }

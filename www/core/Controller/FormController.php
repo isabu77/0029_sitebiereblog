@@ -105,7 +105,7 @@ class FormController
         $this->fields[$field] = $constraints;
 
         // si pas de contraintes : on met le champ dans les datas
-        if (empty($constraints)){
+        if (empty($constraints)) {
             $this->addToDatas($field);
             //$this->datas[$field] = htmlspecialchars($this->postDatas[$field]);
         }
@@ -119,7 +119,7 @@ class FormController
      */
     public function hasErrors(): array
     {
-        if (!$this->errors['post']) {
+        if (!isset($this->errors['post']) || !$this->errors['post']) {
             foreach ($this->fields as $field => $constraints) {
                 // vérifier les contraintes de tous les champs
                 foreach ($constraints as $key => $value) {
@@ -140,7 +140,8 @@ class FormController
                     if ($key == "length") {
                         $this->fieldLength($field, (int) $value);
                     }
- */                }
+ */
+                }
             }
         }
         return $this->errors;

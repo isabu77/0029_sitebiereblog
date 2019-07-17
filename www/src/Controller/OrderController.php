@@ -82,7 +82,6 @@ class OrderController extends Controller
             }
         }
         return false;
-
     }
 
     /**
@@ -108,7 +107,6 @@ class OrderController extends Controller
         $title = 'Bon de commande';
 
         if (!empty($post)) {
-
             // enregistrement des coordonnées dans user_infos
             $userInfos = new UserInfosController();
             $user_Infos_id = $userInfos->updateProfil($post, $user->getId());
@@ -118,7 +116,7 @@ class OrderController extends Controller
                 $client = $this->userInfos->find($user_Infos_id);
 
                 // valider le panier enregistré dans la session et dans la table orderline
-                if ($this->createOrderFromCart($user_Infos_id)){
+                if ($this->createOrderFromCart($user_Infos_id)) {
                     return $this->orderconfirm(null, $this->order->last());
                     //header('Location: /orderconfirm/' . $result);
                     exit();
@@ -141,10 +139,11 @@ class OrderController extends Controller
                 setcookie(QTYPANIER, $total, time() + 3600 * 48);
             }
         }
+        $client = null;
         if ($user_Infos_id) {
             $client = $this->userInfos->find($user_Infos_id);
         } else {
-            if ($clients[0]) {
+            if (count($clients) > 0) {
                 $client = $this->userInfos->find($clients[0]->getId());
             }
         }

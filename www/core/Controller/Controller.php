@@ -1,5 +1,6 @@
 <?php
 namespace Core\Controller;
+
 use Core\Controller\Session\FlashService;
 use Core\Controller\Session\PhpSession;
 
@@ -67,7 +68,7 @@ class Controller
             $this->flashService = new FlashService(new PhpSession(), true);
         }
         return $this->flashService;
- */        
+ */
         return $this->getApp()->getFlashService();
     }
 
@@ -102,7 +103,7 @@ class Controller
         }
         // n'est pas defini et false
         if (!$_SESSION["auth"]) {
-            if ($isConnected ){
+            if ($isConnected) {
                 header('Location: /connexion');
                 exit();
             }

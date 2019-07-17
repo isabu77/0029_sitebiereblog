@@ -1,5 +1,6 @@
 <?php
 namespace Core\Controller;
+
 /**
  * Traitement d'un formulaire, correction de Julien
  */
@@ -90,8 +91,7 @@ class FormulaireController
     private function errorVerify(string $field, bool $value): void
     {
         $fieldVerify = $field . "Verify";
-        if (
-            isset($this->postDatas[$fieldVerify]) &&
+        if (isset($this->postDatas[$fieldVerify]) &&
             $this->postDatas[$fieldVerify] == $this->postDatas[$field]
         ) {
             $this->addToDatas($field);

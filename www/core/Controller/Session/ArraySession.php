@@ -15,9 +15,9 @@ class ArraySession implements SessionInterface
 
     public function get(string $key, $default = null)
     {
-        if (array_key_exists($key, $this->session)){
+        if (array_key_exists($key, $this->session)) {
             return $this->session[$key];
-        }else{
+        } else {
             return $default;
         }
     }

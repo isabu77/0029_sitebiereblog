@@ -8,7 +8,8 @@ class Exercices
      * constructeur
      */
     public function __construct()
-    { }
+    {
+    }
 
 
     public function exercice1()

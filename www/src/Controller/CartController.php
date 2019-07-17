@@ -163,7 +163,7 @@ class CartController extends Controller
     }
 
     /**
-     * Ajout par la page modale dans la Boutique 
+     * Ajout par la page modale dans la Boutique
      * d'une ligne dans le panier par jquery $.post
      * total panier dans $_COOKIE["qtypanier"]
      */
@@ -267,9 +267,8 @@ class CartController extends Controller
         );
         $bieres = $paginatedQuery->getItems();
         $title = 'Votre panier';
-
+        $user_Infos_id = null;
         if (!empty($post)) {
-
             // enregistrement des coordonnées dans user_infos
             $userInfos = new UserInfosController();
             $user_Infos_id = $userInfos->updateProfil($post, $user->getId());
@@ -302,10 +301,11 @@ class CartController extends Controller
                 setcookie(QTYPANIER, $total, time() + 3600 * 48);
             }
         }
+        $client = null;
         if ($user_Infos_id) {
             $client = $this->userInfos->find($user_Infos_id);
         } else {
-            if ($clients[0]) {
+            if (count($clients) > 0) {
                 $client = $this->userInfos->find($clients[0]->getId());
             }
         }

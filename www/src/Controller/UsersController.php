@@ -41,7 +41,6 @@ class UsersController extends Controller
 
                 // vérifier mail et mot de passe
                 if (empty($errors)) {
-
                     // vérifier que le mail n'existe pas en base
                     if ($this->user->find($datas["mail"], "mail")) {
                         throw new \Exception("utilisateur existe déjà");
@@ -210,7 +209,8 @@ class UsersController extends Controller
                                         . "en cliquant sur le lien qui vous a été envoyé par mail"
                                 );
                             } else {
-                                $this->getFlashService()->addAlert("Erreur d'envoi du mail de confirmation, recommencez.");
+                                $this->getFlashService()
+                                ->addAlert("Erreur d'envoi du mail de confirmation, recommencez.");
                             }
                         } else {
                             //signaler erreur
@@ -237,8 +237,7 @@ class UsersController extends Controller
             }
         } else {
             // confirmation d'inscription par le mail envoyé
-            if (
-                isset($idUser) && !empty($idUser) &&
+            if (isset($idUser) && !empty($idUser) &&
                 isset($token) && !empty($token)
             ) {
                 $user = $this->user->find($idUser);
@@ -248,7 +247,8 @@ class UsersController extends Controller
                         // validation en base
                         $res = $this->user->update($user->getId(), ["verify" => 1]);
                         if ($res) {
-                            $this->getFlashService()->addSuccess('Votre inscription est validée, vous pouvez vous connecter.');
+                            $this->getFlashService()
+                            ->addSuccess('Votre inscription est validée, vous pouvez vous connecter.');
                             // Page de connexion
                             $title = 'Connexion';
 
@@ -256,11 +256,13 @@ class UsersController extends Controller
                                 'title' => $title
                             ]);
                         } else {
-                            $this->getFlashService()->addAlert("Votre inscription n'est pas validée, veuillez recommencer.");
+                            $this->getFlashService()
+                            ->addAlert("Votre inscription n'est pas validée, veuillez recommencer.");
                         }
                     }
                 } else {
-                    $this->getFlashService()->addAlert("Cet utilisateur n'existe pas, veuillez recommencer votre inscription.");
+                    $this->getFlashService()
+                    ->addAlert("Cet utilisateur n'existe pas, veuillez recommencer votre inscription.");
                 }
             }
         }
@@ -291,8 +293,7 @@ class UsersController extends Controller
                     // vérifier l'existence du mail en base
                     $user = $this->user->getUserByMail($datas['mail']);
                     // vérifier le mot de passe de l'objet en base
-                    if (
-                        $user  && !empty($datas['password'])
+                    if ($user  && !empty($datas['password'])
                         && password_verify(htmlspecialchars($datas['password']), $user->getPassword())
                         && $user->getVerify()
                     ) {
@@ -309,7 +310,8 @@ class UsersController extends Controller
                         $_SESSION['auth'] = false;
                         //signaler erreur
                         if ($user && !$user->getVerify()) {
-                            $this->getFlashService()->addAlert("Votre inscription n'est pas validée, veuillez recommencer.");
+                            $this->getFlashService
+                            addAlert("Votre inscription n'est pas validée, veuillez recommencer.");
                         } else {
                             $this->getFlashService()->addAlert("Adresse mail ou mot de passe invalide");
                         }
@@ -332,8 +334,7 @@ class UsersController extends Controller
     public function contact($post)
     {
         if (!empty($post)) {
-            if (
-                isset($post["from"]) &&
+            if (isset($post["from"]) &&
                 isset($post["object"]) &&
                 isset($post["message"])
             ) {

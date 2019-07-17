@@ -55,7 +55,7 @@ class UserInfosController extends Controller
         // traitement du formulaire
         $form = new FormController($post);
         $errors = $form->hasErrors();
-        if ($errors["post"] != "no-data") {
+        if (!isset($this->errors['post']) ||  $errors["post"] != "no-data") {
             $form->field('lastname', ["require"]);
             $form->field('firstname', ["require"]);
             $form->field('address', ["require"]);
@@ -65,14 +65,13 @@ class UserInfosController extends Controller
             $form->field('phone', ["require"]);
             $errors = $form->hasErrors();
             if (empty($errors)) {
-
                 $datas = $form->getDatas();
 
                 // enregistrement des coordonnées dans user_infos
                 $datas["zip_code"] = $datas["zipCode"];
                 unset($datas["zipCode"]);
 
-                if ($post["new"] || $user_Infos_id == 0) {
+                if (isset($post["new"]) || $user_Infos_id == 0) {
                     // nouvelle adresse
                     unset($post["new"]);
                     $datas["user_id"] = $user_id;
@@ -113,8 +112,7 @@ class UserInfosController extends Controller
 
         // traitement de la modification du profil
         if (!empty($post)) {
-            if (
-                isset($post["delete"])
+            if (isset($post["delete"])
                 && isset($post["id"]) && !empty($post["id"])
             ) {
                 // suppression du client id s'il n'a pas de commandes
@@ -124,10 +122,10 @@ class UserInfosController extends Controller
                     $this->getFlashService()->addSuccess("Les coordonnées ont bien été supprimées.");
                     $idClient = null;
                 } else {
-                    $this->getFlashService()->addAlert("Impossible de supprimer ces coordonnées car des commandes leur sont attachées.");
+                    $this->getFlashService()
+                    ->addAlert("Impossible de supprimer ces coordonnées car des commandes leur sont attachées.");
                 }
-            } elseif (
-                isset($post["passwordOld"]) && !empty($post["passwordOld"]) &&
+            } elseif (isset($post["passwordOld"]) && !empty($post["passwordOld"]) &&
                 isset($post["password"]) && !empty($post["password"]) &&
                 isset($post["passwordVerify"]) && !empty($post["passwordVerify"])
             ) {
@@ -143,8 +141,7 @@ class UserInfosController extends Controller
 
                         // vérifier l'existence du user en base
                         $user = $this->user->getUserByMail($userConnect->getMail());
-                        if (
-                            $user
+                        if ($user
                             && password_verify(htmlspecialchars($post["passwordOld"]), $user->getPassword())
                             && $user->getVerify()
                         ) {
@@ -168,14 +165,12 @@ class UserInfosController extends Controller
                         $this->getFlashService()->addAlert('Mot de passe incorrect');
                     }
                 }
-            } elseif (
-                isset($post["user_infos_id"]) && !empty($post["user_infos_id"])
+            } elseif (isset($post["user_infos_id"]) && !empty($post["user_infos_id"])
                 && $userConnect != null
             ) {
                 // enregistrement des coordonnées dans user_infos
                 $userInfos = new UserInfosController();
                 $user_Infos_id = $userInfos->updateProfil($post, $userConnect->getId());
-
             }
         }
 
@@ -184,10 +179,11 @@ class UserInfosController extends Controller
 
         // les commandes du client affiché
         $orders = [];
+        $client = null;
         if ($user_Infos_id) {
             $client = $this->userInfos->find($user_Infos_id);
         } else {
-            if ($clients[0]) {
+            if (count($clients) > 0) {
                 $client = $this->userInfos->find($clients[0]->getId());
             }
         }

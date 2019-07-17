@@ -12,38 +12,33 @@ class FlashServiceTest extends TestCase
     {
         $flash = new FlashService(new ArraySession(), true);
 
-        $this->assertEquals(false, $flash->hasMessage("success") );
-
+        $this->assertEquals(false, $flash->hasMessage("success"));
     }
 
     public function testGetMessagesSuccessWithoutMessage(): void
     {
         $flash = new FlashService(new ArraySession(), true);
 
-        $this->assertEquals([], $flash->getMessages("success") );
-
+        $this->assertEquals([], $flash->getMessages("success"));
     }
 
     public function testGetMessagesSuccessWithMessage(): void
     {
         $flash = new FlashService(new ArraySession(), true);
         $flash->addSuccess("ça marche");
-        $this->assertEquals(["ça marche"], $flash->getMessages("success") );
-
+        $this->assertEquals(["ça marche"], $flash->getMessages("success"));
     }
 
     public function testHasMessageWithoutMessage(): void
     {
         $flash = new FlashService(new ArraySession(), true);
-        $this->assertEquals(false, $flash->hasMessage("success") );
-
+        $this->assertEquals(false, $flash->hasMessage("success"));
     }
 
     public function testHasMessageWithMessage(): void
     {
         $flash = new FlashService(new ArraySession(), true);
         $flash->addSuccess("ça marche");
-        $this->assertTrue($flash->hasMessage("success") );
-
+        $this->assertTrue($flash->hasMessage("success"));
     }
 }

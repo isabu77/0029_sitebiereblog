@@ -1,6 +1,7 @@
 <?php
 
 namespace Core\Controller\Session;
+
 use Core\Controller\Session\SessionInterface;
 
 class FlashService
@@ -21,7 +22,7 @@ class FlashService
                 session_start();
                 $this->session = $_SESSION;
             }
-        }else{
+        } else {
             $this->session = $session;
         }
     }
@@ -86,9 +87,9 @@ class FlashService
         if (!$this->bTest) {
             return isset($_SESSION[$key]);
         } else {
-            if ($this->session->get($key, false)){
+            if ($this->session->get($key, false)) {
                 return true;
-            }else{
+            } else {
                 return false;
             }
             //return isset($this->messages[$key]);

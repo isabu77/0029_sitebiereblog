@@ -1,5 +1,6 @@
 <?php
 namespace Tests\Core\Controller;
+
 use \PHPUnit\Framework\TestCase;
 use \Core\Controller\FormulaireController;
 
