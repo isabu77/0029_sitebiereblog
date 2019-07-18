@@ -47,9 +47,8 @@
   <h1 class="titreduhaut">{% block title %}Bread Beer Shop - {{title}}{% endblock %}</h1>
 <div>
 
-
   {% if success %}
-   {% for msg in success %}
+    {% for msg in success %}
     <div class="msgsuccess">
       {{msg}}
     </div>
@@ -107,18 +106,18 @@ $(function() {
       "showMethod": "fadeIn",
       "hideMethod": "fadeOut"
     }
-    
-    {% if flash('success') %} 
+   
       {% for msg in flash('success') %}
       toastr['success']("{{msg}}"); 
       {% endfor %} 
-    {% endif %}
 
-    {% if flash('error') %} 
       {% for msg in flash('error') %}
         toastr['error']("{{msg}}"); 
       {% endfor %} 
-    {% endif %}
+    
+      {% for msg in flash('alert') %}
+        toastr['error']("{{msg}}"); 
+      {% endfor %} 
 
 });
 </script>

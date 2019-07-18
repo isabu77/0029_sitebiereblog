@@ -38,11 +38,10 @@ class PhpSession implements SessionInterface, \ArrayAccess
      * @param mixed $default
      * @return mixed
      */
-    public function get(string $key, $default = null): ?array
+    public function get(string $key, $default = null)
     {
         $this->ensureStarted();
-
-        if (array_key_exists($key, $_SESSION)) {
+        if (isset($_SESSION[$key]) && $_SESSION[$key] && array_key_exists($key, $_SESSION)) {
             return $_SESSION[$key];
         } else {
             return $default;
@@ -70,12 +69,12 @@ class PhpSession implements SessionInterface, \ArrayAccess
     public function delete(string $key): void
     {
         $this->ensureStarted();
-        
         unset($_SESSION[$key]);
     }
 
     public function offsetExists($offset): bool
     {
+        $this->ensureStarted();
         return array_key_exists($offset, $_SESSION);
     }
 

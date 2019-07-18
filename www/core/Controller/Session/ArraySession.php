@@ -16,7 +16,7 @@ class ArraySession implements SessionInterface
      * @return mixed
      */
 
-    public function get(string $key, $default = null): ?array
+    public function get(string $key, $default = null)
     {
         if (array_key_exists($key, $this->session)) {
             return $this->session[$key];

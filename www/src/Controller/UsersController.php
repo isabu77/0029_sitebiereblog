@@ -334,11 +334,10 @@ class UsersController extends Controller
                             $this->getFlashService()
                             ->addAlert("Votre inscription n'est pas validée, veuillez recommencer.");
                         } else {
-                            $this->getFlashService()
-                            ->addAlert("Adresse mail ou mot de passe invalide");
+                            $this->getFlashService()->addAlert("Adresse mail ou mot de passe invalide");
                             
                             // avec FlashController dans $_SESSION['flash']
-                            $this->messageFlash()->error("Adresse mail ou mot de passe invalide");
+                            //$this->messageFlash()->error("Adresse mail ou mot de passe invalide");
                         }
                     }
                 }

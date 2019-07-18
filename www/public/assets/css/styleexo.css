@@ -1,0 +1,15 @@
+@charset "UTF-8";
+body {
+    background-color: rgb(184, 214, 218);
+}
+
+body form {
+    background-color: rgb(70, 193, 209);
+    width: 60%;
+    margin: auto;
+}
+
+body form input {
+    width: 20%;
+    margin: auto;
+}

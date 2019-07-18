@@ -160,7 +160,7 @@ class App
     public function getFlashService(): FlashService
     {
         if (is_null($this->flashService)) {
-            $this->flashService = new FlashService(new PhpSession(), true);
+            $this->flashService = new FlashService(new PhpSession());
         }
         return $this->flashService;
     }

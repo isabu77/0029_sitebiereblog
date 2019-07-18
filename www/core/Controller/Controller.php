@@ -21,9 +21,9 @@ class Controller
         $variable['session'] =  $this->getApp()->getSession()->getSessionGlobale();
         $variable['constant'] =  get_defined_constants();
 
-        //$variable['flashmessages'] =  $this->getFlashService()->getMessages();
-        $variable['success'] =  $this->getFlashService()->getMessages("success");
-        $variable['alert'] =  $this->getFlashService()->getMessages("alert");
+        // remplacé par FlashExtension en toastr dans le twig de layout
+        //$variable['success'] =  $this->getFlashService()->getMessages("success");
+        //$variable['alert'] =  $this->getFlashService()->getMessages("alert");
 
         // charger l'extension dans Twig
         
@@ -39,6 +39,8 @@ class Controller
             // initialisation de Twig : moteur de template PHP
             $loader = new \Twig\Loader\FilesystemLoader(dirname(dirname(__dir__)) . '/views/');
             $this->twig = new \Twig\Environment($loader);
+            
+            // ajouter les extensions Twig
             $this->twig->addExtension(new FlashExtension());
             $this->twig->addExtension(new PriceExtension());
 
@@ -62,6 +64,9 @@ class Controller
         return $this->app;
     }
 
+    /**
+     * retourne l'instance de la classe FlashController(pour l'extension Twig)
+     */
     protected function messageFlash()
     {
         if (is_null($this->messageFlash)) {
@@ -71,7 +76,7 @@ class Controller
     }
     
     /**
-     * retourne l'instance de la classe App (Application)
+     * retourne l'instance de la classe FlashService(
      */
     protected function getFlashService(): FlashService
     {

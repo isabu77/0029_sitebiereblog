@@ -13,18 +13,9 @@ class FlashService
     /**
      * constructeur
      */
-    public function __construct(SessionInterface $session, bool $bTest = false)
+    public function __construct(SessionInterface $session)
     {
-        $this->bTest = $bTest;
-
-        if (!$this->bTest) {
-            if (session_status() === PHP_SESSION_NONE) {
-                session_start();
-                $this->session = $_SESSION;
-            }
-        } else {
-            $this->session = $session;
-        }
+        $this->session = $session;
     }
 
     /**
@@ -32,12 +23,7 @@ class FlashService
      */
     public function addSuccess(string $message)
     {
-        if (!$this->bTest) {
-            $_SESSION["success"][] = $message;
-        } else {
-            //$this->messages["success"][] = $message;
-            $this->session->set("success", $message);
-        }
+        $this->session->set("success", $message);
     }
 
     /**
@@ -45,12 +31,7 @@ class FlashService
      */
     public function addAlert(string $message)
     {
-        if (!$this->bTest) {
-            $_SESSION["alert"][] = $message;
-        } else {
-            $this->session->set("alert", $message);
-            //$this->messages["alert"][] = $message;
-        }
+        $this->session->set("alert", $message);
     }
 
     /**
@@ -58,25 +39,9 @@ class FlashService
      */
     public function getMessages(string $key): array
     {
-        if (!$this->bTest) {
-            if (isset($_SESSION[$key])) {
-                $messages = $_SESSION[$key];
-                unset($_SESSION[$key]);
-                return $messages;
-            }
-        } else {
-            $message = $this->session->get($key, []);
-            $this->session->delete($key);
-            return $message;
-
-/*             if (isset($this->messages[$key])) {
-                $messages = $this->messages[$key];
-                unset($this->messages[$key]);
-                return $messages;
-            }
- */
-        }
-        return [];
+        $message = $this->session->get($key, []);
+        $this->session->delete($key);
+        return $message;
     }
 
     /**
@@ -84,15 +49,9 @@ class FlashService
      */
     public function hasMessage(string $key): bool
     {
-        if (!$this->bTest) {
-            return isset($_SESSION[$key]);
-        } else {
-            if ($this->session->get($key, false)) {
-                return true;
-            } else {
-                return false;
-            }
-            //return isset($this->messages[$key]);
+        if ($this->session->get($key, false)) {
+            return true;
         }
+        return false;
     }
 }
