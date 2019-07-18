@@ -176,7 +176,13 @@ class UsersController extends Controller
      */
     public function inscription($post, $idUser = 0, $token = "", $createdAt = "")
     {
-        if (!empty($post)) {
+        //$uri = $this->getUri('order_profil', ['id' => 2]);
+        //dump($uri);
+        //$uri2 = URLController::getUri('order_profil', ['id' => 2]);
+        //dump($uri2);
+
+ 
+       if (!empty($post)) {
             // traitement du formulaire
             $form = new FormController();
             $errors = $form->hasErrors();

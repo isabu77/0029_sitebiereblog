@@ -4,6 +4,7 @@ namespace Core\Controller;
 use Core\Controller\Session\FlashService;
 use Core\Extension\Twig\FlashExtension;
 use Core\Extension\Twig\PriceExtension;
+use Core\Extension\Twig\UriExtension;
 
 class Controller
 {
@@ -43,6 +44,7 @@ class Controller
             // ajouter les extensions Twig
             $this->twig->addExtension(new FlashExtension());
             $this->twig->addExtension(new PriceExtension());
+            $this->twig->addExtension(new UriExtension());
 
             // passage des variables globales de session et de constantes
             //$this->twig->addGlobal('cookie', $_COOKIE);
@@ -88,7 +90,20 @@ class Controller
      */
     protected function generateUrl(string $routeName, array $params = []): string
     {
+        //getUri();
         return $this->getApp()->getRouter()->url($routeName, $params);
+    }
+
+    /**
+      * génère une uri entière avec http:// .... à partir d'une route
+     */
+    public function getUri(string $routeName, array $params = []): string
+    {
+        //dd($_SERVER);
+        $uri = $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['HTTP_HOST'];
+        //dump($uri);
+        $folder = \App\App::getInstance()->getRouter()->url($routeName, $params);
+        return $uri . $folder ;
     }
 
     /**

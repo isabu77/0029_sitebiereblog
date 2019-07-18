@@ -11,6 +11,7 @@ class CategoryEntity extends Entity
     private $id;
     private $name;
     private $slug;
+    private $route = 'category';
 
     /**
      *  id
@@ -51,6 +52,14 @@ class CategoryEntity extends Entity
             'id' => $this->getId()
             ]);
     }
+    /**
+     * getRoute()
+     */
+    public function getRoute():string
+    {
+        return $this->route;
+    }
+
 
     /**
      * getAdminUrl()

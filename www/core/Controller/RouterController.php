@@ -46,6 +46,7 @@ class RouterController
      */
     public function url(string $name, array  $params = []): string
     {
+        //uri()
         return $this->router->generate($name, $params);
     }
 
