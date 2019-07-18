@@ -12,6 +12,21 @@ use phpDocumentor\Reflection\Types\Boolean;
 class UserTable extends Table
 {
     /**
+     * retourne e user avec vérification de son mot de passe
+     */
+    public function getUser($mail, $password)
+    {
+        $user = $this->query("SELECT * FROM $this->table 
+            WHERE mail = ?", [$mail], true);
+        if ($user) {
+            if (password_verify($password, $user->getPassword())) {
+                $user->setPassword('');
+                return $user;
+            }
+        }
+        return false;
+    }
+    /**
      * cherche le user par son mail
      * @return boolean|object
      */

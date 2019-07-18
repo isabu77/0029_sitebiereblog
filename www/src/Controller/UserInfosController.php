@@ -143,12 +143,14 @@ class UserInfosController extends Controller
                         $datas = $form->getDatas();
 
                         // vérifier l'existence du user en base
-                        $user = $this->user->getUserByMail($userConnect->getMail());
-                        if ($user
-                            && password_verify(htmlspecialchars($post["passwordOld"]), $user->getPassword())
-                            && $user->getVerify()
-                        ) {
-                            // modification du mot de passe en base
+                        //$user = $this->user->getUserByMail($userConnect->getMail());
+                        //if ($user
+                        //    && password_verify(htmlspecialchars($post["passwordOld"]), $user->getPassword())
+                        //    && $user->getVerify()
+                        //) {
+                        $user = $this->user->getUser($userConnect->getMail(), $datas['passwordOld']);
+                        if ($user){
+                                    // modification du mot de passe en base
                             $password = password_hash(htmlspecialchars($post["password"]), PASSWORD_BCRYPT);
 
                             $res = $this->user->update($userConnect->getId(), ["password" => $password]);

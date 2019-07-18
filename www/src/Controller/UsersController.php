@@ -44,61 +44,82 @@ class UsersController extends Controller
     }
 
     /**
-     * Inscription d'un utilisateur
-     * correction de Julien avec utilisation de FormContoller
+     * NON UTILISEE
+     * Affichage de la vu d'inscription 
+     * et du traitement du formulaire inscription
+     *
+     * @return string
      */
-    public function subscribe($post)
+    public function subscribe(): string
     {
+        //Création d'un tableau regroupant les champs requis
         $form = new FormController();
-
-        $errors = $form->hasErrors();
-        if ($errors["post"] != "no-data") {
-            $form->field('mail', ["require", "verify"]);
-            $form->field('password', ["require", "verify", "length" => 8]);
-
-            $errors = $form->hasErrors();
-            if (!isset($errors["post"])) {
-                $datas = $form->getDatas();
-
-                // vérifier mail et mot de passe
-                if (empty($errors)) {
-                    // vérifier que le mail n'existe pas en base
-                    if ($this->user->find($datas["mail"], "mail")) {
-                        throw new \Exception("utilisateur existe déjà");
-                    }
-                    // crypter pwd
-                    $data["password"] = password_hash($datas["password"], PASSWORD_BCRYPT);
-
-                    $data["token"] = substr(md5(uniqid()), 0, 10);
-
-                    // persister en bdd
-                    if (!$this->user->newUser($datas)) {
-                        throw new \Exception("erreur en base de données");
-                    }
-
-                    //$flashMessages = new FlashService(new PhpSession());
-                    $this->messageFlash->addSuccess("Vous êtes bien enregistré");
-
-                    // envoyer mail de confirmation
-                    $mail = new MailController();
-                    $mail->object("validez votre compte")
-                        ->to($datas["mail"])
-                        ->message('confirmation', compact("datas"))
-                        ->send();
-
-                    $this->messageFlash->addSuccess("Vérifiez votre boite mail");
-
-                    // utiliser le nom de la route pour que l'url ne puisse être modifiée que dans index.php
-                    header('location: ' . $this->generateUrl("usersLogin"));
-                } else {
-                    // afficher les erreurs
+        //ajouter des champs avec contraintes
+        $form->field('mail', ["require", "verify"])
+            ->field('password', ["require", "verify", "length" => 8]);
+        //recuperer errors du formulaire
+        $errors =  $form->hasErrors();
+        //verifier si il y a une action de POST
+        if (!isset($errors["post"])) {
+            //recuperer datas du formulaire
+            $datas = $form->getDatas();
+            //Verifie qu'il ny ai pas d'erreur dans les contraintes
+            //des champs
+            if (empty($errors)) {
+                //recuperer la table userTable
+                /**@var UserTable $userTable */
+                $userTable = $this->user;
+                //verifier que l'adresse mail n'existe pas en base de donné
+                if ($userTable->find($datas["mail"], "mail")) {
+                    // lève une exception qui devra être  gérée
+                    //TODO : message flash + redirection?
+                    throw new \Exception("utilisateur existe deja");
                 }
+                //crypter password via un méhtode globale pour tout le site?
+                $datas["password"] = password_hash($datas["password"], PASSWORD_BCRYPT);
+                //cree token via un méhtode globale pour tout le site?
+                $datas["token"] = substr(md5(uniqid()), 0, 10);
+                //cree une nouvelle utilisatrice en base de donnée
+                //avec les données du tableau data
+                if (!$userTable->newUser($datas)) {
+                    //erreure de sauvegarde en base de donnée
+                    //TODO : cree une page 500??
+                    throw new \Exception("erreur de base de donné");
+                }
+                //Message flash pour prevenir du bon l'enregistrement
+                $this->flash()->addSuccess("vous êtes bien enregistré");
+                //envoyer mail de confirmation avec le token
+                $mail = new MailController();
+                //écriture du sujet et du mail
+                $mail->object("validez votre compte")
+                    ->to($datas["mail"])
+                    ->message('confirmation', compact("datas"))
+                    ->send();
+                //informer le client via un message flash 
+                //qu'il var devoir valider son adresse mail
+                $this->flash()->addSuccess("vous avez reçu un mail");
+                //rediriger le client sur la pgae de connexion grace au generateur d'url
+                //TODO : Methode Globale 
+                //$this->app->location($this->generateUrl("usersLogin"), 'code erreur')
+                //qui fait le exit aussi!!!!
+                header('location: ' . $this->generateUrl("usersLogin"));
+                //stoper l'execution du code php
+                exit();
+                //fin de la partie sans erreurs
             }
+            //supression du mot de passe dans le tableau datas
+            unset($datas["password"]);
+        } else {
+            //supression du tableau errors si il n'y a pas eu de post
+            unset($errors);
         }
-
-        unset($errors["post"]);
-        return $this->render('user/subscribe', ["errors" => $errors]);
+        //appel du ficher twig grace a la methe render
+        //qui prend en paramètre le chemin de la vue 
+        //et en 2eme paramètre les variables pour la vue
+        return $this->render('user/subscribe', compact("errors", "datas"));
+        //fin de ma methode subscribe
     }
+
     /**
      * reset du password par mail
      *
@@ -306,18 +327,21 @@ class UsersController extends Controller
             $form = new FormController();
             $errors = $form->hasErrors();
             if ($errors["post"] != "no-data") {
-                $form->field('mail', ["require"]);
-                $form->field('password', ["require"]);
+                $form->field('mail', ["require"])
+                    ->field('password', ["require"]);
                 $errors = $form->hasErrors();
                 if (empty($errors)) {
                     $datas = $form->getDatas();
-                    // vérifier l'existence du mail en base
-                    $user = $this->user->getUserByMail($datas['mail']);
+                    // vérifier l'existence du mail en base : passé dans userTable
+                    //$user = $this->user->getUserByMail($datas['mail']);
                     // vérifier le mot de passe de l'objet en base
-                    if ($user  && !empty($datas['password'])
-                        && password_verify(htmlspecialchars($datas['password']), $user->getPassword())
-                        && $user->getVerify()
-                    ) {
+                    //if ($user  && !empty($datas['password'])
+                    //    && password_verify(htmlspecialchars($datas['password']), $user->getPassword())
+                    //    && $user->getVerify()
+                    //) {
+
+                    $user = $this->user->getUser($datas['mail'], $datas['password']);
+                    if ($user){
                         // connecter l'utilisateur
                         $user->setPassword("");
                         $this->connectSession($user);
