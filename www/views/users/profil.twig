@@ -92,13 +92,10 @@
 		<tbody>
     {% for order in orders %}
 			<tr>
-                <td><a href='/orderconfirm/{{ order.id }}'>Commande n°{{ order.id }}</a></td>
+                <td><a href="{{uri('orderconfirm', {'id': order.id} ) }}">Commande n°{{ order.id }}</a></td>
                 <td>{{ ((order.priceHt * order.tva) + order.port) | number_format(2, ',' ,'.') }} €</td>
                 <td>{{ order.statusId }}</td>
-{#                <form action="/profil" method="POST">
-                    <input type="hidden" name="id" value="{{cmd.id}}" />
-                    <td><input type="submit" name="delete" value="Supprimer" /></td>
-                </form>#}
+
             </tr>
     {% endfor %}
 		</tbody>

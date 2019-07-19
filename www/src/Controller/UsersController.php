@@ -9,6 +9,7 @@ use \Core\Controller\FormController;
 use Core\Controller\Session\FlashService;
 use Core\Controller\Session\PhpSession;
 use \App\Model\Entity\UserEntity;
+use Core\Controller\URLController;
 
 class UsersController extends Controller
 {
@@ -176,12 +177,6 @@ class UsersController extends Controller
      */
     public function inscription($post, $idUser = 0, $token = "", $createdAt = "")
     {
-        //$uri = $this->getUri('order_profil', ['id' => 2]);
-        //dump($uri);
-        //$uri2 = URLController::getUri('order_profil', ['id' => 2]);
-        //dump($uri2);
-
- 
        if (!empty($post)) {
             // traitement du formulaire
             $form = new FormController();
@@ -240,6 +235,7 @@ class UsersController extends Controller
                             $texte = ["html" => '<h1>Bienvenue sur notre site Beer Shop'
                                 . '</h1><p>Pour activer votre compte, veuillez cliquer sur le lien ci-dessous'
                                 . ' ou copier/coller dans votre navigateur internet:</p><br />'
+                                // . '<a href="'. $this->getUri("inscription_Verify", [i:id]&[*:token])
                                 . '<a href="http://localhost/identification/verify/'
                                 . $userId
                                 . "&" . $user->getToken()

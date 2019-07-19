@@ -29,7 +29,7 @@ services:
     restart: unless-stopped
     image: tophfr/mailcatcher
     ports:
-      - 1080:80
+      - ${CONTAINERMAIL_PORT}:80
     networks:
       - blog
     env_file:

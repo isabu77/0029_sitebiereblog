@@ -13,9 +13,15 @@ docker-compose -f docker-compose.yml up -d
 
 sleep 4;
 
-docker exec blog composer update
+#docker exec $CONTAINER_NAME composer update
 
-docker exec blog php commande/createsql.php
+sleep 4;
+
+if [ $ENV_DEV == true ]; then
+    docker exec $CONTAINER_NAME commande/createsql --demo
+else
+    docker exec $CONTAINER_NAME commande/createsql
+fi
 
 echo
 echo "#-----------------------------------------------------------"

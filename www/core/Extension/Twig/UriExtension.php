@@ -4,23 +4,13 @@ namespace Core\Extension\Twig;
 
 use Twig\TwigFunction;
 use Twig\Extension\AbstractExtension;
-use Core\Controller\Controller;
+use Core\Controller\URLController;
 
 /**
  * Classe d'extension de Twig pour les uri
  */
 class UriExtension extends AbstractExtension
 {
-    /**
-     * controller
-     */
-    private $controller;
-
-    public function __construct()
-    {
-        $this->controller = new Controller();
-    }
-
     /**
      * retourne la méthode dans la vue par le mot 'uri'
      */
@@ -36,6 +26,6 @@ class UriExtension extends AbstractExtension
      */
     public function getUri(string $routeName, array $params = []): string
     {
-        return $this->controller->getUri($routeName, $params);
+        return URLcontroller::getUri($routeName, $params);
     }
 }

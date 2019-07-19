@@ -6,7 +6,7 @@ use Core\Extension\Twig\FlashExtension;
 use Core\Extension\Twig\PriceExtension;
 use Core\Extension\Twig\UriExtension;
 
-class Controller
+abstract class Controller
 {
     private $app;
     private $twig;
@@ -97,13 +97,9 @@ class Controller
     /**
       * génère une uri entière avec http:// .... à partir d'une route
      */
-    public function getUri(string $routeName, array $params = []): string
+    protected function getUri(string $routeName, array $params = []): string
     {
-        //dd($_SERVER);
-        $uri = $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['HTTP_HOST'];
-        //dump($uri);
-        $folder = \App\App::getInstance()->getRouter()->url($routeName, $params);
-        return $uri . $folder ;
+        return URLController::getUri($routeName, $params);
     }
 
     /**
