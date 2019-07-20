@@ -16,13 +16,13 @@
             <h1>{% block title %}Bread Beer Shop {{ title }}{% endblock %}</h1>
         </header>
         <ul>
-            <li><a href="/admin">HOME</a></li>
-            <li><a href="/admin/categories">CATEGORIES</a></li>
-            <li><a href="/admin/posts">POSTS</a></li>
-            <li><a href="/admin/beers">BIERES</a></li>
-            <li><a href="/admin/orders">COMMANDES</a></li>
-            <li><a href="/admin/users">UTILISATEURS</a></li>
-            <li><a href="/">EXIT</a></li>
+            <li><a href="{{ uri("admin") }}">HOME</a></li>
+            <li><a href="{{ uri("admin_categories") }}">CATEGORIES</a></li>
+            <li><a href="{{ uri("admin_posts") }}">POSTS</a></li>
+            <li><a href="{{ uri("admin_beers") }}">BIERES</a></li>
+            <li><a href="{{ uri("admin_orders") }}">COMMANDES</a></li>
+            <li><a href="{{ uri("admin_users") }}">UTILISATEURS</a></li>
+            <li><a href="{{ uri("home") }}">EXIT</a></li>
         </ul>
     </aside>
 </div>

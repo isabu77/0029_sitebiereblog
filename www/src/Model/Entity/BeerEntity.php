@@ -142,7 +142,7 @@ class BeerEntity extends Entity
      */
     public function getUrl(): string
     {
-        return \App\App::getInstance()->getRouter()->url('beer', [
+        return \App\App::getInstance()->getUri('beer', [
             'id' => $this->getId()
         ]);
     }
@@ -153,7 +153,7 @@ class BeerEntity extends Entity
      */
     public function getAdminUrl(): string
     {
-        return \App\App::getInstance()->getRouter()->url("admin_beer_edit", [
+        return \App\App::getInstance()->getUri("admin_beer_edit", [
             "slug" => $this->getSlug(),
             "id" => $this->getId()
         ]);
@@ -165,7 +165,7 @@ class BeerEntity extends Entity
      */
     public function getAdminDeleteUrl(): string
     {
-        return \App\App::getInstance()->getRouter()->url("admin_beer_delete", [
+        return \App\App::getInstance()->getUri("admin_beer_delete", [
             "slug" => $this->getSlug(),
             "id" => $this->getId()
         ]);

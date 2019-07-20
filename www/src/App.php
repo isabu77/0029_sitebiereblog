@@ -22,7 +22,6 @@ class App
 
     public $title;
 
-    private $configTable;
     private $router;
     private $startTime;
     private $db_instance;
@@ -155,7 +154,7 @@ class App
     }
 
     /**
-     * retourne l'instance de la classe App (Application)
+     *  crée l'instance du FlashService
      */
     public function getFlashService(): FlashService
     {
@@ -205,5 +204,17 @@ class App
     {
         $nameTable = '\\App\\Model\\Table\\' . ucfirst($nameTable) . "Table";
         return new $nameTable($this->getDb());
+    }
+
+    /**
+     * retourne l'uri d'une route
+     * existe aussi dans URLController
+     * avec appel de \App\App::getInstance()->getRouter()->url($routeName, $params);
+     */
+    public function getUri(string $routeName, array $params = []): string
+    {
+        $uri = $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['HTTP_HOST'];
+        $folder = $this->getRouter()->url($routeName, $params);
+        return $uri . $folder ;
     }
 }

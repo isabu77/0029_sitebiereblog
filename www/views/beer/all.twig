@@ -2,7 +2,7 @@
 
 {% block content %}
 <!-- PAGE PRINCIPALE de présentation des bières -->
-       <h2>{{tourne(10)}}</h2>
+<!-- test de l'extension PriceExtension      <h2>{{tourne(10)}}</h2>-->
 <section id="boutiques">
 
     <!-- BOUCLE de lecture du tableau pour afficher un article par bière -->
@@ -37,7 +37,7 @@
           <div class="modal-footer">
             <input id="QTY_id" class="QTY" type="number" min="1" value=""/>
             <button id="product_id" type="button" class="btn btn-primary">Ajouter au panier</button>
-            <a href="/cart" class="btn btn-info" >Voir mon panier</a>
+            <a href="{{ uri("cart_post") }}" class="btn btn-info" >Voir mon panier</a>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
           </div>
         </div>

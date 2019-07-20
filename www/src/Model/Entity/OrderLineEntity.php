@@ -71,9 +71,7 @@ class OrderLineEntity extends Entity
      */
     public function getUrl(): string
     {
-        return \App\App::getInstance()
-            ->getRouter()
-            ->url('orderline', [
+        return \App\App::getInstance()->getUri('orderline', [
                 'id' => $this->getId()
             ]);
     }

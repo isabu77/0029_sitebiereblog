@@ -109,9 +109,7 @@ class UserInfosEntity extends Entity
      */
     public function getUrl():string
     {
-        return \App\App::getInstance()
-            ->getRouter()
-            ->url('client', [
+        return \App\App::getInstance()->getUri("profil_post", [
             'id' => $this->getId()
             ]);
     }

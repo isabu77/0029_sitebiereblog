@@ -1,4 +1,5 @@
 <?php
+
 namespace Core\Controller;
 
 /**
@@ -17,7 +18,7 @@ class URLController
         if (!isset($_GET[$name])) {
             return $default;
         }
-        
+
         if ($_GET[$name] === '0') {
             return 0;
         }
@@ -25,7 +26,7 @@ class URLController
         if (!filter_var($_GET[$name], FILTER_VALIDATE_INT)) {
             throw new \Exception("Le paramètre '$name' n'est pas un entier");
         }
-        return ((int)$_GET[$name]);
+        return ((int) $_GET[$name]);
     }
 
     /**
@@ -44,6 +45,8 @@ class URLController
 
     /**
      * génère une uri entière avec http:// .... à partir d'une route
+     * existe aussi dans App.php de l'application
+     * avec appel de $this->getRouter()->url($routeName, $params);
      *
      * @return string
      */
@@ -51,7 +54,7 @@ class URLController
     {
         $uri = $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['HTTP_HOST'];
         $folder = \App\App::getInstance()->getRouter()->url($routeName, $params);
-        return $uri . $folder ;
+        return $uri . $folder;
 
         //global $racine; // définie dans config.php (false si wamp, true si serveur externe)
         //$folder = ""; // dossier courant
@@ -62,5 +65,4 @@ class URLController
         //return $uri . '/' . $folder . $cible;
 
     }
-
 }

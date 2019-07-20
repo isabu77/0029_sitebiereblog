@@ -108,13 +108,13 @@ class UserInfosController extends Controller
      * la page profil du site bière
      *
      */
-    public function profil($post, int $user_Infos_id = null)
+    public function profil(?array $post, int $user_Infos_id = null)
     {
         // l'utilisateur connecté
         $userConnect = $this->getApp()->getConnectedUser();
 
         // traitement de la modification du profil
-        if (!empty($post)) {
+        if (isset($post) && !empty($post)) {
             if (isset($post["delete"])
                 && isset($post["id"]) && !empty($post["id"])
             ) {
@@ -135,7 +135,7 @@ class UserInfosController extends Controller
                 // traitement du formulaire de changement de password
                 $form = new FormController();
                 $errors = $form->hasErrors();
-                if ($errors["post"] != "no-data") {
+                if (!isset($this->errors['post']) ||  $errors["post"] != "no-data") {
                     $form->field('password', ["require", "verify"]);
                     $form->field('passwordOld', ["require"]);
                     $errors = $form->hasErrors();

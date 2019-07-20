@@ -108,7 +108,7 @@ class PostEntity extends Entity
      */
     public function getUrl(): string
     {
-        return \App\App::getInstance()->getRouter()->url('post', [
+        return \App\App::getInstance()->getUri('post', [
             'slug' => $this->getSlug(),
             'id' => $this->getId()
         ]);
@@ -120,7 +120,7 @@ class PostEntity extends Entity
      */
     public function getAdminUrl(): string
     {
-        return \App\App::getInstance()->getRouter()->url("admin_posts_edit", [
+        return \App\App::getInstance()->getUri("admin_posts_edit", [
             "slug" => $this->getSlug(),
             "id" => $this->getId()
         ]);
@@ -132,7 +132,7 @@ class PostEntity extends Entity
      */
     public function getAdminDeleteUrl(): string
     {
-        return \App\App::getInstance()->getRouter()->url("admin_post_delete", [
+        return \App\App::getInstance()->getUri("admin_post_delete", [
             "slug" => $this->getSlug(),
             "id" => $this->getId()
         ]);

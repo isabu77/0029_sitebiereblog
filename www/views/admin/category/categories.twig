@@ -3,7 +3,7 @@
 {% block content %}
 <section class="admin-categories">
     <h2>Liste des categories</h2>
-    <p><a href="/admin/categoryInsert">Ajouter une categorie</a></p>
+    <p><a href="{{ uri("admin_category_insert") }}">Ajouter une categorie</a></p>
 {% for category in categories %}
     <article class="onePost">
     <h3>{{ category.name }}</h3>

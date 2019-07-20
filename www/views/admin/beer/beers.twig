@@ -3,7 +3,7 @@
 {% block content %}
 <section class="admin-posts">
     <h2>Liste des bières</h2>
-    <p><a href="/admin/beerInsert">Ajouter une bière</a></p>
+    <p><a href="{{ uri("admin_beer_insert") }}">Ajouter une bière</a></p>
 {% for beer in beers %}
     <article class="onePost">
     <h3>{{ beer.title }}</h3>

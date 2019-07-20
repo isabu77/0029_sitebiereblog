@@ -17,7 +17,8 @@ $app->getRouter($basepath)
     ->get('/order', 'Order#order', 'order')
     ->get('/cart', 'Cart#cart', 'cart')
     ->get('/blog', 'Post#all', 'posts')
-    ->get('/contact', 'Users#contact', 'contact')
+    ->match('/contact', 'Users#contact', 'contact')
+    //->post('/contact', 'users#contact', 'contact_send')
     ->get('/about', 'about#index', 'about')
     ->get('/mentions', 'Beer#mentions', 'mentions')
     ->get('/cgv', 'Beer#cgv', 'cgv')
@@ -25,15 +26,20 @@ $app->getRouter($basepath)
     ->match('/inscription', 'Users#inscription', 'inscription')
     //->post('/inscription', 'Users#inscription', 'inscription_profil')
 
-    ->get('/profil', 'UserInfos#profil', 'profil')
-    ->get('/resetpwd', 'users#resetpwd', 'resetpwd')
+    ->match('/profil', 'UserInfos#profil', 'profil')
+    ->match('/profil/[i:id]', 'UserInfos#profil', 'profil_post')
+    //->post('/profil', 'UserInfos#profil', 'profil_update')
+
+    ->get('/identification/verify/[i:id]-[*:token]', 'Users#inscription', 'inscription_Verify')
+
+    ->match('/resetpwd', 'users#resetpwd', 'resetpwd')
+    //->post('/resetpwd', 'users#resetpwd', 'resetpwd_send')
 
     ->match('/connexion', 'Users#connexion', 'connexion')
     //->post('/connexion', 'Users#connexion', 'connexion_profil')
 
     ->get('/deconnexion', 'Users#deconnectSession', 'deconnexion')
 
-    ->get('/orderconfirm/[i:id]', 'Order#orderconfirm', 'orderconfirm')
 
     ->get('/article/[*:slug]-[i:id]', 'Post#show', 'post')
     ->post('/article/[*:slug]-[i:id]', 'post#comment', 'comment')
@@ -41,18 +47,13 @@ $app->getRouter($basepath)
     ->get('/categories', 'Category#all', 'categories')
     ->get('/category/[*:slug]-[i:id]', 'Category#show', 'category')
 
-    ->get('/identification/verify/[i:id]&[*:token]', 'Users#inscription', 'inscription_Verify')
-
-    ->post('/profil', 'UserInfos#profil', 'profil_update')
-    ->get('/profil/[i:idClient]', 'UserInfos#profil', 'profil_post')
-
     ->post('/order', 'Order#order', 'order_order')
     ->match('/order/[i:idClient]', 'Order#order', 'order_profil')
     //->post('/order/[i:idClient]', 'Beer#order', 'order_post')
 
+    ->get('/orderconfirm/[i:id]', 'Order#orderconfirm', 'orderconfirm')
+
     ->post('/cart', 'Cart#cart', 'cart_post')
-    ->post('/contact', 'users#contact', 'contact_send')
-    ->post('/resetpwd', 'users#resetpwd', 'resetpwd_send')
 
     //->match('/addcart', 'Cart#addcart', 'order_addcart')
     //->post('/addcart', 'Beer#addcart', 'order_addcart_post')

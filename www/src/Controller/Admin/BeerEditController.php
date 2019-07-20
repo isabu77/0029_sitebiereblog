@@ -16,13 +16,6 @@ class BeerEditController extends Controller
         if (!$beer) {
             throw new \Exception('Aucun article ne correspond à cet ID');
         }
-/*         if ($beer->getSlug() !== $slug) {
-            $url = $this->generateUrl('admin_beer_edit', ['slug' => $beer->getSlug(), 'id' => $id]);
-            http_response_code(301);
-            header('Location: ' . $url);
-            exit();
-        }
- */
         $title = $beer->getTitle();
         
         return $this->render("admin/beer/beerEdit", [

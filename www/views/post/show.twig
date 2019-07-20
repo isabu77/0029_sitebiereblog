@@ -39,7 +39,7 @@
             {% if user %}
                 <button type="submit">Poster</button>
             {% else %}
-                <p>Pour poster un commentaire veuillez <a href="/connexion">vous connecter</a> !</p>
+                <p>Pour poster un commentaire veuillez <a href="{{ uri("connexion") }}">vous connecter</a> !</p>
                 <button type="submit" disabled>Poster</button>
             {% endif %}
         </form>

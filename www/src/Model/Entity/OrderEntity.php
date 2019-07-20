@@ -104,9 +104,7 @@ class OrderEntity extends Entity
      */
     public function getUrl():string
     {
-        return \App\App::getInstance()
-            ->getRouter()
-            ->url('orders', [
+        return \App\App::getInstance()->getUri('orders', [
             'id' => $this->getId()
             ]);
     }
@@ -117,7 +115,7 @@ class OrderEntity extends Entity
      */
     public function getAdminUrl():string
     {
-        return \App\App::getInstance()->getRouter()->url("admin_order_edit", [
+        return \App\App::getInstance()->getUri("admin_order_edit", [
             "id" => $this->getId(),
             "user_id" => $this->getUserInfosId()
         ]);
@@ -128,7 +126,7 @@ class OrderEntity extends Entity
      */
     public function getAdminDeleteUrl():string
     {
-        return \App\App::getInstance()->getRouter()->url("admin_order_delete", [
+        return \App\App::getInstance()->getUri("admin_order_delete", [
             "id" => $this->getId(),
             "user_id" => $this->getUserInfosId()
         ]);

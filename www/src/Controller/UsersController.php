@@ -230,15 +230,15 @@ class UsersController extends Controller
                             $clientId = $this->userInfos->insert($attributes);
 
                             $user = $this->user->find($userId);
-
+                            $uri = $this->getUri("inscription_Verify", ['id' => $userId, 'token' => $user->getToken()]);
                             // envoyer le mail de confirmation
                             $texte = ["html" => '<h1>Bienvenue sur notre site Beer Shop'
                                 . '</h1><p>Pour activer votre compte, veuillez cliquer sur le lien ci-dessous'
                                 . ' ou copier/coller dans votre navigateur internet:</p><br />'
-                                // . '<a href="'. $this->getUri("inscription_Verify", [i:id]&[*:token])
-                                . '<a href="http://localhost/identification/verify/'
-                                . $userId
-                                . "&" . $user->getToken()
+                                . '<a href="'. $uri
+                                //. '<a href="http://localhost/identification/verify/'
+                                //. $userId
+                                //. "-" . $user->getToken()
                                 . '">Cliquez ICI pour valider votre compte</a><hr><p>Ceci est un mail automatique,'
                                 . ' Merci de ne pas y répondre.</p>'];
 
@@ -335,13 +335,6 @@ class UsersController extends Controller
                 if (empty($errors)) {
                     $datas = $form->getDatas();
                     // vérifier l'existence du mail en base : passé dans userTable
-                    //$user = $this->user->getUserByMail($datas['mail']);
-                    // vérifier le mot de passe de l'objet en base
-                    //if ($user  && !empty($datas['password'])
-                    //    && password_verify(htmlspecialchars($datas['password']), $user->getPassword())
-                    //    && $user->getVerify()
-                    //) {
-
                     $user = $this->user->getUser($datas['mail'], $datas['password']);
                     if ($user){
                         // connecter l'utilisateur

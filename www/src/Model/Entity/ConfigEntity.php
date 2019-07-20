@@ -63,9 +63,7 @@ class ConfigEntity extends Entity
      */
     public function getUrl():string
     {
-        return \App\App::getInstance()
-            ->getRouter()
-            ->url('config', [
+        return \App\App::getInstance()->getUri('config', [
             'id' => $this->getId()
             ]);
     }

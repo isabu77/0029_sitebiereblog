@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Model\Entity;
 
 use Core\Model\Entity;
@@ -28,7 +29,7 @@ class CategoryEntity extends Entity
      **/
     public function getName(): string
     {
-        return ((string)$this->name);
+        return ((string) $this->name);
     }
 
     /**
@@ -39,35 +40,25 @@ class CategoryEntity extends Entity
     {
         return ($this->slug);
     }
-    
+
     /**
      * getUrl()
      */
-    public function getUrl():string
+    public function getUrl(): string
     {
-        return \App\App::getInstance()
-            ->getRouter()
-            ->url('category', [
+        return \App\App::getInstance()->getUri('category', [
             'slug' => $this->getSlug(),
             'id' => $this->getId()
-            ]);
+        ]);
     }
-    /**
-     * getRoute()
-     */
-    public function getRoute():string
-    {
-        return $this->route;
-    }
-
 
     /**
      * getAdminUrl()
      *  @return string
      */
-    public function getAdminUrl():string
+    public function getAdminUrl(): string
     {
-        return \App\App::getInstance()->getRouter()->url("admin_category_edit", [
+        return \App\App::getInstance()->getUri("admin_category_edit", [
             "slug" => $this->getSlug(),
             "id" => $this->getId()
         ]);
@@ -77,9 +68,9 @@ class CategoryEntity extends Entity
      * getAdminDeleteUrl()
      *  @return string
      */
-    public function getAdminDeleteUrl():string
+    public function getAdminDeleteUrl(): string
     {
-        return \App\App::getInstance()->getRouter()->url("admin_category_delete", [
+        return \App\App::getInstance()->getUri("admin_category_delete", [
             "slug" => $this->getSlug(),
             "id" => $this->getId()
         ]);

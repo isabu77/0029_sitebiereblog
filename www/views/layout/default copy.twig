@@ -13,7 +13,7 @@
 
 <body class="container-fluid p-0">
     <nav class="navbar navbar-expand-lg navbar-dark bg-info fixed-top">
-        <a class="navbar-brand" href="{{ uri("home") }}">Home</a>
+        <a class="navbar-brand" href="/">Boutique</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
             aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -22,20 +22,20 @@
         <div class="collapse navbar-collapse" id="navbarColor01">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="{{ uri("posts") }}">Articles<span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="/blog">Articles<span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="{{ uri("categories") }}">Catégories</a>
+                    <a class="nav-link" href="/categories">Catégories</a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="{{ uri("contact") }}">Contact</a>
+                    <a class="nav-link" href="/contact">Contact</a>
                 </li>
                 {% if session.auth %}
-                <li class="nav-item active"><a class="nav-link" href="{{ uri("profil") }}">Profil</a></li>
-                <li class="nav-item active"><a class="nav-link" href="{{ uri("deconnexion") }}">Déconnexion</a></li>
+                <li class="nav-item active"><a class="nav-link" href="/profil">Profil</a></li>
+                <li class="nav-item active"><a class="nav-link" href="/deconnexion">Déconnexion</a></li>
                 {% else %}
-                <li class="nav-item active"><a class="nav-link" href="{{ uri("connexion") }}">Connexion</a></li>
-                <li class="nav-item active"><a class="nav-link" href="{{ uri("inscription") }}">Inscription</a></li>
+                <li class="nav-item active"><a class="nav-link" href="/connexion">Connexion</a></li>
+                <li class="nav-item active"><a class="nav-link" href="/inscription">Inscription</a></li>
                 {% endif %}
             </ul>
             <form class="form-inline my-2 my-lg-0">

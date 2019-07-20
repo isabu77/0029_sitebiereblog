@@ -3,7 +3,7 @@
 {% block content %}
 <section class="admin-posts">
     <h2>Liste des articles</h2>
-    <p><a href="/admin/postInsert">Ajouter un nouvel article</a></p>
+    <p><a href="{{ uri("admin_post_insert") }}">Ajouter un nouvel article</a></p>
 {% for post in posts %}
     <article class="onePost">
     <h3>{{ post.name }}</h3>

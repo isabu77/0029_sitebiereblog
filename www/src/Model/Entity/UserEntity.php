@@ -75,9 +75,7 @@ class UserEntity extends Entity
      */
     public function getUrl():string
     {
-        return \App\App::getInstance()
-            ->getRouter()
-            ->url('users', [
+        return \App\App::getInstance()->getUri('users', [
             'id' => $this->getId()
             ]);
     }
@@ -87,7 +85,7 @@ class UserEntity extends Entity
      */
     public function getAdminUrl():string
     {
-        return \App\App::getInstance()->getRouter()->url("admin_user_edit", [
+        return \App\App::getInstance()->getUri("admin_user_edit", [
             "lastname" => $this->getToken(),
             "id" => $this->getId()
         ]);
@@ -98,7 +96,7 @@ class UserEntity extends Entity
      */
     public function getAdminDeleteUrl():string
     {
-        return \App\App::getInstance()->getRouter()->url("admin_user_delete", [
+        return \App\App::getInstance()->getUri("admin_user_delete", [
             "lastname" => $this->getToken(),
             "id" => $this->getId()
         ]);

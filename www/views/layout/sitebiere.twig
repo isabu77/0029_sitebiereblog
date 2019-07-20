@@ -21,20 +21,20 @@
     <input type="checkbox" class= "burger">
     <nav>
       <ul>
-        <li><a class="text-light mt-1" href="/"><i class="fas fa-home"></i></a></li>
-        <li><a class="text-light mt-1" href="/boutique">Boutique</a></li>
+        <li><a class="text-light mt-1" href="{{ uri("home") }}"><i class="fas fa-home"></i></a></li>
+        <li><a class="text-light mt-1" href="{{ uri("boutique") }}">Boutique</a></li>
         {% if session.auth %}
-        <li><a class="text-light mt-1" href="/order">Bon de commande</a></li>
-        <li><a class="text-light mt-1" href="/profil">Profil</a></li>
-        <li><a class="text-light mt-1" href="/deconnexion">Déconnexion</a></li>
+        <li><a class="text-light mt-1" href="{{ uri("order") }}">Bon de commande</a></li>
+        <li><a class="text-light mt-1" href="{{ uri("profil") }}">Profil</a></li>
+        <li><a class="text-light mt-1" href="{{ uri("deconnexion") }}">Déconnexion</a></li>
         {% else %}
-        <li><a class="text-light mt-1" href="/connexion">Connexion</a></li>
-        <li><a class="text-light mt-1" href="/inscription">Inscription</a></li>
+        <li><a class="text-light mt-1" href="{{ uri("connexion") }}">Connexion</a></li>
+        <li><a class="text-light mt-1" href="{{ uri("inscription") }}">Inscription</a></li>
         {% endif %}
-    	  <li><a class="text-light mt-1" href="/contact">Contact</a></li>
-    	  <li><a class="text-light mt-1" href="/blog">Blog</a></li>
+    	  <li><a class="text-light mt-1" href="{{ uri("contact") }}">Contact</a></li>
+    	  <li><a class="text-light mt-1" href="{{ uri("posts") }}">Blog</a></li>
         <li>
-				<a class="text-light mt-1" href="/cart">
+				<a class="text-light mt-1" href="{{ uri("cart") }}">
         <i class="fas fa-beer"></i>
           <span id="panier" class="badge badge-success">{{ cookie.qtypanier }}</span>
         </a>
@@ -70,8 +70,8 @@
 	<footer>
 		<nav>
 			<ul>
-				<li><a href="/mentions">Mentions Légales</a></li>
-				<li><a href="/cgv">CGV</a></li>
+				<li><a href="{{ uri("mentions") }}">Mentions Légales</a></li>
+				<li><a href="{{ uri("cgv") }}">CGV</a></li>
 			</ul>
 		</nav>
 	</footer>

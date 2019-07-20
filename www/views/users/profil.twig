@@ -19,9 +19,9 @@
 <ul class="nav nav-pills nav-justified flex-column flex-sm-row">
     {% for client in clients %}
     {% if client.id == user.id %}
-    <li class="nav-item"><a class="nav-link active" href="/profil/{{client.id}}">{{client.firstname}} {{client.lastname}}</a></li>
+    <li class="nav-item"><a href="{{client.url}}" class="nav-link active" >{{client.firstname}} {{client.lastname}}</a></li>
     {% else %}
-    <li class="nav-item"><a class="nav-link" href="/profil/{{client.id}}">{{client.firstname}} {{client.lastname}}</a></li>
+    <li class="nav-item"><a href="{{client.url}}" class="nav-link" >{{client.firstname}} {{client.lastname}}</a></li>
     {% endif %}
     {% endfor %}
 </ul>

@@ -35,9 +35,7 @@ class StatusEntity extends Entity
      */
     public function getUrl():string
     {
-        return \App\App::getInstance()
-            ->getRouter()
-            ->url('status', [
+        return \App\App::getInstance()->getUri('status', [
             'id' => $this->getId()
             ]);
     }
@@ -48,8 +46,7 @@ class StatusEntity extends Entity
     public function getAdminUrlOrders():string
     {
         return \App\App::getInstance()
-            ->getRouter()
-            ->url('admin_orders_post', [
+        ->getUri('admin_orders_post', [
             'id' => $this->getId()
             ]);
     }

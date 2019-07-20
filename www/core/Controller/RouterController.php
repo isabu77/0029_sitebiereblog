@@ -42,7 +42,7 @@ class RouterController
     }
 
     /**
-     * génère une url avec une route
+     * génère une url avec une route par Altorouter
      */
     public function url(string $name, array  $params = []): string
     {

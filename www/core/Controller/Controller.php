@@ -78,7 +78,7 @@ abstract class Controller
     }
     
     /**
-     * retourne l'instance de la classe FlashService(
+     * retourne l'instance de la classe FlashService
      */
     protected function getFlashService(): FlashService
     {
@@ -90,8 +90,8 @@ abstract class Controller
      */
     protected function generateUrl(string $routeName, array $params = []): string
     {
-        //getUri();
-        return $this->getApp()->getRouter()->url($routeName, $params);
+        //return $this->getApp()->getRouter()->url($routeName, $params);
+        return URLController::getUri($routeName, $params);
     }
 
     /**
