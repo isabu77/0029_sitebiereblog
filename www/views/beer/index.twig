@@ -1,23 +1,27 @@
 {% extends "layout/sitebiere.twig" %}
 
 {% block content %}
-<section class="sectionHome">
-     <article class="articleHome">
-        <div>
-            <img src="assets/img/BAP.jpg" alt="BAP logo">
-        </div>
-        <p>Gros producteur de bières, j'ai créé ma propre bière spéciale : "du pain dur à la bière".<br />
-			Lancée dans un village en Allemagne, "Stuttgart la rieuse". Dans un rayon de 10 km, 
-            les boulangeries nous fournissent le pain dur et font la promotion de cette bière.<br /><br />
-        La bière au pain est seulement disponible par contact email au montluconaformac2019@gmail.com, 
-        à 15 € les 50 cl.</p>
-    </article>
-    </br>
-    <article class="articleHome">
-        <div>
-            <img src="assets/img/BAP2.jpg" alt="BAP logo">
-        </div>
-        <p>OFFRE EXCEPTIONNELLE de LANCEMENT :<br /><br /> 1 bière offerte pour 3 bière achetées.<br /></p>
-    </article>
+{{ parent() }}
+<section class="container-fluid accueil">
+    <div class="container my-5">
+        <article class="row align-items-center mb-5">
+            <div class="col-12 col-sm-6">
+                <img class="w-100" src="assets/img/BAP.jpg" alt="BAP logo">
+            </div>
+            <p class="col-12 col-sm-6">Gros producteur de bières, j'ai créé ma propre bière spéciale : "du pain dur à la bière".<br />
+                Lancée dans un village en Allemagne, "Stuttgart la rieuse". Dans un rayon de 10 km, 
+                les boulangeries nous fournissent le pain dur et font la promotion de cette bière.<br />
+                <br />
+            La bière au pain est seulement disponible par contact email au montluconaformac2019@gmail.com, 
+            à 15 € les 50 cl.
+            </p>
+        </article>
+        </br>
+        <article class="row flex-row-reverse align-items-center mb-5">
+            <div class="col-12 col-sm-6">
+                <img class="w-100" src="assets/img/BAP2.jpg" alt="BAP logo">
+                </div>
+                <p class="col-12 col-sm-6">OFFRE EXCEPTIONNELLE de LANCEMENT :<br /><br /> 1 bière offerte pour 3 bière achetées.<br /></p>
+        </article>
 </section>
 {% endblock content %}

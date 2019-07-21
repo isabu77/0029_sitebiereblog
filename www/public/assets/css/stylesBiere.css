@@ -1,0 +1,377 @@
+@charset "UTF-8";
+body .titreduhaut {
+    text-align: center;
+}
+
+body .menu {
+    background-color: #069FBB;
+    color: #FFFFFF;
+    height: 4vh;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    margin-bottom: 10px;
+}
+
+body .menu .burger {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    color: inherit;
+    cursor: pointer;
+    font-size: 5vw;
+    margin: 0;
+    outline: 0;
+    padding: 0;
+    text-align: center;
+    width: 50px;
+    top: 0;
+}
+
+body .menu .burger:before {
+    content: '☰';
+}
+
+body .menu .burger:checked+nav {
+    height: calc(100vh - 50px);
+    opacity: 0.9;
+}
+
+body .menu .burger:checked:before {
+    content: 'X';
+}
+
+body .menu nav {
+    background: inherit;
+    font-size: 20px;
+    font-weight: bold;
+    height: 0;
+    overflow: hidden;
+    text-transform: uppercase;
+    transition: height .2s;
+    width: 100%;
+}
+
+body .menu nav>* {
+    display: block;
+    letter-spacing: 1px;
+    padding: 0 20px;
+    width: 100%;
+    font-size: 4vw;
+}
+
+body .menu nav ul {
+    list-style-type: none;
+}
+
+body .menu nav ul li {
+    text-align: left;
+}
+
+body .menu nav ul li a {
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+body section {
+    margin-bottom: 5%;
+    margin-top: 5%;
+    min-height: 92vh;
+}
+
+body section h1,
+body section h2 {
+    text-align: center;
+    color: #AED581;
+}
+
+body section .articleHome {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+body section .articleHome img,
+body section .articleHome p {
+    width: 80%;
+    margin-left: 10%;
+    text-align: justify;
+}
+
+body #boutiques h1,
+body #boutiques h2 {
+    text-align: center;
+}
+
+body #boutiques .bieres div img {
+    width: 30%;
+    margin-left: 35%;
+}
+
+body #boutiques .bieres p {
+    width: 80%;
+    margin-left: 10%;
+    text-align: justify;
+}
+
+body #boutiques .bieres .price {
+    text-align: right;
+}
+
+.panier {
+    background-color: #b8ddc4;
+}
+
+body #formOrder .form label {
+    display: block;
+}
+
+body #formOrder .form input {
+    width: 100%;
+    border: 1px solid black;
+}
+
+body #formOrder table {
+    width: 100%;
+    margin: auto;
+}
+
+body #formOrder table tr th {
+    font-family: initial;
+    text-align: center;
+}
+
+body #formOrder table tr td {
+    font-family: initial;
+    text-align: center;
+}
+
+#commandes {
+    text-align: center;
+}
+
+#commandes table {
+    width: 80%;
+    margin: auto;
+}
+
+body footer {
+    background-color: #069FBB;
+    line-height: 20px;
+    height: 4vh;
+}
+
+body footer nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: space-around;
+    margin: 0;
+}
+
+body footer nav ul li a {
+    color: #FFFFFF;
+}
+
+form {
+    width: 90%;
+    margin: auto;
+}
+
+form input[type="password"],
+form input[type="text"],
+form input[type="email"],
+form input[type="tel"],
+form textarea {
+    width: 100%;
+    margin: 10px 10px;
+    padding: 5px;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: 0;
+}
+
+form button[type="submit"],
+form button[type="reset"] {
+    font-weight: bold;
+    color: #eee;
+    text-transform: uppercase;
+    background-color: #3a9232a9;
+    margin: auto;
+    border: 10px!important;
+    padding: 16px!important;
+    width: 100%;
+    border-radius: 10px;
+}
+
+#commander:disabled {
+    background-color: #b8ddc4;
+}
+
+form button[type="submit"]:focus,
+form button[type="submit"]:hover,
+form button[type="reset"]:focus,
+form button[type="reset"]:hover {
+    background-color: #2db121a9;
+}
+
+form input[type="password"]:focus,
+form input[type="password"]:hover,
+form input[type="text"]:focus,
+form input[type="text"]:hover,
+form input[type="email"]:focus,
+form input[type="email"]:hover,
+form input[type="tel"]:focus,
+form input[type="tel"]:hover,
+form textarea:focus,
+form textarea:hover {
+    background-color: #ccc;
+}
+
+.QTY,
+.PQTY {
+    width: 50px;
+}
+
+.productField:hover {
+    cursor: pointer;
+    transform: scale(1.01);
+}
+
+
+/* PANIER */
+
+.w-5 {
+    width: 10%!important;
+}
+
+.cartImgRow {
+    width: 20%;
+}
+
+.cartImgRow i {
+    cursor: pointer;
+}
+
+.msgerror {
+    background-color: red;
+    text-align: center;
+    color: black;
+    width: 60%;
+    line-height: 30px;
+    margin: auto;
+}
+
+.msgsuccess {
+    background-color: lightgreen;
+    color: black;
+    text-align: center;
+    width: 60%;
+    line-height: 30px;
+    margin: auto;
+}
+
+.centrer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around!important;
+    margin: auto;
+    padding: 10px;
+}
+
+@media (min-width: 768px) {
+    body .menu {
+        background-color: #069FBB;
+        color: #FFFFFF;
+        height: 5vh;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        margin-bottom: 10px;
+    }
+    body .menu .burger {
+        display: none;
+    }
+    body .menu nav {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        height: 30px;
+        position: fixed;
+        top: 0;
+    }
+    body .menu nav>* {
+        font-size: 1.3vw;
+    }
+    body .menu nav ul {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 10px;
+    }
+    /* PAGE HOME */
+    body section {
+        margin-bottom: 5%;
+        margin-top: 5%;
+        min-height: 90vh;
+    }
+    section h1 {
+        font-size: 3vw;
+    }
+    section h2 {
+        font-size: 2.5vw;
+    }
+    section article {
+        flex-direction: row !important;
+        width: 80% !important;
+        margin-left: 10%;
+    }
+    section article div {
+        width: 40%;
+    }
+    section article div img {
+        width: 50%;
+        margin: 0;
+    }
+    section article p {
+        margin-left: 10% !important;
+        width: 50% !important;
+    }
+    /* FIN PAGE HOME
+    PAGE BOUTIQUES */
+    #boutiques {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    #boutiques .bieres {
+        width: 33% !important;
+        margin-left: 0;
+    }
+    #boutiques .bieres div {
+        margin-left: 15% !important;
+    }
+    #boutiques .bieres div img {
+        margin-left: 70% !important;
+    }
+    #boutiques .bieres p {
+        width: 80% !important;
+    }
+    /* PURCHASE_ORDER */
+    #formOrder .form_row {
+        display: flex;
+        justify-content: space-between;
+    }
+    #formOrder table {
+        width: 100%;
+    }
+    /* FIN PURCHASE_ORDER
+   FOOTER */
+    footer {
+        height: 5vh;
+        display: flex;
+        align-items: center;
+    }
+    footer nav {
+        width: 100%;
+    }
+}

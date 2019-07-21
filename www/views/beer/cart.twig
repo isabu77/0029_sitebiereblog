@@ -1,9 +1,12 @@
 {% extends "layout/sitebiere.twig" %}
 
 {% block content %}
-<form method="POST" action="/cart" id="formOrder">
+{{ parent() }}
+<section class="container p-5">
+<form method="POST" action="" id="formOrder">
     <input type="hidden" id="id" name="user_infos_id" value="{{client.id}}" />
-	<table class="table-striped panier">
+	<h1 class="titreduhaut">Votre panier</h1>
+	<table class="table-striped panier col-12">
 		<thead>
 			<tr>
 				<th id="titrePanier">Votre PANIER</th>
@@ -25,7 +28,7 @@
 					{% if biere.id == orderline.beerId %}
 						{% set line = orderline %}
 						<td>{{biere.title}}</td>
-						<td><input id="PQTY_{{biere.id}}" class="PQTY" type="number" min="0" value="{{line.beerQty}}"/></td>
+						<td><input id="PQTY_{{biere.id}}" class="PQTY col-2" type="number" min="0" value="{{line.beerQty}}"/></td>
 						<td id="PHT_{{biere.id}}">{{(line.priceHT * line.beerQty)| number_format(2, '.', ',')}}€</td>
 						<td id="PTTC_{{biere.id}}">{{(line.priceHT * line.beerQty * constant.TVA)| number_format(2, '.', ',')}}€</td>
 						<td><input type="button" name="update[{{biere.id}}]" value="Modifier" onclick="updateCart({{biere.id}}, {{biere.priceHt}},'P');"/></td>
@@ -107,10 +110,11 @@
 			<input class="form-control form-control-sm" type="tel" id="phone" name="phone" value="{{client.phone}}" required/>
 		</div>
 	</div>
-	<div class="centrer">
-		<div><button id="commander" type="submit">Commander</button></div>
-	</div>
+		<p class="text-center m-0">
+			<button class="btn btn-primary" id="commander"  type="submit">Commander</button>
+		</p>
 </form>
+</section>
 {% block javascripts %}
     <script src="{{ 'assets/js/script.js' }}"></script>
 {% endblock %}

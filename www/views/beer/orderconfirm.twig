@@ -1,11 +1,13 @@
 {% extends "layout/sitebiere.twig" %}
 
 {% block content %}
-<section id="formOrder">
-	<div class="centrer">
-		<p>Bonjour {{user.firstname}} {{user.lastname}}, merci pour votre commande</p>
-	</div>
-	<table>
+{{ parent() }}
+
+<div class="col-12 text-center">
+	<p>Bonjour {{user.firstname}} {{user.lastname}}, merci pour votre commande</p>
+</div>
+<section id="commandSection" class="container">
+	<table class="table table-striped">
 		<thead>
 			<tr>
 				<th>Nomination</th>
@@ -43,10 +45,10 @@
 			</tr>
 		</tbody>
 	</table>
-	<div class="centrer">
+	<div class="col-12 text-center">
 		<p>Celle-ci vous sera livrée au {{user.address}} {{user.zipCode}} {{user.city}} sous deux jours</p>
 	</div>
-	<div class="centrer">
+	<div class="col-12 text-center">
 		<p>
 			<small>Si vous ne réglez pas sous 10 jours, le prix de votre commande sera majoré (25%/jour de retard)</small>
 		</p>

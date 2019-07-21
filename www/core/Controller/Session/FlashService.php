@@ -6,9 +6,7 @@ use Core\Controller\Session\SessionInterface;
 
 class FlashService
 {
-    private $messages = [];
     private $session;
-    private $bTest;
 
     /**
      * constructeur

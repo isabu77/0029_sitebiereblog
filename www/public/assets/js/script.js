@@ -21,6 +21,7 @@ function removeAccents(strAccents) {
     return strAccentsOut;
 }
 
+// recherche d'une chaine dans la page avec surlignage en rouge quand trouvé
 function search() {
     var texte = $("#searchSaisie").val();
     var offset = 0;
@@ -29,11 +30,11 @@ function search() {
     var re = new RegExp('(' + texte + ')(?![^<]*>)', "gi");
     $('span').contents().unwrap();
 
-    var content = $('.contenu').html();
+    var content = $('.content').html();
 
 
     content = content.replace(re, span + '$&' + span2);
-    $('.contenu').html(content);
+    $('.content').html(content);
 
     $("#searchSaisie").val("");
 }
@@ -72,7 +73,7 @@ function calcPriceCart(obj, id, originalPrice) {
 
 }
 
-// delete la ligne du panier
+// supprime la ligne du panier
 function deleteOfCart(id, originalPrice) {
     // appel AJAX pour lancer un post de suppression de la ligne de commande du panier
     $.post("/deletecart", { idBeer: id },

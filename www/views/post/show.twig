@@ -1,6 +1,7 @@
-{% extends "layout/default.twig" %}
+{% extends "layout/sitebiere.twig" %}
 
 {% block content %}
+{{ parent() }}
 <section class="post seeking">
     <article class="card">
         <h2>{{ post.name }}</h2>

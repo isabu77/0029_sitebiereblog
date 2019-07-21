@@ -1,19 +1,24 @@
 {% extends "layout/sitebiere.twig" %}
 
 {% block content %}
+{{ parent() }}
 <!-- PAGE PRINCIPALE de présentation des bières -->
 <!-- test de l'extension PriceExtension      <h2>{{tourne(10)}}</h2>-->
-<section id="boutiques">
-
+<section id="boutiques" class="container-fluid accueil">
+	<div class="row productField">
     <!-- BOUCLE de lecture du tableau pour afficher un article par bière -->
     {% for biere in bieres %}
-      <article class='bieres productField' onclick="getProductsModal('{{ biere.title }}', '{{ biere.img }}', '{{ biere.content }}', '{{ (biere.price * constant.TVA)| number_format(2, ',', '.') }}', {{ biere.id }})" data-toggle="modal" data-target="#modal">
-        <h2>{{biere.title}}</h2>
-        <div><img src="{{biere.img}}" alt="{{biere.title}}"/></div>
-        <p>{{biere.excerpt}}</p>
-        <p class="price">{{getPriceHt(biere.priceHt)}}</p>
-        <p class="price">{{getPriceTtc(biere.priceHt)}}</p>
-    </article>
+      <article class="col-12 col-sm-6 col-md-4 mb-4">
+        <div class="card p-3" onclick="getProductsModal('{{ biere.title }}', '{{ biere.img }}', '{{ biere.content }}', '{{ (biere.price * constant.TVA)| number_format(2, ',', '.') }}', {{ biere.id }})" data-toggle="modal" data-target="#modal">
+          <h2 class="text-center">{{biere.title}}</h2>
+          <div class="d-flex align-items-center justify-content-center">
+            <img class="w-25" src="{{biere.img}}" alt="{{biere.title}}"/>
+          </div>
+          <p class="text-truncate">{{biere.excerpt}}</p>
+          <p  class="text-right">{{getPriceHt(biere.priceHt)}}</p>
+          <p  class="text-right">{{getPriceTtc(biere.priceHt)}}</p>
+        </div>
+      </article>
     {% endfor %}
     <div id="modal" class="modal" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
@@ -43,8 +48,6 @@
         </div>
       </div>
 	</div>
-
 </section>
-
 {{ paginate | raw }}
 {% endblock content %}

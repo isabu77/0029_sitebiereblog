@@ -1,16 +1,25 @@
 {% extends "layout/sitebiere.twig" %}
 
 {% block content %}
-<form method="POST" name="{{title}}" action="/connexion">
-<div class="input-group">
-    <span class="input-group-addon"><i class="fa fa-user"></i></span>
-    <input class="form-control" id="mail" type="email" name="mail" value="{{user.mail}}" required></div>
-<div class="input-group">
-    <span class="input-group-addon"><i class="fa fa-lock"></i></span>
-    <input class="form-control" id="password" type="password" name="password" value="" required></div>
-<div class="centrer">
-    <div><button type="submit">Envoyer</button></div>
-</div>
-<div class="centrer"><span class="centrer"><a href="{{ uri("resetpwd") }}">mot de passe oublié</a></span></div>
-</form>
+{{ parent() }}
+<section id='login_section' class="d-flex flex-column align-items-center justify-content-center">
+    <article class="card p-3 col-12 col-sm-4">
+        <div class="card-title">
+            <h1 class="text-center">{{ page }}</h1>
+        </div>
+        <div class="card-body">
+            <form method="POST" name="{{title}}" action="">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                <input class="form-control" id="mail" type="email" name="mail" value="{{user.mail}}" required></div>
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                <input class="form-control" id="password" type="password" name="password" value="" required></div>
+                <p class="text-center m-0">
+                    <button class="btn btn-primary" type="submit">Connexion</button>
+                </p>
+                <p class="text-center m-0">
+                    <a href="{{ uri("resetpwd") }}">mot de passe oublié</a>
+                </p>
+            </form>
 {% endblock content %}

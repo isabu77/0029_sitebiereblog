@@ -35,7 +35,7 @@ class PostController extends Controller
         );
         $postById = $paginatedQuery->getItems();
 
-        $title = 'Posts';
+        $title = 'Articles';
 
         return $this->render('post/all', [
             'posts' => $postById,

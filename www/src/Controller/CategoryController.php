@@ -33,7 +33,7 @@ class CategoryController extends Controller
         );
         $categories = $paginatedQuery->getItems();
 
-        $title = "Catégories";
+        $title = "Thèmes du Blog";
 
         // affichage HTML avec category/all.twig
         return $this->render('category/all', [
@@ -52,7 +52,7 @@ class CategoryController extends Controller
         $category = $this->category->find($id);
 
         if (!$category) {
-            throw new \exception("Aucune catégorie ne correspond à cet Id");
+            throw new \exception("Aucun thème ne correspond à cet Id");
         }
         if ($category->getSlug() !== $slug) {
             $url = $this->generateUrl('category', ['id' => $id, 'slug' => $category->getSlug()]);
@@ -62,7 +62,7 @@ class CategoryController extends Controller
             exit();
         }
 
-        $title = 'Catégorie : ' . $category->getName();
+        $title = 'Thème : ' . $category->getName();
 
         // les articles de la catégorie :
         // $this->post doit etre créé par loadModel dans le constructeur

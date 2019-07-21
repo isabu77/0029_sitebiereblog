@@ -181,7 +181,7 @@ class UsersController extends Controller
             // traitement du formulaire
             $form = new FormController();
             $errors = $form->hasErrors();
-            if ($errors["post"] != "no-data") {
+            if (!isset($this->errors['post']) ||  $errors["post"] != "no-data") {
                 $form->field('mail', ["require", "verify"]);
                 $form->field('password', ["require", "verify"]);
                 $form->field('lastname', ["require"]);
@@ -328,7 +328,7 @@ class UsersController extends Controller
             // traitement du formulaire
             $form = new FormController();
             $errors = $form->hasErrors();
-            if ($errors["post"] != "no-data") {
+            if (!isset($this->errors['post']) ||  $errors["post"] != "no-data") {
                 $form->field('mail', ["require"])
                     ->field('password', ["require"]);
                 $errors = $form->hasErrors();

@@ -25,7 +25,7 @@ class BeerController extends Controller
      */
     public function index()
     {
-        $title = 'Welcome !';
+        $title = 'Bienvenue !';
 
         return $this->render('beer/index', [
             'title' => $title

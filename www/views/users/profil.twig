@@ -1,104 +1,123 @@
 {% extends "layout/sitebiere.twig" %}
 
 {% block content %}
-<form method="POST" name="{{title}}" action="/profil">
-    <div class="form-group">
-        <label class="form-control-sm" for="passwordOld">votre ancien mot de passe</label>
-        <input class="form-control form-control-sm" id="passwordOld" type="password" name="passwordOld" value="" required></div>
-    <div class="form-group">
-        <label class="form-control-sm" for="password">votre mot de passe</label>
-        <input  class="form-control form-control-sm" id="password" type="password" name="password" value="" required></div>
-    <div class="form-group">
-        <label class="form-control-sm" for="passwordVerify">confirmez votre mot de passe</label>
-        <input  class="form-control form-control-sm" id="passwordVerify" type="password" name="passwordVerify" value="" required></div>
-    <div class="centrer">
-        <div><button type="submit">Envoyer</button></div>
-    </div>
-</form>
-<h1 class="titreduhaut">Vos adresses</h1>
-<ul class="nav nav-pills nav-justified flex-column flex-sm-row">
-    {% for client in clients %}
-    {% if client.id == user.id %}
-    <li class="nav-item"><a href="{{client.url}}" class="nav-link active" >{{client.firstname}} {{client.lastname}}</a></li>
-    {% else %}
-    <li class="nav-item"><a href="{{client.url}}" class="nav-link" >{{client.firstname}} {{client.lastname}}</a></li>
-    {% endif %}
-    {% endfor %}
-</ul>
+{{ parent() }}
+<section class="container p-5">
 
-<form method="POST" name="{{title}}" action="/profil">
-	<div class="form-group row justify-content-center">
-	 	<div class="form-check">
-			<input class="form-check-input" type="checkbox" id="new" name="new">
-			<label class="form-check-label" for="new">Enregistrer une nouvelle adresse</label>
+	<form method="POST" name="{{title}}" action="">
+        <h1>Changer mon mot de passe </h1>
+     	<div class="row">
+          {% if message %}
+                <div class="alert alert-info"><p>{{ message }}</p></div>
+            {% endif %}
+			<div class="form-group col-12 col-sm">
+				<label for="passwordOld">Votre ancien mot de passe</label>
+				<input class="form-control " id="passwordOld" type="password" name="passwordOld" value="" required>
+			</div>
 		</div>
-	</div>
-	<div class="form-group row">
-		<div class="col">
-			<label class="form-control-sm" for="lastname">NOM</label>
-			<input class="form-control form-control-sm" type="text" id="lastname" name="lastname" value="{{user.lastname}}" required/>
+     	<div class="row">
+			<div class="form-group col-12 col-sm">
+				<label for="password">Votre mot de passe</label>
+				<input  class="form-control" id="password" type="password" name="password" value="" required>
+			</div>
+			<div class="form-group col-12 col-sm">
+				<label for="passwordVerify">Confirmez votre mot de passe</label>
+				<input  class="form-control" id="passwordVerify" type="password" name="passwordVerify" value="" required>
+			</div>
 		</div>
-		<div class="col">
-			<label class="form-control-sm" for="firstname">PRENOM</label>
-			<input class="form-control form-control-sm" type="text" id="firstname" name="firstname" value="{{user.firstname}}" required/>
-		</div>
-	</div>
-	<div class="form-group row">
-	<div class="col">
-		<label class="form-control-sm" for="address">ADRESSE</label>
-		<input class="form-control form-control-sm" type="text" id="address" name="address" value="{{user.address}}" required/>
-	</div>
-	</div>
-	<div class="form-group row">
-		<div class="col">
-			<label class="form-control-sm" for="zipCode">Code Postal</label>
-			<input class="form-control form-control-sm" type="text" id="zipCode" name="zipCode" value="{{user.zipcode}}" required/>
-		</div>
-		<div class="col">
-			<label class="form-control-sm" for="city">VILLE</label>
-			<input class="form-control form-control-sm" type="text" id="city" name="city" value="{{user.city}}" required/>
-		</div>
-	</div>
-	<div class="form-group row">
-		<div class="col">
-			<label class="form-control-sm" for="country">PAYS</label>
-			<input class="form-control form-control-sm" type="text" id="country" name="country" value="{{user.country}}" required/>
-		</div>
-		<div class="col">
-			<label class="form-control-sm" for="phone">TEL</label>
-			<input class="form-control form-control-sm" type="tel" id="phone" name="phone" value="{{user.phone}}" required/>
-		</div>
-	</div>
-    <div class="centrer">
-        <div><button type="submit">Modifier</button></div>
-        <div><button name="delete" formaction="/profil" formmethod="POST" type="submit">Supprimer</button></div>
-    </div>
-    <input id="id" type="hidden" name="user_infos_id" value="{{user.id}}" /></div>
-    <input id="user_id" type="hidden" name="user_id" value="{{user.user_id}}" /></div>
-</form>
+		<p class="text-center m-0">
+			<button class="btn btn-primary" required type="submit">Modifier</button>
+		</p>
+	</form>
 
-<h1 class="titreduhaut">Les commandes de {{user.firstname}} {{user.lastname}}</h1>
+	<form method="POST" name="{{title}}" action="">
+		<h1 class="titreduhaut">Vos adresses</h1>
+		<div class="row">
+			<ul class="nav nav-pills nav-justified flex-column flex-sm-row">
+				{% for client in clients %}
+				{% if client.id == user.id %}
+				<li class="nav-item"><a href="{{client.url}}" class="nav-link active" >{{client.firstname}} {{client.lastname}}</a></li>
+				{% else %}
+				<li class="nav-item"><a href="{{client.url}}" class="nav-link" >{{client.firstname}} {{client.lastname}}</a></li>
+				{% endif %}
+				{% endfor %}
+			</ul>
+		</div>
 
-<section id="commandes">
-	<table class="table-striped">
-		<thead>
-			<tr>
-                <th scope='row'>Commande</th>
-				<th>Total TTC</th>
-				<th>Status</th>
-                <th></th>
-			</tr>
-		</thead>
-		<tbody>
-    {% for order in orders %}
-			<tr>
-                <td><a href="{{uri('orderconfirm', {'id': order.id} ) }}">Commande n°{{ order.id }}</a></td>
-                <td>{{ ((order.priceHt * order.tva) + order.port) | number_format(2, ',' ,'.') }} €</td>
-                <td>{{ order.statusId }}</td>
+		<div class="row">
+			<div class="form-check">
+				<input class="form-check-input" type="checkbox" id="new" name="new">
+				<label class="form-check-label" for="new">Enregistrer une nouvelle adresse</label>
+			</div>
+		</div>
+		<div class="row">
+			<div  class="form-group col-12 col-sm">
+				<label class="form-control-sm" for="lastname">NOM</label>
+				<input class="form-control form-control-sm" type="text" id="lastname" name="lastname" value="{{user.lastname}}" required/>
+			</div>
+			<div  class="form-group col-12 col-sm">
+				<label class="form-control-sm" for="firstname">PRENOM</label>
+				<input class="form-control form-control-sm" type="text" id="firstname" name="firstname" value="{{user.firstname}}" required/>
+			</div>
+		</div>
+		<div class="row">
+			<div  class="form-group col-12 col-sm">
+				<label class="form-control-sm" for="address">ADRESSE</label>
+				<input class="form-control form-control-sm" type="text" id="address" name="address" value="{{user.address}}" required/>
+			</div>
+		</div>
+		<div class="row">
+			<div  class="form-group col-12 col-sm">
+				<label class="form-control-sm" for="zipCode">Code Postal</label>
+				<input class="form-control form-control-sm" type="text" id="zipCode" name="zipCode" value="{{user.zipcode}}" required/>
+			</div>
+			<div  class="form-group col-12 col-sm">
+				<label class="form-control-sm" for="city">VILLE</label>
+				<input class="form-control form-control-sm" type="text" id="city" name="city" value="{{user.city}}" required/>
+			</div>
+		</div>
+		<div class="row">
+			<div  class="form-group col-12 col-sm">
+				<label class="form-control-sm" for="country">PAYS</label>
+				<input class="form-control form-control-sm" type="text" id="country" name="country" value="{{user.country}}" required/>
+			</div>
+			<div  class="form-group col-12 col-sm">
+				<label class="form-control-sm" for="phone">TEL</label>
+				<input class="form-control form-control-sm" type="tel" id="phone" name="phone" value="{{user.phone}}" required/>
+			</div>
+		</div>
+		<input id="id" type="hidden" name="user_infos_id" value="{{user.id}}" /></div>
+		<input id="user_id" type="hidden" name="user_id" value="{{user.user_id}}" /></div>
+		<p class="text-center m-0">
+			<button class="btn btn-primary" required type="submit">Modifier</button>
+			<button  class="btn btn-primary" name="delete" formaction="" formmethod="POST" type="submit">Supprimer</button>
+		</p>
+	</form>
 
-            </tr>
-    {% endfor %}
-		</tbody>
-    </table>
+
+	<h1 class="titreduhaut">Les commandes de {{user.firstname}} {{user.lastname}}</h1>
+
+	<section id="commandes">
+		<table class="table-striped col-12 col-sm">
+			<thead>
+				<tr>
+					<th scope='row'>Commande</th>
+					<th>Total TTC</th>
+					<th>Etat</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for order in orders %}
+				<tr>
+					<td><a href="{{uri('orderconfirm', {'id': order.id} ) }}">Commande n°{{ order.id }}</a></td>
+					<td>{{ ((order.priceHt * order.tva) + order.port) | number_format(2, ',' ,'.') }} €</td>
+					<td>{{ order.statusId }}</td>
+
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</section>
 </section>
 {% endblock content %}

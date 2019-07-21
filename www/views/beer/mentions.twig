@@ -1,36 +1,33 @@
 {% extends "layout/sitebiere.twig" %}
 
 {% block content %}
-<section class="sectionHome">
-     <article >
-        <div>
-            <img src="assets/img/BAP.jpg" alt="BAP logo">
+{{ parent() }}
+<section class="container p-5">
+    <article class="row">
+        <div class="col-6 col-sm-6">
+            <img class="w-100" src="assets/img/BAP.jpg" alt="BAP logo">
         </div>
-        <p><strong>Raison sociale : Beer Bread shop</strong></p>
-        <p>capital social : 1000€</p>
-        <p>SIRET : 111 222 333 00012</p>
-        <p>RCS : 111 222 333 00012</p>
-        <p>Id Fiscal : 111222333</p>
-        <p>RM : 111 222 333</p>
-
-
-        <p>N° TVA : FR55 411222111</p>
-        
-        <p><strong>Adresse</strong></p>
-        <p>47 bd de la république</p>
-        <p>03100 Montluçon</p>
-        <p>France</p>
-
-        <p><strong>Contact par mail</strong></p>
-        <p>montluconaformac2019@gmail.com</p>
-        <p>ou un message par la page CONTACT</p>
-        <p>France</p>
-
-        <p><strong>Tél</strong></p>
-        <p>04 11 22 23 44</p>
-
-
+        <div class="col-3">
+            <p><strong>Raison sociale : Beer Bread shop</strong></p>
+            <p>capital social : 1000€</p>
+            <p>SIRET : 111 222 333 00012</p>
+            <p>RCS : 111 222 333 00012</p>
+            <p>Id Fiscal : 111222333</p>
+            <p>RM : 111 222 333</p>
+            <p>N° TVA : FR55 411222111</p>
+            <p><strong>Adresse</strong></p>
+            <p>47 bd de la république</p>
+            <p>03100 Montluçon</p>
+            <p>France</p>
+        </div>
+        <div class="col-3">
+            <p><strong>Contact par mail</strong></p>
+            <p>montluconaformac2019@gmail.com</p>
+            <p>ou un message par la page CONTACT</p>
+            <p>France</p>
+            <p><strong>Tél</strong></p>
+            <p>04 11 22 23 44</p>
+        </div>
     </article>
-
 </section>
 {% endblock content %}

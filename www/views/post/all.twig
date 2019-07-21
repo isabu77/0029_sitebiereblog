@@ -1,6 +1,7 @@
-{% extends "layout/default.twig" %}
+{% extends "layout/sitebiere.twig" %}
 
 {% block content %}
+{{ parent() }}
 <section class="row">
     {% for post in posts %}
     {{ include('post/card.twig') }}

@@ -1,125 +1,151 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang='fr'>
 
 <head>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width">
 	<title>Bread Beer Shop</title>
-	<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
-        rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+		integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+	<link href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/lumen/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-iqcNtN3rj6Y1HX/R0a3zu3ngmbdwEa9qQGHdkXwSRoiE+Gj71p0UNDSm99LcXiXV" crossorigin="anonymous">
 	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
 	<link rel="stylesheet" type="text/css" href="/assets/css/styles.css">
-  <script src="https://kit.fontawesome.com/c597f3655b.js"></script>
+  	<script src="https://kit.fontawesome.com/c597f3655b.js"></script>
 </head>
 
 <body>
-<div>
-  <header class="menu" >
-    <input type="checkbox" class= "burger">
-    <nav>
-      <ul>
-        <li><a class="text-light mt-1" href="{{ uri("home") }}"><i class="fas fa-home"></i></a></li>
-        <li><a class="text-light mt-1" href="{{ uri("boutique") }}">Boutique</a></li>
-        {% if session.auth %}
-        <li><a class="text-light mt-1" href="{{ uri("order") }}">Bon de commande</a></li>
-        <li><a class="text-light mt-1" href="{{ uri("profil") }}">Profil</a></li>
-        <li><a class="text-light mt-1" href="{{ uri("deconnexion") }}">Déconnexion</a></li>
-        {% else %}
-        <li><a class="text-light mt-1" href="{{ uri("connexion") }}">Connexion</a></li>
-        <li><a class="text-light mt-1" href="{{ uri("inscription") }}">Inscription</a></li>
-        {% endif %}
-    	  <li><a class="text-light mt-1" href="{{ uri("contact") }}">Contact</a></li>
-    	  <li><a class="text-light mt-1" href="{{ uri("posts") }}">Blog</a></li>
-        <li>
-				<a class="text-light mt-1" href="{{ uri("cart") }}">
-        <i class="fas fa-beer"></i>
-          <span id="panier" class="badge badge-success">{{ cookie.qtypanier }}</span>
-        </a>
-        </li>
-      </ul>
-    </nav>
-</header >
+	<header class="menu">
+		<nav class="vh-10 navbar navbar-expand-lg navbar-dark bg-primary">
+			<a class="navbar-brand" href="{{ uri("home") }}"><i class="fa fa-home h1"></i></a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
+				aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarColor01">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item active">
+						<a class="nav-link" href="{{ uri("home") }}">Home <span class="sr-only">(current)</span></a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="{{ uri("boutique") }}">Boutique</a>
+					</li>
+					{% if session.auth %}
+					<li class="nav-item">
+						<a class="nav-link" href="{{ uri("order") }}">Bon de commande</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="{{ uri("profil") }}">Profil</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="{{ uri("deconnexion") }}">Déconnexion</a>
+					</li>
+					{% else %}
+					<li class="nav-item">
+						<a class="nav-link" href="{{ uri("connexion") }}">Connexion</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="{{ uri("inscription") }}">Inscription</a>
+					</li>
+					{% endif %}
+					<li class="nav-item">
+						<a class="nav-link" href="{{ uri("contact") }}">Contact</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="{{ uri("posts") }}">Blog</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="{{ uri("categories") }}">Thèmes</a>
+					</li>
+					<li id="cart" class="nav-item">
+						<a href="{{ uri("cart") }}"><i class="nav-link fa fa-beer text-white h1 m-0"><span
+									id="panier">{{ session.cartNumber }}</span></i></a>
+					</li>
+				</ul>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" id="searchSaisie" onchange="search()" type="text" placeholder="Search">
+                <button class="btn btn-secondary my-2 my-sm-0" onclick="search()" type="submit">Search</button>
+            </form>
+			</div>
+		</nav>
+	</header>
 
-  <section class="container body">
-  <h1 class="titreduhaut">{% block title %}Bread Beer Shop - {{title}}{% endblock %}</h1>
-<div>
+	<section class="content">
+		{% for success in flash("success") %}
+		<div class="alert alert-success text-center col-4 offset-4 mt-2" role="alert">
+			{{ success }}
+		</div>
+		{% endfor %}
+		{% for errors in flash("alert") %}
+		<div class="alert alert-danger text-center col-4 offset-4 mt-2" role="alert">
+			{{ errors }}
+		</div>
+		{% endfor %}
 
-  {% if success %}
-    {% for msg in success %}
-    <div class="msgsuccess">
-      {{msg}}
-    </div>
-    {% endfor %}
-  {% endif %}
 
-  {% if alert %}
-    {% for msg in alert %}
-    <div class="msgerror">
-      {{msg}}
-    </div>
-    {% endfor %}
-  {% endif %}
-</div>
-  {% block content %}
-
-  {% endblock content %}
-  </section>
+		{% block content %}
+		<header class="jumbotron  mb-5">
+            <h1 class="text-center display-4">{% block title %}Bread Beer Shop - {{title}}{% endblock %}</h1>
+        </header>
+		{% endblock %}
+	</section>
 	<footer>
-		<nav>
-			<ul>
-				<li><a href="{{ uri("mentions") }}">Mentions Légales</a></li>
-				<li><a href="{{ uri("cgv") }}">CGV</a></li>
-			</ul>
+		<nav class="vh-10 navbar navbar-expand-lg navbar-dark bg-primary">
+			<div class="collapse navbar-collapse" id="navbarColor01">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item active">
+						<a class="nav-link" href="{{ uri("mentions") }}">Mentions Légales</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="{{ uri("cgv") }}">CGV</a>
+					</li>
+				</ul>
+			</div>
 		</nav>
 	</footer>
-</div>
-	<script
-		src="https://code.jquery.com/jquery-3.4.1.min.js"
-		integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-		crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+		integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
 		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
 		crossorigin="anonymous"></script>
 	<script src="https://js.stripe.com/v3/"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+ 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+	{% block script %}{% endblock %}
 	<script type="text/javascript" src="/assets/js/script.js"></script>
-<script type="text/javascript">
-$(function() {
-    toastr.options = {
-      "closeButton": false,
-      "debug": false,
-      "newestOnTop": false,
-      "progressBar": true,
-      "positionClass": "toast-top-right",
-      "preventDuplicates": false,
-      "onclick": null,
-      "showDuration": "300",
-      "hideDuration": "1000",
-      "timeOut": "5000",
-      "extendedTimeOut": "1000",
-      "showEasing": "swing",
-      "hideEasing": "linear",
-      "showMethod": "fadeIn",
-      "hideMethod": "fadeOut"
-    }
-   
-      {% for msg in flash('success') %}
-      toastr['success']("{{msg}}"); 
-      {% endfor %} 
+    <script type="text/javascript">
+        $(function() {
+            toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+            }
+        
+            {% for msg in flash('success') %}
+            toastr['success']("{{msg}}"); 
+            {% endfor %} 
 
-      {% for msg in flash('error') %}
-        toastr['error']("{{msg}}"); 
-      {% endfor %} 
-    
-      {% for msg in flash('alert') %}
-        toastr['error']("{{msg}}"); 
-      {% endfor %} 
+            {% for msg in flash('error') %}
+                toastr['error']("{{msg}}"); 
+            {% endfor %} 
+            
+            {% for msg in flash('alert') %}
+                toastr['error']("{{msg}}"); 
+            {% endfor %} 
 
-});
-</script>
+        });
+    </script>
 </body>
 </html>

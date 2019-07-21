@@ -1,23 +1,31 @@
 {% extends "layout/sitebiere.twig" %}
 
 {% block content %}
-<form method="post" name="{{title}}" action="/contact">  
-    <div class="form-group">
-        <label for="from">Courriel pour la réponse</label>  
-        <input type="text" name="from" id="from"/>  
-    </div>  
-    <div class="form-group">
-        <label for="object">Objet</label>  
-        <input type="text" name="object" id="object"/>  
-    </div>   
-    <div class="form-group">
-        <label for="message">Message</label>  
-        <textarea name="message" id="message" rows="20" cols="80"></textarea>  
-    </div>  
-    <div class="centrer">
-        <div><button type="reset">Effacer</button></div> 
-        <div><button type="submit">Envoyer</button></div>
-    </div>
-</form>  
+{{ parent() }}
+<section class="container p-5">
+    <form method="post" name="{{title}}" action="">  
+        <div class="row">
+            <div class="form-group col-12 col-sm">
+                <label for="from">Courriel pour la réponse</label>  
+                <input class="form-control" type="text" name="from" id="from"/>  
+        </div>  
+        </div>  
+        <div class="row">
+            <div class="form-group col-12 col-sm">
+                <label for="object">Objet</label>  
+                <input class="form-control" type="text" name="object" id="object"/>  
+            </div>   
+        </div>  
+        <div class="row">
+            <div class="form-group col-12 col-sm">
+                <label for="message">Message</label>  
+                <textarea class="form-control" name="message" id="message" rows="20" cols="80"></textarea>  
+            </div>  
+        </div>            
+        <p class="text-center m-0">
+            <button class="btn btn-primary" required type="reset">Effacer</button>
+            <button class="btn btn-primary" required type="submit">Envoyer</button>
+        </p>
+    </form>  
 
 {% endblock content %}

@@ -1,44 +1,87 @@
 {% extends "layout/sitebiere.twig" %}
 
 {% block content %}
-<form method="POST" name="{{title}}" action="/inscription">
-<div class="form-group">
-    <label for="mail">votre courriel</label>
-    <input id="mail" type="email" name="mail" value="{{user.mail}}" required></div>
-<div class="form-group">
-    <label for="mailVerify">vérification de votre courriel</label>
-    <input id="mailVerify" type="email" name="mailVerify" value="{{user.mailVerify}}" required></div>
-<div class="form-group">
-    <label for="lastname">votre nom</label>
-    <input id="lastname" type="text" name="lastname" value="{{user.lastname}}" required></div>
-<div class="form-group">
-    <label for="firstname">votre prénom</label>
-    <input id="firstname" type="text" name="firstname" value="{{user.firstname}}" required></div>
-<div class="form-group">
-    <label for="address">votre adresse</label>
-    <input id="address" type="text" name="address" value="{{user.address}}" required></div>
-<div class="form-group">
-    <label for="zipCode">votre code postal</label>
-    <input id="zipCode" type="text" name="zipCode" value="{{user.zipCode}}" required></div>
-<div class="form-group">
-    <label for="city">votre ville</label>
-    <input id="city" type="text" name="city" value="{{user.city}}" required></div>
-<div class="form-group">
-    <label for="country">votre pays</label>
-    <input id="country" type="text" name="country" value="{{user.country}}" required></div>
-<div class="form-group">
-    <label for="phone">votre numéro de portable</label>
-    <input id="phone" type="tel" name="phone" value="{{user.phone}}" required></div>
-<div class="form-group">
-    <label for="password">votre mot de passe</label>
-    <input id="password" type="password" name="password" value="" required></div>
-<div class="form-group">
-    <label for="passwordVerify">confirmez votre mot de passe</label>
-    <input id="passwordVerify" type="password" name="passwordVerify" value="" required></div>
+{{ parent() }}
+<section class="container p-5">
+    <form method="POST" name="{{title}}" action="" {% if errors %}class="was-validated" {% endif %}>
+        <div class="row">
+            <div class="form-group col-12 col-sm">
+                <label for="mail">Votre courriel</label>
+                <input id="mail" class="form-control" type="email" name="mail" value="{{user.mail}}" required>
+                {% if errors.mail %}
+                <div class="invalid-feedback">
+                    <ul>
+                        {% for error in errors.mail %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+            <div class="form-group col-12 col-sm">
+                <label for="mailVerify">Vérification de votre courriel</label>
+                <input id="mailVerify" class="form-control" type="email" name="mailVerify" value="{{user.mailVerify}}" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-12 col-sm">
+                <label for="password">Votre mot de passe</label>
+                <input id="password" class="form-control" type="password" name="password" value="" required>
+                {% if errors.password %}
+                <div class="invalid-feedback">
+                    <ul>
+                        {% for error in errors.password %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
 
-<div class="centrer">
-    <div><button type="submit">Envoyer</button></div>
-</div>
+            <div class="form-group col-12 col-sm">
+                <label for="passwordVerify">Confirmez votre mot de passe</label>
+                <input id="passwordVerify" class="form-control" type="password" name="passwordVerify" value="" required>
+            </div>
+        </div>
 
-</form>
+        <div class="row">
+            <div class="form-group col-12 col-sm">
+                <label for="lastname">votre nom</label>
+                <input id="lastname" class="form-control" type="text" name="lastname" value="{{user.lastname}}" required>
+            </div>
+            <div class="form-group col-12 col-sm">
+                <label for="firstname">votre prénom</label>
+                <input id="firstname" class="form-control" type="text" name="firstname" value="{{user.firstname}}" required>
+            </div>
+        </div>
+        
+        <div class="form-group col-12 col-sm">
+            <label for="address">votre adresse</label>
+            <input id="address" class="form-control" type="text" name="address" value="{{user.address}}" required>
+        </div>
+        <div class="row">
+            <div class="form-group col-12 col-sm">
+                <label for="zipCode">votre code postal</label>
+                <input id="zipCode" class="form-control" type="text" name="zipCode" value="{{user.zipCode}}" required>
+            </div>
+            <div class="form-group col-12 col-sm">
+                <label for="city">votre ville</label>
+                <input id="city" class="form-control" type="text" name="city" value="{{user.city}}" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-12 col-sm">
+                <label for="country">votre pays</label>
+                <input id="country" class="form-control" type="text" name="country" value="{{user.country}}" required>
+            </div>
+            <div class="form-group col-12 col-sm">
+                <label for="phone">votre numéro de portable</label>
+                <input id="phone" class="form-control" type="tel" name="phone" value="{{user.phone}}" required>
+            </div>
+        </div>
+        <p class="text-center m-0">
+            <button class="btn btn-primary" required type="submit">S'inscrire</button>
+        </p>
+    </form>
+</section>
 {% endblock content %}

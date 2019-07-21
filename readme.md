@@ -1,6 +1,6 @@
-# Fusion du "site Bière" et du "BLOG en MVC" 
+# Fusion du "site Bière PHP" et du "BLOG en MVC" 
 
-Modèle MVC avec un dossier 'Core' contenant les classes génériques réutilisables en MVC
+Modèle MVC PHP avec un dossier 'Core' contenant les classes génériques réutilisables en MVC
 
 - Les variables d'environnement, à adapter selon le serveur, sont définies dans le fichier www/src/config.php, 
 à créer sur le modèle de www/src/config.sample.php :
@@ -20,23 +20,63 @@ Modèle MVC avec un dossier 'Core' contenant les classes génériques réutilisa
 
 - le fichier .env est utilisé dans un environnement Docker sur Linux, 
     il est remplacé par config.php pour la portabilité de certaines variables
-    seules les variables suivantes sont utilisées par docker dans .env (voir .env.sample) :
+    seules les variables suivantes sont utilisées par docker dans docker-compose.yml (voir .env.sample) :
     CONTAINER_NAME=blog
     CONTAINER_MYSQL=blog.mysql
     CONTAINER_PORT=80
+    CONTAINERMAIL_PORT=1080
+
 
 - sur Windows/Wamp : 
-    - copier le dossier www dans un dossier 'sitebiere' de c:\Wamp64\www\
+    - copier le dossier **www** dans un dossier 'sitebiere' de c:\Wamp64\www\
     - déclarer ce dossier dans le fichier hosts : 127.0.0.1 sitebiere
     - ajouter dans httpd-vhosts.conf un bloc  <VirtualHost:80> les lignes suivantes :
        
         ServerName sitebiere
         ServerAlias sitebiere
         DocumentRoot "${INSTALL_DIR}/www/sitebiere/public
+    - installation du projet dans la console : 
+        - cd c:\wamp64\www\sitebiere
+        - composer update
+        - php commande\createsql.php --demo
 
 ## Le Diagramme de classes
 
 ![Classes](sitebiereClasses.jpg "classes")
+
+## le CSS utilisé dans assets/css
+- Bootstrap essentiellement
+- styles.css pour des détails
+- admin.css pour la partie Administration
+
+## le Javascript : assets/js/script.js
+- search() : 
+    recherche d'une chaine dans la page avec surlignage en rouge quand trouvé
+- calcPrice(obj, id, originalPrice) : 
+    calcul du prix dans les champs ddu bon de commande
+- calcPriceCart(obj, id, originalPrice) : 
+    calcul du prix dans les champs du panier
+- deleteOfCart(id, originalPrice) : 
+    supprime la ligne du panier
+- totaux(prefix = "", totalPanier = 0) : 
+    calcule le total du panier (si $prefix = 'P') ou du coté commande
+- getProductsModal(title, img, content, price, id) : 
+    affichage de la carte modale d'une bière pour l'ajouter au panier
+- addCart(id, qtyId) : 
+    ajouter une bière au panier par la carte modale
+- addToCart(id, originalPrice) : 
+    ajouter au panier par la modale 
+- updateCart(id, originalPrice, prefix = "") : 
+    update la ligne du panier dans la page commande ou panier
+- afficheCart(data, id, originalPrice) : 
+    affichage du panier et de la commande
+- selectClient() : 
+    lecture en base et affichage des coordonnées d'un user_infos à partir d'un select contenant la liste des user_infos_id
+- selectAdresse(id) : 
+    lecture en base et affichage des coordonnées d'un user_infos à partir d'un navbar
+- selectStatus(id) : 
+    sélection d'un état de commande pour afficher seulement les commandes ayant cet état
+
 
 ## LE SITE "Bread Beer Shop" : la page d'accueil
 Un menu dans le Header de toutes les pages :
@@ -44,11 +84,20 @@ Un menu dans le Header de toutes les pages :
 - Boutique
 - Connexion
 - Inscription
+- Contact
+- Blog
+- Thèmes
+- Panier
+si utilisateur connecté :
+- Home
+- Boutique 
 - Bon de commande
 - Profil
 - Déconnexion
 - Contact
 - Blog
+- Thèmes
+- Panier
 
 ### - "Boutique" : Affiche les produits (bières) 
 un clic sur un produit affiche une modale pour ajouter une quantité au panier
@@ -85,15 +134,6 @@ envoie un mail de confirmation pour valider l'inscription.
 Ce formulaire envoie un email à l'adresse définie dans config.php
 
 ### Le BLOG :
-- Un menu dans le Header de toutes les pages :
-- Boutique
-- Articles
-- Catégories
-- Contact
-- Connexion
-- Inscription
-- Profil
-- Déconnexion
 
 - Page d'accueil : Liste des articles avec leurs catégories et un lien 'lire plus"
 - Page Catégories : liste des catégories avec lien sur chacune et la liste de ses articles
@@ -136,22 +176,37 @@ Ce formulaire envoie un email à l'adresse définie dans config.php
 
 - createsql.php : requêtes SQL de création de la base lancées dans ./start.sh par :
 docker exec blog php commande/createsql.php
+- createsql : le même en mode commande sous linux
 
 ##### www/core : Environnement générique MVC
 
 - www/core/Controller : les classes génériques de contrôleurs 
     Controller.php : contrôleur général, classe parente
-    FormController.php : Contrôleur de formulaire
+    FlashController.php : Messages Flash (n'est plus utilisé, remplacé par FlashService)
+    FormController.php : Contrôleur de formulaire    
+    FormulaireController.php : Contrôleur de formulaire (correction, non utilisée)
+    PaginatedQueryController.php : contrôleur de la pagination
     RouterController.php : contrôleur des routes
     URLController.php : contrôleur des url
-    PaginatedQueryController.php : contrôleur de la pagination
+    
     Database/DatabaseController.php et Database/DatabaseMysqlController.php : contrôleur des bases
+    
     Helpers/TextController.php : contrôleur des méthodes sur chaines
     Helpers/MailController.php : contrôleur des envois de mail par SwiftMail
+    
+    Session/ArraySession.php : Classe de session dans un tableau
+    Session/Flashservice.php : Messages Flash dans une session
+    Session/PhpSession.php : classe de session sur $_SESSION
+    Session/sessionInterface.php : Interface pour classe xxxSession
+
+- www/core/Extension : les classes d'extensions pour librairies externes 
+    Twig/FlashExtension : Extension Twig pour les messages Flash
+    Twig/PriceExtension : calcul de prix TTC
+    Twig/UriExtension : Calcul d'url avec http ou https
 
 - www/core/Model : les classes génériques du modèle 
-    Table.php : Classe abstraite de requêtes aux tables
     Entity.php : Description d'un enregistrement de table
+    Table.php : Classe abstraite de requêtes aux tables
 
 ##### www/src : Environnement spécifique de l'application
 
@@ -161,6 +216,7 @@ docker exec blog php commande/createsql.php
 
 - **www/src/Controller** : les classes spécifiques du contrôleur qui héritent de core/Controller
     
+    AuthController.php : provisoire, gestion de la session de connexion
     ConfigController.php : contrôleur de la table config (tva, frais de port)
     PaginatedQueryAppController.php : contrôleur de la pagination
     
@@ -168,6 +224,10 @@ docker exec blog php commande/createsql.php
     PostController.php : contrôleur des articles du BLOG
 
     BeerController.php : contrôleur des produits de la boutique de bières
+    CartController.php : contrôleur du panier de la boutique de bières
+    OrderController.php : contrôleur du bon de commande de la boutique de bières
+    UsersController.php : contrôleur des utilisateurs de la boutique de bières et du blog
+    UserInfosController.php : contrôleur des clients de la boutique de bières
     UsersController.php : contrôleur des clients de la boutique de bières
 
 - **www/src/Controller/Admin** : les classes de la partir **Administration**
@@ -209,9 +269,11 @@ docker exec blog php commande/createsql.php
 
 ##### www/views : les vues HTML des pages de l'application 
 
-- www/views/layout/default.twig : modèle d'une page 'modèle' du BLOG (header + contenu + footer)
-- www/views/layout/sitebiere.twig : modèle d'une page 'modèle' du SITE BIERE (header + contenu + footer)
+- www/views/layout/sitebiere.twig : modèle d'une page 'modèle' du SITE BIERE avec BLOG (header + contenu + footer)
 - www/views/layout/admindefault.twig : modèle d'une page 'modèle' du de l'administration du SITE BIERE (header + contenu + footer)
+- anciennes versions : 
+- www/views/layout/defaultBlog.twig : modèle d'une page 'modèle' du BLOG (header + contenu + footer)
+- www/views/layout/defaultBiere.twig : modèle d'une page 'modèle' du site Bière (header + contenu + footer)
 
 - www/views/category/ : templates .twig des pages pour les catégories (all.twig et show.twig)
 - www/views/post/ : templates .twig des pages pour les articles (card.twig, all.twig et show.twig)
@@ -229,7 +291,11 @@ docker exec blog php commande/createsql.php
 ##### www/tests : les tests unitaires des classes de l'application 
 
 - www/tests/Core/Controller/Helpers/TextTest.php : classe de tests unitaires de la classe \Core\Controller\Helpers\TextController
-- www/tests/Core/Controller/FormTest.php : classe de tests unitaires de la classe \Core\Controller\FormController
+- www/tests/Core/Controller/Helpers/ExercicesTest.php : classe de tests unitaires de la classe \Core\Controller\Helpers\Exercices
+- www/tests/Core/Controller/Session/FlashServiceTest.php : classe de tests unitaires de la classe \Core\Controller\Session\FlashService
+
+- www/tests/Core/Controller/FormControllerTest.php : classe de tests unitaires de la classe \Core\Controller\FormController
+
 - www/tests/Core/Model/TableTest.php : classe de tests unitaires de la classe \Core\Model\Table
 - www/tests/Core/Model/ClassTest/ClassNameTable.php : classe pour les tests unitaires de la classe \Core\Model\Table
 - www/tests/Core/Model/ClassTest/MotMotTable.php : classe pour les tests unitaires de la classe \Core\Model\Table
