@@ -23,7 +23,7 @@ class MailController extends Controller
         }
         // Crée le Transport
         if (\App\App::getInstance()->getEnv('ENV_DEV')) {
-            $transport = new \Swift_SmtpTransport('mailCatcher', 25);
+            $transport = new \Swift_SmtpTransport('mailCatcher', 1025);
             $sender = ["mail@test.fr" => "adminDev"];
         } else {
             // 'smtp.gmail.com' peut être dans une variable d'environnement

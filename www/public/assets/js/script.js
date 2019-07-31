@@ -32,7 +32,6 @@ function search() {
 
     var content = $('.content').html();
 
-
     content = content.replace(re, span + '$&' + span2);
     $('.content').html(content);
 
